@@ -8,6 +8,10 @@ src/services: 外部APIとの接続サービスを格納(Supabaseクライアン
 src/utils: 定数などを格納
 
 ## Supabaseコンテナの導入方法
+
+開発環境の動作にはSupabaseコンテナの実行が必須です。  
+以下の手順に従ってコンテナを立ち上げておいてください。
+
 1. リポジトリをクローンする  
 git clone --depth 1 https://github.com/supabase/supabase
 
