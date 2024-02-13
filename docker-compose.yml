@@ -1,0 +1,16 @@
+version: '3'
+services:
+  app:
+    build: .
+    image: pythagora_maker
+    ports:
+      - '3000:3000'
+    volumes:
+      - '.:/app'
+    environment:
+      - NODE_ENV=development
+    networks:
+      - supabase_default
+networks:
+  supabase_default:
+    external: true
