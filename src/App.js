@@ -4,6 +4,7 @@ import './App.css';
 import HomePage from './pages/HomePage';
 import SignUp from "./pages/SignUp";
 import LogIn from "./pages/LogIn";
+import UserIndex from "./pages/UserIndex";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path={RoutePath.signup.path} element={<SignUp />} />
         <Route path={RoutePath.login.path} element={<LogIn />} />
+        <Route path={RoutePath.userindex.path} element={<UserIndex />} />
       </Routes>
       
       

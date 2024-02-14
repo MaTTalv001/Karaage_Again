@@ -7,4 +7,8 @@ export const RoutePath = {
     path: "/login",
     name: "ログイン",
   },
+  userindex: {
+    path: "/userindex",
+    name: "ユーザー一覧",
+  },
 };
