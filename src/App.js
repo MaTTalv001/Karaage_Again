@@ -1,22 +1,20 @@
-import { Routes, Route } from "react-router-dom";
-import { RoutePath } from "./utils/Route";
+import { RoutesComponent } from 'components/RoutesComponent';
 import './App.css';
-import HomePage from './pages/HomePage';
-import SignUp from "./pages/SignUp";
-import LogIn from "./pages/LogIn";
-import UserIndex from "./pages/UserIndex";
+import Header from 'components/Header';
+import { Footer } from 'components/Footer';
 
 function App() {
   return (
-    <div className="App" style={{ width: '100%', margin: 0 }}>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path={RoutePath.signup.path} element={<SignUp />} />
-        <Route path={RoutePath.login.path} element={<LogIn />} />
-        <Route path={RoutePath.userindex.path} element={<UserIndex />} />
-      </Routes>
-      
-      
+    <div className='flex flex-col w-screen h-screen  m-0 p-0'>
+      <header className='w-full h-14'>
+        <Header />
+      </header>
+      <main className='w-full'>
+        <RoutesComponent />
+      </main>
+      <footer className='w-full h-3'>
+        <Footer />
+      </footer>
     </div>
   );
 }
