@@ -1,8 +1,8 @@
 import HomePage from "pages/HomePage";
 import LogInPage from "pages/LogIn";
 import SignUpPage from "pages/SignUp";
-import { StageSelectPage } from "pages/StageSelect";
-import UserIndex from "pages/UserIndex";
+import { StageSelectPage } from "pages/game";
+import { UsersIndex } from "pages/users";
 import { GameCreate } from "pages/game/GameCreate";
 import { GameEdit } from "pages/game/GameEdit";
 import { GamePlay } from "pages/game/GamePlay";
@@ -49,7 +49,7 @@ export const RouteSetting = [
   // ユーザー周り
   {
     path: Path.users,
-    component: <UserIndex />,
+    component: <UsersIndex />,
   },
   {
     path: Path.usersProfile,
