@@ -1,23 +1,20 @@
-import logo from './logo.svg';
+import { RoutesComponent } from 'components/RoutesComponent';
 import './App.css';
+import Header from 'components/Header';
+import { Footer } from 'components/Footer';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div className='flex flex-col w-screen h-screen'>
+      <header className='fixed top-0 h-14 w-full z-10'>
+        <Header />
       </header>
+      <main className='flex-1 bg-green-400'>
+        <RoutesComponent />
+      </main>
+      <footer className='w-full'>
+        <Footer />
+      </footer>
     </div>
   );
 }
