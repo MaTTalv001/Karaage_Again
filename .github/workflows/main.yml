@@ -1,0 +1,52 @@
+name: Notify Mattermost on PR and comment and assigned and merged
+on:
+  pull_request:
+    types: [opened, assigned, closed]
+  issue_comment:
+    types: [created]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification
+        uses: actions/github-script@v3
+        env:
+          MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_WEBHOOK_URL }}
+        with:
+          script: |
+            const mattermostWebhookUrl = process.env.MATTERMOST_WEBHOOK_URL;
+            const payload = context.payload;
+            let username, title, url, message;
+            // PRがアサインされた場合
+            if (payload.action === 'assigned') {
+                title = payload.pull_request.title;
+                const assignee = payload.assignee.login;
+                message = `\n**${assignee}**さんがプルリクエスト[${title}]にアサインされました。`;
+              }else if (payload.action === 'closed' && payload.pull_request.merged) {
+                title = payload.pull_request.title;
+                message = `\nプルリクエスト[${title}]がマージされました。`;
+              }
+              
+            if (payload.action === 'opened') {
+              username = payload.pull_request.user.login;
+              title = payload.pull_request.title;
+              url = payload.pull_request.html_url;
+              const baseBranch = payload.pull_request.base.ref;
+              const headBranch = payload.pull_request.head.ref;
+              message = `**${username}**さんがプルリクエストを送りました。\n[${title}](${url})\n${baseBranch} ⇦ ${headBranch}`;
+            } 
+            else if (context.eventName === 'issue_comment') {
+              username = payload.comment.user.login;
+              title = payload.issue.title;
+              url = payload.issue.html_url;
+              const comment = payload.comment.body;
+              message = `**${username}**さんが[${title}](${url})にコメントしました。\n${comment}`;
+            }
+
+            await github.request({
+              url: mattermostWebhookUrl,
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              data: { text: message }
+            });
