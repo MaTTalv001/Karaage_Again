@@ -25,10 +25,10 @@ const Path = {
   login: "/login",
   users: "/users",
   usersProfile: "/users/:id",
+  stageSelect: "/game",
   gamePlay: "/game/:id",
   gameEdit: "/game/:id/edit",
   gameNew: "/game/new",
-  stageSelect: "/stage-select",
 };
 
 // NOTE : ルーティング設定用
