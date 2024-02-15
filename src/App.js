@@ -5,14 +5,14 @@ import { Footer } from 'components/Footer';
 
 function App() {
   return (
-    <div className='flex flex-col w-screen h-screen  m-0 p-0'>
-      <header className='w-full h-14'>
+    <div className='flex flex-col w-screen h-screen'>
+      <header className='fixed top-0 h-14 w-full z-10'>
         <Header />
       </header>
-      <main className='w-full'>
+      <main className='flex-1 bg-green-400'>
         <RoutesComponent />
       </main>
-      <footer className='w-full h-3'>
+      <footer className='w-full'>
         <Footer />
       </footer>
     </div>
