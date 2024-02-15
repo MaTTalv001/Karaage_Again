@@ -9,8 +9,8 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="bg-green-400 w-screen h-screen relative">
-        <Header />
+      <div className="w-full h-full relative">
+        {/* 全画面で表示するものなので、App.jsで読み込むようにさせていただきました。<Header /> */}
         <div className="font-[DotGothic16] flex flex-col items-center justify-center h-[calc(100%-40px)]">
           <div className="pt-5 pb-5 pl-15 pr-15 rounded-3xl border-4 border-black text-center font-dotgothic16 text-shadow-black ">
             <h1 className="text-8xl my-3 mx-10 text-yellow-300">Pythagora</h1>
@@ -22,7 +22,8 @@ const HomePage = () => {
           >
             Game Start
           </Link>
-          <footer className="flex justify-between items-center p-2.5 absolute bottom-2 right-0 left-0">
+          {/* Footerコンポーネントへ移動させていただきました。 */}
+          {/* <footer className="flex justify-between items-center p-2.5 absolute bottom-2 right-0 left-0">
             <div className="flex ml-10">
               <div className="mx-1">COPY RIGHT</div>
               <div className="mx-1">プラバシーポリシー</div>
@@ -31,7 +32,7 @@ const HomePage = () => {
             <p className="text-base text-black mb-2 mx-4">
               ※本ゲームはPC専用となっております。
             </p>
-          </footer>
+          </footer> */}
         </div>
       </div>
     </>
