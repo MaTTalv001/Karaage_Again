@@ -1,11 +1,23 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header';
+import { useAuth } from "contexts/AuthContext";
+
 
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const { user, isLoading } = useAuth();
+
+  useEffect(() => {
+		// ユーザーが取得できなければログイン画面に飛ばします
+    if (!user && !isLoading) {
+      console.log("no_user")
+      navigate('/');
+    }
+  }, [user, isLoading, navigate]);
+
 
   return (
     <>
@@ -22,17 +34,7 @@ const HomePage = () => {
           >
             Game Start
           </Link>
-          {/* Footerコンポーネントへ移動させていただきました。 */}
-          {/* <footer className="flex justify-between items-center p-2.5 absolute bottom-2 right-0 left-0">
-            <div className="flex ml-10">
-              <div className="mx-1">COPY RIGHT</div>
-              <div className="mx-1">プラバシーポリシー</div>
-              <div className="mx-1">利用規約</div>
-            </div>
-            <p className="text-base text-black mb-2 mx-4">
-              ※本ゲームはPC専用となっております。
-            </p>
-          </footer> */}
+          
         </div>
       </div>
     </>

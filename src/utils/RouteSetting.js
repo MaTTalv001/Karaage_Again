@@ -7,6 +7,7 @@ import { GameCreate } from "pages/game/GameCreate";
 import { GameEdit } from "pages/game/GameEdit";
 import { GamePlay } from "pages/game/GamePlay";
 import { UserProfile } from "pages/users/UserProfile";
+import  Test  from "pages/Test";
 
 // NOTE : 暫定処理なので必要に応じて修正してくださいっ
 
@@ -29,6 +30,7 @@ const Path = {
   gamePlay: "/game/:id",
   gameEdit: "/game/:id/edit",
   gameNew: "/game/new",
+  test: "/test",
 };
 
 // NOTE : ルーティング設定用
@@ -45,6 +47,10 @@ export const RouteSetting = [
   {
     path: Path.login,
     component: <LogInPage />,
+  },
+  {
+    path: Path.test,
+    component: <Test />,
   },
   // ユーザー周り
   {
@@ -114,5 +120,9 @@ export const RoutePath = {
   gameNew: {
     path: Path.gameNew,
     name: "ゲーム新規作成",
+  },
+  test: {
+    path: Path.test,
+    name: "test",
   },
 };
