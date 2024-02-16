@@ -28,6 +28,7 @@ const LogInPage = () => {
     } else {
       // ユーザー情報をコンテキストに設定 
       console.log("success!!")
+      alert("ログインしました")
       setUser(data.user);
       navigate('/');
     }
@@ -68,9 +69,6 @@ const LogInPage = () => {
                 </button>
               </div>
             </form>
-            <button
-                  className=" text-black font-bold py-2 px-4"
-                  onClick={handleLogin}>botan</button>
           </div>
         </div>
 

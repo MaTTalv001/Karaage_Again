@@ -15,6 +15,7 @@ const Header = () => {
       if (logoutError) {
         throw logoutError;
       }
+      alert('ログアウトしました');
       await navigate('/');
     }catch{
       alert('エラーが発生しました');
