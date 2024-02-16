@@ -7,6 +7,10 @@ class CollisionEvents {
     this.collisionStartCallback = null;
   }
 
+  clear() {
+    this.removeTouchEvents();
+  }
+
   /**
     * @method タッチイベント
     * @param {function} callback 衝突時のコールバック関数
@@ -28,7 +32,7 @@ class CollisionEvents {
    */
   removeTouchEvents() {
     if (this.collisionStartCallback) {
-      this.events.off(this.engine, 'collisionStart', this.collisionStartCallback);
+      Events.off(this.engine, 'collisionStart', this.collisionStartCallback);
       this.collisionStartCallback = null;
     }
   }

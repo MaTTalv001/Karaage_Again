@@ -30,6 +30,12 @@ class MouseEvents {
     return this.mouseConstraint;
   }
 
+  clear() {
+    this.offClickEvents();
+    this.offDragEvents();
+    this.offClickUpEvents();
+  }
+
   /**
    * @method クリックイベント登録
    * @param {function} events 登録したいイベントコールバック

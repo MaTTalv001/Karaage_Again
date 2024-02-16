@@ -1,4 +1,4 @@
-import getColor from "../../common/ColorSetting";
+import getColor from "../ColorSetting";
 import { Body, Composite } from "matter-js";
 
 class MatterObject {
@@ -81,6 +81,10 @@ class MatterObject {
    */
   getObject() {
     return this.object;
+  }
+
+  getPosition() {
+    return this.object.position;
   }
 
   /**

@@ -4,8 +4,8 @@ class MatterEngine {
   /**
    * TODO : 画面幅をここで設定するとほかで使いづらいのでどうにかしたい
    */
-  DisplayWidth = 1000;
-  DisplayHeight = 700;
+  DisplayWidth = 890;
+  DisplayHeight = 796;
   constructor() {
     this.engine = Engine.create();
   }
@@ -23,6 +23,7 @@ class MatterEngine {
         width: this.DisplayWidth,
         height: this.DisplayHeight,
         wireframes: false,
+        background: "transparent",
       },
     });
     Render.run(this.render);
