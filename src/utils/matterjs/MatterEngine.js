@@ -5,7 +5,7 @@ class MatterEngine {
    * TODO : 画面幅をここで設定するとほかで使いづらいのでどうにかしたい
    */
   DisplayWidth = 890;
-  DisplayHeight = 796;
+  DisplayHeight = 740;
   constructor() {
     this.engine = Engine.create();
   }

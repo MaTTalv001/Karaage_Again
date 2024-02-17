@@ -10,7 +10,7 @@ export const GamePlay = () => {
   const { id } = useParams();
   const [gameClear, setGameClear] = useState(false);
   const [loading, setLoading] = useState(true);
-  // TODO : useStateでいいのか勉強中
+  const [gameData, setGameData] = useState({});
   const [stageData, setStageData] = useState([]);
   const [switchObject, setSwitchObject] = useState({});
   const [userPlacement, setUserPlacement] = useState([]);
@@ -33,6 +33,7 @@ export const GamePlay = () => {
   useEffect(() => {
     if (gameClear) {
       // TODO : ゲームクリア処理や演出
+      alert("ゲームクリア");
     }
   }, [gameClear]);
 
@@ -48,18 +49,21 @@ export const GamePlay = () => {
     const matterEngine = new MatterEngine();
     matterEngine.setup("#Game");
 
+    setGameData(data);
+
     const switchObj = createObject(data.Switch, "Switch");
     setSwitchObject(switchObj);
     const stageObj = createObjects(data.Stage);
     setStageData(stageObj);
     const userPlacementObj = createObjects(data.UserPlacement, "User");
     setUserPlacement(data.UserPlacement);
-    matterEngine.registerObject([switchObj, ...stageObj, ...userPlacementObj]);
+    const ball = createObject(data.Ball, "Ball");
+    matterEngine.registerObject([switchObj, ...stageObj, ...userPlacementObj, ball]);
 
     matterEngine.run();
 
     const colEvents = new CollisionEvents(matterEngine.getEngine());
-    colEvents.pushSwitch(() => handleSwitch(switchObj));
+    colEvents.pushSwitch(() => handleSwitch(switchObj, data.Switch.y));
     setCollisionEvents(colEvents);
 
     const mouseEvents = new MouseEvents(matterEngine.getRender(), matterEngine.getEngine());
@@ -70,10 +74,10 @@ export const GamePlay = () => {
     setMouseEvents(mouseEvents);
   }
 
-  const handleSwitch = (switchObj) => {
+  const handleSwitch = (switchObj, startPos_y) => {
     const intervalId = setInterval(() => {
       const pos = switchObj.getPosition();
-      const results = switchObj.setPositionAnimate(pos.x, pos.y + 30);
+      const results = switchObj.setPositionAnimate(pos.x, startPos_y + 15);
       setGameClear(results);
       if (results) {
         clearInterval(intervalId);
@@ -153,7 +157,7 @@ const Data = {
     {
       "bodiesType": "Rectangle",
       "x": 448,
-      "y": 740,
+      "y": 730,
       "width": 896,
       "height": 30,
       "option": {
@@ -166,12 +170,12 @@ const Data = {
     },
     {
       "bodiesType": "Rectangle",
-      "x": 500,
+      "x": 600,
       "y": 200,
       "width": 500,
       "height": 30,
       "option": {
-        "angle": -0.2,
+        "angle": -0.3,
         "isStatic": true,
         "collisionFilter": {
           "group": -1
@@ -183,7 +187,7 @@ const Data = {
   "Switch": {
     "bodiesType": "Rectangle",
     "x": 600,
-    "y": 550,
+    "y": 700,
     "width": 100,
     "height": 50,
     "option": {
@@ -217,7 +221,8 @@ const Data = {
     "y": 100,
     "radius": 30,
     "option": {
-      "label": "ball"
+      "label": "ball",
+      "mass": 50,
     }
   }
 }
