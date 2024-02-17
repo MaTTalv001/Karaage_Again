@@ -2,11 +2,12 @@ import HomePage from "pages/HomePage";
 import LogInPage from "pages/LogIn";
 import SignUpPage from "pages/SignUp";
 import { StageSelectPage } from "pages/game";
-import { UsersIndex } from "pages/users";
+import UsersIndex from "pages/users/UsersIndex";
 import { GameCreate } from "pages/game/GameCreate";
 import { GameEdit } from "pages/game/GameEdit";
 import { GamePlay } from "pages/game/GamePlay";
 import { UserProfile } from "pages/users/UserProfile";
+import  Header  from "components/Header";
 
 // NOTE : 暫定処理なので必要に応じて修正してくださいっ
 
@@ -21,6 +22,7 @@ import { UserProfile } from "pages/users/UserProfile";
  */
 const Path = {
   home: "/",
+  header: "/header",
   signup: "/signup",
   login: "/login",
   users: "/users",
@@ -45,6 +47,10 @@ export const RouteSetting = [
   {
     path: Path.login,
     component: <LogInPage />,
+  },
+  {
+    path: Path.header,
+    component: <Header />,
   },
   // ユーザー周り
   {
@@ -80,6 +86,10 @@ export const RoutePath = {
   home: {
     path: Path.home,
     name: "ホーム",
+  },
+  header: {
+    path: Path.header,
+    name: "ヘッダ",
   },
   signup: {
     path: Path.signup,

@@ -21,32 +21,42 @@ const Header = () => {
       alert('エラーが発生しました');
     }
   }
+
+  //ゲストログイン
+  const handleGuestLogin = (event) => {
+    event.preventDefault(); // デフォルトのリンク動作を防ぐ
+    // ゲストログインの処理をここに記述
+    alert('ゲストログインの処理が作動します');
+  };
+
   return (
     <div className="font-bold bg-gray-200 text-black p-2.5 flex justify-between">
       <div className="mx-5">
-        <a href="/" className="text-black mr-5 font-[DotGothic16]">
-          Home
-        </a>
+        <Link to={RoutePath.home.path} className="text-black mr-5 font-[DotGothic16]">
+          {RoutePath.home.name}
+        </Link>
       </div>
       <div className="mx-5">
-        <a href="/about" className="text-black mr-5 font-[DotGothic16]">
+        <Link to="#" className="text-black mr-5 font-[DotGothic16]">
           About_Us...
-        </a>
+        </Link>
         {user ? (
           <button onClick={Logout} className="text-black font-[DotGothic16] mx-2">
             LogOut
           </button>
         ) : (
             <>
-              <a href="/login" className="text-black font-[DotGothic16] mx-2">
-                LogIn
-              </a>
-              <a href="/signup" className="text-black mx-2 font-[DotGothic16]">SignUp</a>
-              <a href="/guest-login" className="text-black mx-2 font-[DotGothic16]">Guest_LogIn</a>
-              
+              <Link to={RoutePath.login.path} className="text-black font-[DotGothic16] mx-2">
+                {RoutePath.login.name}
+              </Link>
+              <Link to={RoutePath.signup.path} className="text-black mx-2 font-[DotGothic16]">
+                {RoutePath.signup.name}
+              </Link>
+              <Link to="#" className="text-black mx-2 font-[DotGothic16]" onClick={handleGuestLogin}>
+                ゲストログイン
+              </Link>
             </>
-        )}
-
+              )}
       </div>
     </div>
   );
