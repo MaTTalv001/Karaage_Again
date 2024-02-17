@@ -7,7 +7,6 @@ import { GameCreate } from "pages/game/GameCreate";
 import { GameEdit } from "pages/game/GameEdit";
 import { GamePlay } from "pages/game/GamePlay";
 import { UserProfile } from "pages/users/UserProfile";
-import  Header  from "components/Header";
 
 // NOTE : 暫定処理なので必要に応じて修正してくださいっ
 
