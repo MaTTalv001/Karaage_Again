@@ -22,7 +22,6 @@ import  Header  from "components/Header";
  */
 const Path = {
   home: "/",
-  header: "/header",
   signup: "/signup",
   login: "/login",
   users: "/users",
@@ -47,10 +46,6 @@ export const RouteSetting = [
   {
     path: Path.login,
     component: <LogInPage />,
-  },
-  {
-    path: Path.header,
-    component: <Header />,
   },
   // ユーザー周り
   {
