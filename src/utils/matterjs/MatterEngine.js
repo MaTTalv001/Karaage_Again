@@ -1,11 +1,6 @@
 import { Composite, Engine, Render, Runner } from "matter-js";
 
 class MatterEngine {
-  /**
-   * TODO : 画面幅をここで設定するとほかで使いづらいのでどうにかしたい
-   */
-  DisplayWidth = 890;
-  DisplayHeight = 740;
   constructor() {
     this.engine = Engine.create();
   }
@@ -16,12 +11,13 @@ class MatterEngine {
    * @description 表示する要素のクラス名を指定して、表示設定を行う
    */
   setup(elementName) {
+    const parent = document.body.querySelector(elementName);
     this.render = Render.create({
-      element: document.body.querySelector(elementName),
+      element: parent,
       engine: this.engine,
       options: {
-        width: this.DisplayWidth,
-        height: this.DisplayHeight,
+        width: parent.offsetWidth,
+        height: parent.offsetHeight,
         wireframes: false,
         background: "transparent",
       },

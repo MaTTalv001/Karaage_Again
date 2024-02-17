@@ -33,6 +33,14 @@ class MatterObject {
     Body.setPosition(this.object, { x, y });
   }
 
+  getId() {
+    return this.object.id;
+  }
+
+  getScale() {
+    return { x: this.object.render.sprite.xScale, y: this.object.render.sprite.yScale };
+  }
+
   /**
    * @method オブジェクトの移動アニメーション
    * @param {number} x X座標

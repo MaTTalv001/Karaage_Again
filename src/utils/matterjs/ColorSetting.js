@@ -30,7 +30,9 @@ const ColorSetting = {
   Switch: "red",
   Move: "yellow",
   UserStatic: "blue",
-  UserMove: "green"
+  UserMove: "green",
+  Ball: "cyan",
+  Wall: "#4ADE80", // TODO 背景色と同じ
 }
 
 
@@ -50,6 +52,12 @@ const getColor = (type, isStatic) => {
     case "User":
       if (isStatic) colorSet = { fillStyle: ColorSetting.UserStatic }; // ユーザー配置且つ動かない
       else colorSet = { fillStyle: ColorSetting.UserMove };  // ユーザー配置且つ動く
+      break;
+    case "Ball":
+      colorSet = { fillStyle: ColorSetting.Ball }; // ボール
+      break;
+    case "Wall":
+      colorSet = { fillStyle: ColorSetting.Wall }; // 壁
       break;
   }
 
