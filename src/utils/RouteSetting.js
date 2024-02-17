@@ -82,10 +82,6 @@ export const RoutePath = {
     path: Path.home,
     name: "ホーム",
   },
-  header: {
-    path: Path.header,
-    name: "ヘッダ",
-  },
   signup: {
     path: Path.signup,
     name: "ユーザー登録",
