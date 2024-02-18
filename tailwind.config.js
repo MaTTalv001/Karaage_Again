@@ -5,7 +5,11 @@ module.exports = {
     "./src/*.{js,jsx,ts,tsx}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      textShadow: {
+      'black': '5px 5px black'
+    }
+    },
   },
   plugins: [],
 }

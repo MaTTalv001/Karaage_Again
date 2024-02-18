@@ -2,7 +2,7 @@ import HomePage from "pages/HomePage";
 import LogInPage from "pages/LogIn";
 import SignUpPage from "pages/SignUp";
 import { StageSelectPage } from "pages/game";
-import { UsersIndex } from "pages/users";
+import UsersIndex from "pages/users/UsersIndex";
 import { GameCreate } from "pages/game/GameCreate";
 import { GameEdit } from "pages/game/GameEdit";
 import { GamePlay } from "pages/game/GamePlay";
@@ -79,7 +79,7 @@ export const RouteSetting = [
 export const RoutePath = {
   home: {
     path: Path.home,
-    name: "ホーム",
+    name: "Pythagora maker",
   },
   signup: {
     path: Path.signup,
@@ -114,5 +114,5 @@ export const RoutePath = {
   gameNew: {
     path: Path.gameNew,
     name: "ゲーム新規作成",
-  },
+  }
 };
