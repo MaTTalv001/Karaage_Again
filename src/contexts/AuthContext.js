@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
 
 	// ユーザーの情報
   const [user, setUser] = useState(null);
+  const [isGuest, setIsGuest] = useState(false);
 
   /*
 		セッションの読み込みは非同期で行われるため、
@@ -47,7 +48,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, isLoading }}>
+    <AuthContext.Provider value={{ user, setUser, isLoading , isGuest, setIsGuest}}>
       {children}
     </AuthContext.Provider>
   );
