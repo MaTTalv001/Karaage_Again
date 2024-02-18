@@ -80,6 +80,8 @@ export const GamePlay = () => {
     });
     setUserPlacement(placements);
 
+    // ユーザー配置オブジェクトとピタゴラスペースの仕切り壁
+    // TODO : 仕切り壁の位置をどこかで管理したい
     const wall = {
       "bodiesType": "Rectangle",
       "x": 304,
@@ -138,12 +140,6 @@ export const GamePlay = () => {
       if (selectObjectRef.current) {
         selectObjectRef.current.render.lineWidth = 0;
       }
-      selectObjectRef.current = null;
-      return false;
-    }
-
-    if (selectObjectRef.current === target) {
-      selectObjectRef.current.render.lineWidth = 0;
       selectObjectRef.current = null;
       return false;
     }
