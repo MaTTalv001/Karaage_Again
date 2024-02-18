@@ -79,7 +79,7 @@ export const RouteSetting = [
 export const RoutePath = {
   home: {
     path: Path.home,
-    name: "ホーム",
+    name: "Pythagora maker",
   },
   signup: {
     path: Path.signup,

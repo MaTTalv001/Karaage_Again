@@ -32,7 +32,7 @@ const Header = () => {
   return (
     <div className="font-bold bg-gray-200 text-black p-2.5 flex justify-between">
       <div className="mx-5">
-        <Link to={RoutePath.home.path} className="text-black mr-5 font-[DotGothic16]">
+        <Link to={RoutePath.home.path} className="text-xl mr-5  text-yellow-300 text-black-outline font-[DotGothic16]">
           {RoutePath.home.name}
         </Link>
       </div>
