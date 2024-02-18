@@ -5,20 +5,20 @@ import { Polygon } from "./Polygon";
 
 // 引数作成のマッパー
 const mapper = {
-  Rectangle: (stage, type, size) => {
-    return [stage.x, stage.y, type, stage.width * size, stage.height * size, stage.option];
+  Rectangle: (object, type, size) => {
+    return [object.x, object.y, type, object.width * size, object.height * size, object.option];
   },
 
-  Circle: (stage, type, size) => {
-    return [stage.x, stage.y, type, stage.radius * size, stage.option];
+  Circle: (object, type, size) => {
+    return [object.x, object.y, type, object.radius * size, object.option];
   },
 
-  Triangle: (stage, type, size) => {
-    return [stage.x, stage.y, type, stage.height * size, stage.option];
+  Triangle: (object, type, size) => {
+    return [object.x, object.y, type, object.height * size, object.option];
   },
 
-  Polygon: (stage, type, size) => {
-    return [stage.x, stage.y, type, stage.sides, stage.radius * size, stage.option];
+  Polygon: (object, type, size) => {
+    return [object.x, object.y, type, object.sides, object.radius * size, object.option];
   },
 };
 

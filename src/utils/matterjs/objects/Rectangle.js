@@ -25,6 +25,7 @@ class Rectangle extends MatterObject {
     super(x, y, type);
 
     this.object = Bodies.rectangle(x, y, width, height, this.getOptionAddColor(option, type));
+    this.object.getParent = () => this;
   }
 }
 

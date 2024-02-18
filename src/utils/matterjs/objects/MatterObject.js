@@ -20,7 +20,7 @@ class MatterObject {
    * @param {bool} bool 静止ならtrue
    */
   setStatic(bool) {
-    Body.setStatic(this.object, bool);
+    Body.setStatic(this.object, bool, { preserve: true });
   }
 
   /**
@@ -40,6 +40,11 @@ class MatterObject {
   getScale() {
     return { x: this.object.render.sprite.xScale, y: this.object.render.sprite.yScale };
   }
+
+  setScale({ x, y }) {
+    Body.scale(this.object, x, y);
+  }
+
 
   /**
    * @method オブジェクトの移動アニメーション

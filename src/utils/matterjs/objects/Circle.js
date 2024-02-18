@@ -20,6 +20,7 @@ class Circle extends MatterObject {
   ) {
     super(x, y, type);
     this.object = Bodies.circle(x, y, radius, this.getOptionAddColor(option));
+    this.object.getParent = () => this;
   }
 }
 

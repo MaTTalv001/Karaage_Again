@@ -1,4 +1,4 @@
-import { Body } from 'matter-js';
+import { Body, use } from 'matter-js';
 import React, { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import CollisionEvents from 'utils/matterjs/CollisionEvents';
@@ -11,17 +11,16 @@ export const GamePlay = () => {
   const [gameClear, setGameClear] = useState(false);
   const [loading, setLoading] = useState(true);
   const [gameData, setGameData] = useState({});
-  const [stageData, setStageData] = useState([]);
   const [switchObject, setSwitchObject] = useState({});
-  const [userPlacement, setUserPlacement] = useState([]);
+  const userPlacementRef = useRef([]);
   const [ball, setBall] = useState({});
-  const [wall, setWall] = useState({});
   const selectObjectRef = useRef(null);
   const [selectObjectLeft, setSelectObjectLeft] = useState(true); // TODO : ネーミングセンス
   const [collisionEvents, setCollisionEvents] = useState(null);
   const [mouseEvents, setMouseEvents] = useState(null);
   const mouseClickPosition = useRef({ x: 0, y: 0 });
   const navigator = useNavigate();
+  const wallPosX = 304;
 
   useEffect(() => {
     fetchData();
@@ -43,10 +42,11 @@ export const GamePlay = () => {
   useEffect(() => {
     if (selectObjectRef.current === null) return;
     if (selectObjectLeft) {
-      Body.scale(selectObjectRef.current, 0.5, 0.5);
+      selectObjectRef.current.getParent().setScale({ x: 0.5, y: 0.5 });
+      selectObjectRef.current.getParent().setStatic(true);
       return;
     }
-    Body.scale(selectObjectRef.current, 2, 2);
+    selectObjectRef.current.getParent().setScale({ x: 2, y: 2 });
   }, [selectObjectLeft]);
 
 
@@ -68,23 +68,27 @@ export const GamePlay = () => {
     const switchObj = createObject(data.Switch, "Switch");
     setSwitchObject(switchObj);
     const stageObj = createObjects(data.Stage);
-    setStageData(data.Stage);
     const ball = createObject(data.Ball, "Ball");
     setBall(ball);
     const userPlacementObj = createObjects(data.UserPlacement, "User");
+    // ユーザーは一オブジェクトの中に物理オブジェクトがあるとき、
+    // 初めから物理が効いていると操作が難しいので、最初は切っておく。
+    // ピタゴラスペースに配置するときに物理を効かせる
+    userPlacementObj.forEach(obj => obj.setStatic(true));
     const placements = data.UserPlacement.map((obj, index) => {
       return {
         object: obj,
         id: userPlacementObj[index].getId()
       }
     });
-    setUserPlacement(placements);
+    userPlacementRef.current = placements;
 
     // ユーザー配置オブジェクトとピタゴラスペースの仕切り壁
     // TODO : 仕切り壁の位置をどこかで管理したい
+    // FIX : 右側と天井に壁がないのでふっとばすと消える
     const wall = {
       "bodiesType": "Rectangle",
-      "x": 304,
+      "x": wallPosX,
       "y": 370,
       "width": 30,
       "height": 740,
@@ -97,11 +101,6 @@ export const GamePlay = () => {
       }
     };
     const wallObj = createObject(wall, "Wall");
-    setWall(wallObj);
-
-    matterEngine.registerObject([switchObj, ...stageObj, ...userPlacementObj, ball, wallObj]);
-
-    matterEngine.run();
 
     const colEvents = new CollisionEvents(matterEngine.getEngine());
     colEvents.pushSwitch(() => handleSwitch(switchObj, data.Switch.y));
@@ -113,7 +112,13 @@ export const GamePlay = () => {
     mouseEvents.onClickEvents();
     mouseEvents.registerDragEvent(handleDrag);
     mouseEvents.onDragEvents();
+    mouseEvents.registerClickUpEvent(handleClickUp);
+    mouseEvents.onClickUpEvents();
     setMouseEvents(mouseEvents);
+
+    matterEngine.setRenderMouse(mouseEvents.getMouse());
+    matterEngine.registerObject([switchObj, ...stageObj, ...userPlacementObj, ball, wallObj, mouseEvents.getMouseConstraint()]);
+    matterEngine.run();
   }
 
   const handleSwitch = (switchObj, startPos_y) => {
@@ -128,6 +133,7 @@ export const GamePlay = () => {
   };
 
   const handleClick = (e) => {
+
     const target = e.source.body;
     if (setSelectObject(target)) {
       const diff_x = e.mouse.position.x - target.position.x;
@@ -153,18 +159,15 @@ export const GamePlay = () => {
 
   const handleDrag = (e) => {
     const target = e.source.body;
-    if (!target || target.label === "useMove") return;
+    if (!target || !target.isStatic) return;
     if (selectObjectRef.current && selectObjectRef.current === target) {
       const position = e.source.mouse.position;
       const x = position.x - mouseClickPosition.current.x;
       const y = position.y - mouseClickPosition.current.y;
-      // TODO : BodyをMatterEngineとかでラップしたい
-      // あっちこっちにmatterjsがあると管理が大変なのでラップしたい
-      // FIX : たまに座標がずれる
-      Body.setPosition(selectObjectRef.current, { x, y });
+      // FIX : たまに座標がずれるかも
+      selectObjectRef.current.getParent().setPosition({ x, y });
 
-      // マジックナンバァァァァ！！！！
-      if (x < 304) {
+      if (x < wallPosX) {
         setSelectObjectLeft(true);
         return;
       }
@@ -172,8 +175,20 @@ export const GamePlay = () => {
     }
   };
 
+  const handleClickUp = (e) => {
+    const x = e.mouse.position.x;
+    if (!selectObjectRef.current || selectObjectRef.current.label !== "userMove") return;
+    // FIX : 左側のユーザー配置エリアに戻すと物理判定がバグるためオフにしてます。
+    // if (x < wallPosX) {
+    //   selectObjectRef.current.getParent().setStatic(true);
+    //   return;
+    // }
+    selectObjectRef.current.getParent().setStatic(false);
+  }
+
   const onClickPlay = () => {
     ball.setStatic(false);
+    setSelectObject(null);
   };
 
   const onClickReset = () => {
@@ -191,7 +206,7 @@ export const GamePlay = () => {
       <div className='h-[800px] w-[1200px] m-auto mt-14'>
         <div className='w-full h-[60px] flex'>
           <div className='w-1/4 flex flex-col'>
-            <h3 className='my-4'>配置オブジェクト</h3>
+            <h3 className='my-4 text-center'>配置オブジェクト</h3>
           </div>
           <div className='w-3/4 flex flex-col'>
             <div className='flex justify-between items-center mx-5'>
@@ -269,6 +284,16 @@ const Data = {
         "angle": 0.5,
         "isStatic": true,
         "label": "userStatic"
+      }
+    },
+    {
+      "bodiesType": "Circle",
+      "x": 150,
+      "y": 200,
+      "radius": 30,
+      "option": {
+        "label": "userMove",
+        "mass": 10,
       }
     }
   ],
