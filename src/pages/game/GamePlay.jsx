@@ -64,6 +64,7 @@ export const GamePlay = () => {
 
     const colEvents = new CollisionEvents(matterEngine.getEngine());
     colEvents.pushSwitch(() => handleSwitch(switchObj, data.Switch.y));
+    colEvents.onTouchEvents();
     setCollisionEvents(colEvents);
 
     const mouseEvents = new MouseEvents(matterEngine.getRender(), matterEngine.getEngine());

@@ -7,7 +7,10 @@ export class MatterEvents {
     this.beforeUpdateEvents = [];
     this.afterRenderEvents = [];
     this.beforeRenderEvents = [];
-    // イベントが残っていては困るので全削除
+    this.clear();
+  }
+
+  clear() {
     this.allOffAfterRenderEvent();
     this.allOffAfterUpdateEvent();
     this.allOffBeforeRenderEvent();
@@ -29,30 +32,27 @@ export class MatterEvents {
    * NOTE : 厳密には発火するのは更新後です。
    */
   onAfterUpdateEvent() {
-    this.afterUpdateEvents.forEach((event) => {
-      Events.on(this.engine, "afterUpdate", (e) => {
+    if (this.afterUpdateCallback) return;
+
+    this.afterUpdateCallback = (e) => {
+      this.afterUpdateEvents.forEach((event) => {
         event(e);
       });
-    });
+    }
+    Events.on(this.engine, "afterUpdate", this.afterUpdateCallback);
   }
 
-  /**
-   * @method 更新後イベント解除
-   * @param {function} event 解除したいイベント
-   * @description 登録した更新後イベントを解除する
-   */
-  offAfterUpdateEvent(event) {
-    Events.off(this.engine, "afterUpdate", (e) => {
-      event(e);
-    });
-  }
+  // TODO : 個別でイベント削除の必要が出たら改めて仕様を考え実装
 
   /**
    * @method 更新後イベント全解除
    * @description 登録した更新後イベントを全て解除する
    */
   allOffAfterUpdateEvent() {
-    Events.off(this.engine, "afterUpdate");
+    if (!this.afterUpdateCallback) return;
+    Events.off(this.engine, "afterUpdate", this.afterUpdateCallback);
+    this.afterUpdateEvents = [];
+    this.afterUpdateCallback = null;
   }
 
   /**
@@ -70,30 +70,26 @@ export class MatterEvents {
    * NOTE : 厳密には発火するのは更新前です。
    */
   onBeforeUpdateEvent() {
-    this.beforeUpdateEvents.forEach((event) => {
-      Events.on(this.engine, "beforeUpdate", (e) => {
+    if (this.beforeUpdateCallback) return;
+    this.beforeUpdateCallback = (e) => {
+      this.beforeUpdateEvents.forEach((event) => {
         event(e);
       });
-    });
+    };
+    Events.on(this.engine, "beforeUpdate", this.beforeUpdateCallback);
   }
 
-  /**
-   * @method 更新前イベント解除
-   * @param {function} event 解除したいイベント
-   * @description 登録した更新前イベントを解除する
-   */
-  offBeforeUpdateEvent(event) {
-    Events.off(this.engine, "beforeUpdate", (e) => {
-      event(e);
-    });
-  }
+  // TODO : 個別でイベント削除の必要が出たら改めて仕様を考え実装
 
   /**
    * @method 更新前イベント全解除
    * @description 登録した更新前イベントを全て解除する
    */
   allOffBeforeUpdateEvent() {
-    Events.off(this.engine, "beforeUpdate");
+    if (!this.beforeUpdateCallback) return;
+    Events.off(this.engine, "beforeUpdate", this.beforeUpdateCallback);
+    this.beforeUpdateCallback = null;
+    this.beforeUpdateEvents = [];
   }
 
   /**
@@ -111,30 +107,25 @@ export class MatterEvents {
    * NOTE : 厳密には発火するのは描画後です。
    */
   onAfterRenderEvent() {
-    this.afterRenderEvents.forEach((event) => {
-      Events.on(this.engine, "afterRender", (e) => {
+    this.afterRenderCallback = (e) => {
+      this.afterRenderEvents.forEach((event) => {
         event(e);
       });
-    });
+    }
+    Events.on(this.engine, "afterRender", this.afterRenderCallback);
   }
 
-  /**
-   * @method 描画後イベント解除
-   * @param {function} event 解除したいイベント
-   * @description 登録した描画後イベントを解除する
-   */
-  offAfterRenderEvent(event) {
-    Events.off(this.engine, "afterRender", (e) => {
-      event(e);
-    });
-  }
+  // TODO : 個別でイベント削除の必要が出たら改めて仕様を考え実装
 
   /**
    * @method 描画後イベント全解除
    * @description 登録した描画後イベントを全て解除する
    */
   allOffAfterRenderEvent() {
+    if (!this.afterRenderCallback) return;
     Events.off(this.engine, "afterRender");
+    this.afterRenderEvents = [];
+    this.afterRenderCallback = null;
   }
 
   /**
@@ -152,29 +143,24 @@ export class MatterEvents {
    * NOTE : 厳密には発火するのは描画前です。
    */
   onBeforeRenderEvent() {
-    this.beforeRenderEvents.forEach((event) => {
-      Events.on(this.engine, "beforeRender", (e) => {
+    this.beforeRenderCallback = (e) => {
+      this.beforeRenderEvents.forEach((event) => {
         event(e);
       });
-    });
+    }
+    Events.on(this.engine, "beforeRender", this.beforeRenderCallback);
   }
 
-  /**
-   * @method 描画前イベント解除
-   * @param {function} event 解除したいイベント
-   * @description 登録した描画前イベントを解除する
-   */
-  offBeforeRenderEvent(event) {
-    Events.off(this.engine, "beforeRender", (e) => {
-      event(e);
-    });
-  }
+  // TODO : 個別でイベント削除の必要が出たら改めて仕様を考え実装
 
   /**
    * @method 描画前イベント全解除
    * @description 登録した描画前イベントを全て解除する
    */
   allOffBeforeRenderEvent() {
-    Events.off(this.engine, "beforeRender");
+    if (!this.beforeRenderCallback) return;
+    Events.off(this.engine, "beforeRender", this.beforeRenderCallback);
+    this.beforeRenderEvents = [];
+    this.beforeRenderCallback = null;
   }
 }

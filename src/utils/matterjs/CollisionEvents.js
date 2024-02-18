@@ -3,8 +3,8 @@ import { Events } from "matter-js";
 class CollisionEvents {
   constructor(engine) {
     this.engine = engine;
-    this.switchCallback = null;
-    this.collisionStartCallback = null;
+    this.touchEvents = [];
+    this.clear();
   }
 
   clear() {
@@ -12,16 +12,24 @@ class CollisionEvents {
   }
 
   /**
-    * @method タッチイベント
-    * @param {function} callback 衝突時のコールバック関数
-    * @description 衝突時のコールバック関数を登録する
+   * @method 衝突開始イベント登録
+   * @param {function} callback 衝突時のコールバック関数
    */
-  touchEvents(callback) {
-    this.collisionStartCallback = function (event) {
-      var pairs = event.pairs;
-      for (var i = 0; i < pairs.length; i++) {
-        callback(pairs[i].bodyA, pairs[i].bodyB);
-      }
+  registerCollisionStartEvent(callback) {
+    this.touchEvents.push(callback);
+  }
+
+  /**
+    * @method タッチイベント
+    * @description 衝突時のコールバック関数を実行する
+   */
+  onTouchEvents() {
+    this.collisionStartCallback = (e) => {
+      this.touchEvents.forEach((event) => {
+        e.pairs.forEach((pair) => {
+          event(pair.bodyA, pair.bodyB);
+        });
+      });
     };
     Events.on(this.engine, 'collisionStart', this.collisionStartCallback);
   }
@@ -31,10 +39,10 @@ class CollisionEvents {
     * @description 登録したタッチイベントを削除する
    */
   removeTouchEvents() {
-    if (this.collisionStartCallback) {
-      Events.off(this.engine, 'collisionStart', this.collisionStartCallback);
-      this.collisionStartCallback = null;
-    }
+    if (!this.collisionStartCallback) return;
+    Events.off(this.engine, 'collisionStart', this.collisionStartCallback);
+    this.collisionStartCallback = null;
+    this.touchEvents = [];
   }
 
   /**
@@ -44,7 +52,7 @@ class CollisionEvents {
    */
   pushSwitch(callback) {
     this.switchCallback = callback;
-    this.touchEvents(this.triggerSwitch);
+    this.registerCollisionStartEvent(this.triggerSwitch);
   }
 
   /**
