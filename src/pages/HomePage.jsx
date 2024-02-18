@@ -1,24 +1,21 @@
-import React from 'react';
+import React from "react";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext";
-import { RoutePath } from "../utils/RouteSetting";
-
-
+import { RoutePath } from "utils/RouteSetting";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const { user, isLoading, isGuest } = useAuth();
 
   useEffect(() => {
-		// ユーザーが取得できなければログイン画面に飛ばします
+    // ユーザーが取得できなければログイン画面に飛ばします
     if (!user && !isLoading) {
-      console.log("no_user")
-      navigate('/');
+      console.log("no_user");
+      navigate("/");
     }
   }, [user, isLoading, navigate]);
-
 
   return (
     <>
@@ -30,20 +27,14 @@ const HomePage = () => {
             <h1 className="text-8xl my-3 mx-10 text-yellow-300">maker</h1>
           </div>
           <Link
-            to={user || isGuest ? RoutePath.stageSelect.path : "#"}
+            to={user ? RoutePath.stageSelect.path : "#"}
             className="inline-block mt-0.5 text-5xl py-5 px-10 rounded-xl cursor-pointer font-dotgothic16 font-bold bg-transparent border-none no-underline text-inherit"
           >
             Game Start
           </Link>
-          {!(user || isGuest) && (
-        <div className="text-center mt-4 font-[DotGothic16]">
-          Please logIn from the Header Menu.
-        </div>
-      )}
-          
         </div>
       </div>
     </>
   );
-}
+};
 export default HomePage;
