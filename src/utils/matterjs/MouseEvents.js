@@ -10,16 +10,16 @@ class MouseEvents {
     this.mouseConstraint = MouseConstraint.create(engine, {
       mouse: this.mouse,
       constraint: {
-        stiffness: 0.2,
+        stiffness: 0.2, // マジックナンバー
         render: {
           visible: false,
         },
       },
     });
-
     this.clickEvents = [];
     this.dragEvents = [];
     this.clickUpEvents = [];
+    this.clear();
   }
 
   getMouse() {
@@ -42,10 +42,6 @@ class MouseEvents {
    * @description クリックイベントを登録する。配列も可能。引数はイベント
    */
   registerClickEvent(callback) {
-    if (Array.isArray(callback)) {
-      this.clickEvents.push(...callback);
-      return;
-    }
     this.clickEvents.push(callback);
   }
 
@@ -54,15 +50,23 @@ class MouseEvents {
    * @description クリックイベントを実行する
    */
   onClickEvents() {
-    Events.on(this.mouseConstraint, "mousedown", (e) => {
+    this.clickCallback = (e) => {
       this.clickEvents.forEach((event) => {
         event(e);
       });
-    });
+    }
+    Events.on(this.mouseConstraint, "mousedown", this.clickCallback);
   }
 
+  /**
+   * @method クリックイベント解除
+   * @description 登録したクリックイベントを解除する
+   */
   offClickEvents() {
-    Events.off(this.mouseConstraint, "mousedown");
+    if (!this.clickCallback) return;
+    Events.off(this.mouseConstraint, "mousedown", this.clickCallback);
+    this.clickCallback = null;
+    this.clickEvents = [];
   }
 
   /**
@@ -70,10 +74,6 @@ class MouseEvents {
    * @param {function} callback 登録したいイベントコールバック
    */
   registerDragEvent(callback) {
-    if (Array.isArray(callback)) {
-      this.dragEvents.push(...callback);
-      return;
-    }
     this.dragEvents.push(callback);
   }
 
@@ -82,35 +82,39 @@ class MouseEvents {
    * @description ドラッグイベントを実行する
    */
   onDragEvents() {
-    Events.on(this.mouseConstraint, "mousemove", (e) => {
+    this.dragCallback = (e) => {
       this.dragEvents.forEach((event) => {
         event(e);
       });
-    });
+    }
+    Events.on(this.mouseConstraint, "mousemove", this.dragCallback);
   }
 
   offDragEvents() {
-    Events.off(this.mouseConstraint, "mousemove");
+    if (!this.dragCallback) return;
+    Events.off(this.mouseConstraint, "mousemove", this.dragCallback);
+    this.dragCallback = null;
+    this.dragEvents = [];
   }
 
   registerClickUpEvent(callback) {
-    if (Array.isArray(callback)) {
-      this.clickUpEvents.push(...callback);
-      return;
-    }
     this.clickUpEvents.push(callback);
   }
 
   onClickUpEvents() {
-    Events.on(this.mouseConstraint, "mouseup", (e) => {
+    this.clickUpCallback = (e) => {
       this.clickUpEvents.forEach((event) => {
         event(e);
       });
-    });
+    }
+    Events.on(this.mouseConstraint, "mouseup", this.clickUpCallback);
   }
 
   offClickUpEvents() {
-    Events.off(this.mouseConstraint, "mouseup");
+    if (!this.clickUpCallback) return;
+    Events.off(this.mouseConstraint, "mouseup", this.clickUpCallback);
+    this.clickUpCallback = null;
+    this.clickUpEvents = [];
   }
 }
 
