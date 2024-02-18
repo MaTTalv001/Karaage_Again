@@ -40,12 +40,12 @@ const Header = () => {
       </div>
       <div className="mx-5">
         {user && (
-        <span className="font-[DotGothic16] inline-block bg-green-300 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">User</span>
+        <span className="font-[DotGothic16] inline-block bg-green-300 rounded-full px-3 py-1 text-sm font-semibold text-black mr-2 mb-2">User</span>
       )}
         {isGuest && (
-        <span className="font-[DotGothic16] inline-block bg-green-300 rounded-full px-5 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">Guest</span>
+        <span className="font-[DotGothic16] inline-block bg-green-300 rounded-full px-5 py-1 text-sm font-semibold text-black mr-2 mb-2">Guest</span>
       )}
-        <Link to="#" className="text-black mr-5 font-[DotGothic16]">
+        <Link to="#" className="text-black mr-2 font-[DotGothic16]">
           About_Us...
         </Link>
         {user || isGuest ? (
