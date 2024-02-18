@@ -22,7 +22,7 @@ class MatterEngine {
         background: "transparent",
       },
     });
-    Render.run(this.render);
+    Render.run(this.render, this.engine);
   }
 
   /**

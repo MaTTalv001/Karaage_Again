@@ -1,4 +1,3 @@
-import { Body, use } from 'matter-js';
 import React, { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import CollisionEvents from 'utils/matterjs/CollisionEvents';
@@ -15,7 +14,9 @@ export const GamePlay = () => {
   const userPlacementRef = useRef([]);
   const [ball, setBall] = useState({});
   const selectObjectRef = useRef(null);
-  const [selectObjectLeft, setSelectObjectLeft] = useState(true); // TODO : ネーミングセンス
+  const getSelectObjectParent = () => selectObjectRef.current ? selectObjectRef.current.getParent() : null;
+  const isDragObjectRef = useRef(false);
+  const [isMousePosXLeft, setIsMousePosXLeft] = useState(true);
   const [collisionEvents, setCollisionEvents] = useState(null);
   const [mouseEvents, setMouseEvents] = useState(null);
   const mouseClickPosition = useRef({ x: 0, y: 0 });
@@ -40,14 +41,15 @@ export const GamePlay = () => {
   }, [gameClear]);
 
   useEffect(() => {
-    if (selectObjectRef.current === null) return;
-    if (selectObjectLeft) {
-      selectObjectRef.current.getParent().setScale({ x: 0.5, y: 0.5 });
-      selectObjectRef.current.getParent().setStatic(true);
+    if (selectObjectRef.current === null || isDragObjectRef.current === false) return;
+    let parent = getSelectObjectParent();
+    if (isMousePosXLeft) {
+      parent.multiplyScale(0.5);
+      parent.setStatic(true);
       return;
     }
-    selectObjectRef.current.getParent().setScale({ x: 2, y: 2 });
-  }, [selectObjectLeft]);
+    parent.multiplyScale(2);
+  }, [isMousePosXLeft]);
 
 
   const fetchData = async () => {
@@ -150,7 +152,9 @@ export const GamePlay = () => {
       selectObjectRef.current = null;
       return false;
     }
-
+    if (selectObjectRef.current && target !== selectObjectRef.current) {
+      selectObjectRef.current.render.lineWidth = 0;
+    }
     target.render.lineWidth = 5;
     target.render.strokeStyle = "red";
     selectObjectRef.current = target;
@@ -158,32 +162,35 @@ export const GamePlay = () => {
   };
 
   const handleDrag = (e) => {
+    setIsMousePosXLeft(e.source.mouse.position.x < wallPosX);
     const target = e.source.body;
-    if (!target || !target.isStatic) return;
+    if (!target) return;
+
+    isDragObjectRef.current = true;
+
+    if (!target.isStatic) return;
+
     if (selectObjectRef.current && selectObjectRef.current === target) {
       const position = e.source.mouse.position;
       const x = position.x - mouseClickPosition.current.x;
       const y = position.y - mouseClickPosition.current.y;
       // FIX : たまに座標がずれるかも
-      selectObjectRef.current.getParent().setPosition({ x, y });
-
-      if (x < wallPosX) {
-        setSelectObjectLeft(true);
-        return;
-      }
-      setSelectObjectLeft(false);
+      const parent = getSelectObjectParent();
+      parent.setPosition({ x, y });
     }
   };
 
   const handleClickUp = (e) => {
-    const x = e.mouse.position.x;
+    isDragObjectRef.current = false;
     if (!selectObjectRef.current || selectObjectRef.current.label !== "userMove") return;
+    const parent = getSelectObjectParent();
     // FIX : 左側のユーザー配置エリアに戻すと物理判定がバグるためオフにしてます。
+    // const x = e.mouse.position.x;
     // if (x < wallPosX) {
-    //   selectObjectRef.current.getParent().setStatic(true);
+    //   parent.setStatic(true);
     //   return;
     // }
-    selectObjectRef.current.getParent().setStatic(false);
+    parent.setStatic(false);
   }
 
   const onClickPlay = () => {
@@ -304,7 +311,6 @@ const Data = {
     "radius": 30,
     "option": {
       "label": "ball",
-      "mass": 1,
       "isStatic": true,
     }
   }

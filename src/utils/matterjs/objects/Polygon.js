@@ -15,6 +15,7 @@ class Polygon extends MatterObject {
     super(x, y, type);
     this.object = Bodies.polygon(x, y, sides, radius, this.getOptionAddColor(option, type));
     this.object.getParent = () => this;
+    this.initialScale = radius;
   }
 }
 

@@ -41,10 +41,14 @@ class MatterObject {
     return { x: this.object.render.sprite.xScale, y: this.object.render.sprite.yScale };
   }
 
-  setScale({ x, y }) {
-    Body.scale(this.object, x, y);
+  /**
+   * @method オブジェクトのスケール設定
+   * @param {number} number 乗算する数値
+   * @description オブジェクトのスケールを乗算
+   */
+  multiplyScale(number) {
+    Body.scale(this.object, number, number);
   }
-
 
   /**
    * @method オブジェクトの移動アニメーション
@@ -101,30 +105,16 @@ class MatterObject {
   }
 
   /**
-   *  @method オブジェクトの色設定取得
-   * @param {object} option オプション
-   * @description オブジェクトの色設定を取得
-   *              オプションがあれば、オプションに色設定を追加して返却
-   *              オプションがなければ、色設定のみ返却
-   */
-  getColorSetting(option) {
-    let isStatic = option && option.isStatic !== undefined;
-    return getColor(this.type, isStatic)
-  }
-
-  /**
    * @method オプション取得
    * @param {object} option オプション
    * @description オプションに色設定を追加して返却
    */
   getOptionAddColor(option) {
-    let optionAddColor;
+    let isStatic = option && option.isStatic !== undefined;
     if (option) {
-      optionAddColor = { ...option, render: this.getColorSetting(option) };
-    } else {
-      optionAddColor = { render: this.getColorSetting(option) };
+      return { ...option, render: getColor(this.type, isStatic) };
     }
-    return optionAddColor;
+    return { render: getColor(this.type, isStatic) };
   }
 }
 
