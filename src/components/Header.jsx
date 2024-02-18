@@ -6,7 +6,7 @@ import { useAuth } from 'contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
-  const { user, logout } = useAuth();
+  const { user, logout,  isGuest, setIsGuest } = useAuth();
   const navigate = useNavigate();
   const Logout = async(e) => {
     e.preventDefault();
@@ -15,6 +15,7 @@ const Header = () => {
       if (logoutError) {
         throw logoutError;
       }
+      setIsGuest(false); // ゲストログイン状態を解除
       alert('ログアウトしました');
       await navigate('/');
     }catch{
@@ -25,8 +26,9 @@ const Header = () => {
   //ゲストログイン
   const handleGuestLogin = (event) => {
     event.preventDefault(); // デフォルトのリンク動作を防ぐ
+    setIsGuest(true); // ゲストログインの状態をセット
     // ゲストログインの処理をここに記述
-    alert('ゲストログインの処理が作動します');
+    alert('ゲストログインします');
   };
 
   return (
@@ -37,10 +39,16 @@ const Header = () => {
         </Link>
       </div>
       <div className="mx-5">
-        <Link to="#" className="text-black mr-5 font-[DotGothic16]">
+        {user && (
+        <span className="font-[DotGothic16] inline-block bg-green-300 rounded-full px-3 py-1 text-sm font-semibold text-black mr-2 mb-2">User</span>
+      )}
+        {isGuest && (
+        <span className="font-[DotGothic16] inline-block bg-green-300 rounded-full px-5 py-1 text-sm font-semibold text-black mr-2 mb-2">Guest</span>
+      )}
+        <Link to="#" className="text-black mr-2 font-[DotGothic16]">
           About_Us...
         </Link>
-        {user ? (
+        {user || isGuest ? (
           <button onClick={Logout} className="text-black font-[DotGothic16] mx-2">
             LogOut
           </button>
