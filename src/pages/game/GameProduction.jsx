@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 
 
-export const GameCreate = () => {
+export const GameProduction = () => {
   return (
     <div className="w-full relative font-[DotGothic16] mt-14">
       <Link to="RoutePath.gameMake.path">

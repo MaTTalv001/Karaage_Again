@@ -3,7 +3,7 @@ import LogInPage from "pages/LogIn";
 import SignUpPage from "pages/SignUp";
 import { StageSelectPage } from "pages/game";
 import UsersIndex from "pages/users/UsersIndex";
-import { GameCreate } from "pages/game/GameCreate";
+import { GameProduction } from "pages/game/GameProduction";
 import { GameMake } from "pages/game/GameMake";
 import { GameEdit } from "pages/game/GameEdit";
 import { GamePlay } from "pages/game/GamePlay";
@@ -72,7 +72,7 @@ export const RouteSetting = [
   },
   {
     path: Path.gameNew,
-    component: <GameCreate />,
+    component: <GameProduction />,
   },
   {
     path: Path.gameMake,
