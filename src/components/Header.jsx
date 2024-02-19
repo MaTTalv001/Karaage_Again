@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 const Header = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const Logout = async (e) => {
+  const logout = async (e) => {
     e.preventDefault();
     try {
       const { error: logoutError } = await supabase.auth.signOut();
@@ -16,7 +16,7 @@ const Header = () => {
         throw logoutError;
       }
       alert("ログアウトしました");
-      await navigate("/");
+      await navigate(RoutePath.home.path);
     } catch {
       alert("エラーが発生しました");
     }
@@ -37,10 +37,10 @@ const Header = () => {
         </Link>
         {user ? (
           <button
-            onClick={Logout}
+            onClick={logout}
             className="text-black font-[DotGothic16] mx-2"
           >
-            LogOut
+            Logout
           </button>
         ) : (
           <>

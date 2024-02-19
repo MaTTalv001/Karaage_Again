@@ -7,20 +7,17 @@ import { RoutePath } from "utils/RouteSetting";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { user, isLoading, isGuest } = useAuth();
+  const { user, isLoading } = useAuth();
 
   useEffect(() => {
-    // ユーザーが取得できなければログイン画面に飛ばします
     if (!user && !isLoading) {
-      console.log("no_user");
-      navigate("/");
+      navigate(RoutePath.home.path);
     }
   }, [user, isLoading, navigate]);
 
   return (
     <>
       <div className="w-full h-full relative">
-        {/* 全画面で表示するものなので、App.jsで読み込むようにさせていただきました。<Header /> */}
         <div className="font-[DotGothic16] flex flex-col items-center justify-center h-[calc(100%-40px)]">
           <div className="pt-5 pb-5 pl-15 pr-15 rounded-3xl border-4 border-black text-center font-dotgothic16 text-shadow-black ">
             <h1 className="text-8xl my-3 mx-10 text-yellow-300">Pythagora</h1>

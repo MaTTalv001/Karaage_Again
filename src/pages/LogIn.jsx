@@ -4,11 +4,11 @@ import { useState } from "react";
 import supabase from "services/supabaseClient";
 import { useAuth } from "contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { RoutePath } from "utils/RouteSetting";
 
 const LogInPage = () => {
   const navigate = useNavigate();
 
-  // カスタムフックからユーザーのセット用関数を取得
   const { setUser } = useAuth();
 
   const [email, setEmail] = useState("");
@@ -30,7 +30,7 @@ const LogInPage = () => {
       console.log("success!!");
       alert("ログインしました");
       setUser(data.user);
-      navigate("/");
+      navigate(RoutePath.stageSelect.path);
     }
   };
   return (
