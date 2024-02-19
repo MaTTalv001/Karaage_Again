@@ -1,7 +1,7 @@
-import getColor from "../ColorSetting";
+import { ColorSetting } from "utils/GameSetting";
 import { Body, Composite } from "matter-js";
 
-class MatterObject {
+export class MatterObject {
   /**
    * @method コンストラクタ
    * @param {Matter} Matter
@@ -112,10 +112,40 @@ class MatterObject {
   getOptionAddColor(option) {
     let isStatic = option && option.isStatic !== undefined;
     if (option) {
-      return { ...option, render: getColor(this.type, isStatic) };
+      return { ...option, render: this.getColor(this.type, isStatic) };
     }
-    return { render: getColor(this.type, isStatic) };
+    return { render: this.getColor(this.type, isStatic) };
+  }
+
+  setResetPosition() {
+    this.setPosition({ x: this.posX, y: this.posY });
+  }
+
+  // 配色設定
+  getColor = (type, isStatic) => {
+    let colorSet = {};
+    switch (type) {
+      case "default":
+        if (isStatic) colorSet = { fillStyle: ColorSetting.Static }; // 初期配置且つ動かない
+        else colorSet = { fillStyle: ColorSetting.Move }; // 初期配置且つ動く
+        break;
+      case "Switch":
+        colorSet = { fillStyle: ColorSetting.Switch }; // スイッチ
+        break;
+      case "User":
+        if (isStatic) colorSet = { fillStyle: ColorSetting.UserStatic }; // ユーザー配置且つ動かない
+        else colorSet = { fillStyle: ColorSetting.UserMove };  // ユーザー配置且つ動く
+        break;
+      case "Ball":
+        colorSet = { fillStyle: ColorSetting.Ball }; // ボール
+        break;
+      case "Wall":
+        colorSet = { fillStyle: ColorSetting.Wall }; // 壁
+        break;
+    }
+
+    return colorSet;
   }
 }
 
-export { MatterObject };
+

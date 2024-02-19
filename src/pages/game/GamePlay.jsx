@@ -1,27 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom';
+// import { useParams, useNavigate } from 'react-router-dom'; // ページ遷移用
 import CollisionEvents from 'utils/matterjs/CollisionEvents';
 import MatterEngine from 'utils/matterjs/MatterEngine';
 import MouseEvents from 'utils/matterjs/MouseEvents';
 import { createObject, createObjects } from 'utils/matterjs/objects/CreateObjects';
+import { GameHeight, GameWidth, UserPlacementBox, WallX } from 'utils/GameSetting';
 
 export const GamePlay = () => {
-  const { id } = useParams();
+  //const { id } = useParams(); // ゲームID
   const [gameClear, setGameClear] = useState(false);
   const [loading, setLoading] = useState(true);
   const [gameData, setGameData] = useState({});
-  const [switchObject, setSwitchObject] = useState({});
-  const userPlacementRef = useRef([]);
-  const [ball, setBall] = useState({});
-  const selectObjectRef = useRef(null);
-  const getSelectObjectParent = () => selectObjectRef.current ? selectObjectRef.current.getParent() : null;
-  const isDragObjectRef = useRef(false);
+  const [matterEngine, setMatterEngine] = useState();
+  const [userPlacementComposite, setUserPlacementComposite] = useState([]);
+  const [ballComposite, setBallComposite] = useState([]);
   const [isMousePosXLeft, setIsMousePosXLeft] = useState(true);
   const [collisionEvents, setCollisionEvents] = useState(null);
   const [mouseEvents, setMouseEvents] = useState(null);
+  const isDragObjectRef = useRef(false);
   const mouseClickPosition = useRef({ x: 0, y: 0 });
-  const navigator = useNavigate();
-  const wallPosX = 304;
+  const selectObjectRef = useRef(null);
+  const getSelectObjectParent = () => selectObjectRef.current ? selectObjectRef.current.getParent() : null;
+  //const navigator = useNavigate(); // ページ遷移用
 
   useEffect(() => {
     fetchData();
@@ -55,61 +55,35 @@ export const GamePlay = () => {
   const fetchData = async () => {
     // supabaseからデータを取得する処理をここに書く
     // 今回は確認用データを使う
-    // const data = await supabase.from("テーブル名").select().eq('id', id);
     const data = Data;
 
     await matterInitialize(data);
   };
 
   const matterInitialize = async (data) => {
-    const matterEngine = new MatterEngine();
-    matterEngine.setup("#Game");
+    const mEngine = new MatterEngine();
+    mEngine.setup("#Game");
 
     setGameData(data);
 
     const switchObj = createObject(data.Switch, "Switch");
-    setSwitchObject(switchObj);
-    const stageObj = createObjects(data.Stage);
-    const ball = createObject(data.Ball, "Ball");
-    setBall(ball);
+
+    const ball = createObjects(data.Ball, "Ball");
+    const ballComposite = mEngine.createComposite();
+    mEngine.registerObjectInComposite(ballComposite, ball);
+    setBallComposite(ballComposite);
+
     const userPlacementObj = createObjects(data.UserPlacement, "User");
-    // ユーザーは一オブジェクトの中に物理オブジェクトがあるとき、
-    // 初めから物理が効いていると操作が難しいので、最初は切っておく。
-    // ピタゴラスペースに配置するときに物理を効かせる
-    userPlacementObj.forEach(obj => obj.setStatic(true));
-    const placements = data.UserPlacement.map((obj, index) => {
-      return {
-        object: obj,
-        id: userPlacementObj[index].getId()
-      }
-    });
-    userPlacementRef.current = placements;
+    const userPlacementComposite = mEngine.createComposite();
+    mEngine.registerObjectInComposite(userPlacementComposite, userPlacementObj);
+    setUserPlacementComposite(userPlacementComposite);
 
-    // ユーザー配置オブジェクトとピタゴラスペースの仕切り壁
-    // TODO : 仕切り壁の位置をどこかで管理したい
-    // FIX : 右側と天井に壁がないのでふっとばすと消える
-    const wall = {
-      "bodiesType": "Rectangle",
-      "x": wallPosX,
-      "y": 370,
-      "width": 30,
-      "height": 740,
-      "option": {
-        "isStatic": true,
-        "collisionFilter": {
-          "group": -1
-        },
-        "label": "wall"
-      }
-    };
-    const wallObj = createObject(wall, "Wall");
-
-    const colEvents = new CollisionEvents(matterEngine.getEngine());
+    const colEvents = new CollisionEvents(mEngine.getEngine());
     colEvents.pushSwitch(() => handleSwitch(switchObj, data.Switch.y));
     colEvents.onTouchEvents();
     setCollisionEvents(colEvents);
 
-    const mouseEvents = new MouseEvents(matterEngine.getRender(), matterEngine.getEngine());
+    const mouseEvents = new MouseEvents(mEngine.getRender(), mEngine.getEngine());
     mouseEvents.registerClickEvent(handleClick);
     mouseEvents.onClickEvents();
     mouseEvents.registerDragEvent(handleDrag);
@@ -118,9 +92,10 @@ export const GamePlay = () => {
     mouseEvents.onClickUpEvents();
     setMouseEvents(mouseEvents);
 
-    matterEngine.setRenderMouse(mouseEvents.getMouse());
-    matterEngine.registerObject([switchObj, ...stageObj, ...userPlacementObj, ball, wallObj, mouseEvents.getMouseConstraint()]);
-    matterEngine.run();
+    mEngine.setRenderMouse(mouseEvents.getMouse());
+    mEngine.registerObject([switchObj, ...createObjects(data.Stage), ballComposite, userPlacementComposite, ...createObjects(UserPlacementBox, "Wall"), mouseEvents.getMouseConstraint()]);
+    mEngine.run();
+    setMatterEngine(mEngine);
   }
 
   const handleSwitch = (switchObj, startPos_y) => {
@@ -135,7 +110,6 @@ export const GamePlay = () => {
   };
 
   const handleClick = (e) => {
-
     const target = e.source.body;
     if (setSelectObject(target)) {
       const diff_x = e.mouse.position.x - target.position.x;
@@ -162,7 +136,7 @@ export const GamePlay = () => {
   };
 
   const handleDrag = (e) => {
-    setIsMousePosXLeft(e.source.mouse.position.x < wallPosX);
+    setIsMousePosXLeft(e.source.mouse.position.x < WallX);
     const target = e.source.body;
     if (!target) return;
 
@@ -186,7 +160,7 @@ export const GamePlay = () => {
     const parent = getSelectObjectParent();
     // FIX : 左側のユーザー配置エリアに戻すと物理判定がバグるためオフにしてます。
     // const x = e.mouse.position.x;
-    // if (x < wallPosX) {
+    // if (x < WallX) {
     //   parent.setStatic(true);
     //   return;
     // }
@@ -194,36 +168,42 @@ export const GamePlay = () => {
   }
 
   const onClickPlay = () => {
-    ball.setStatic(false);
+    ballComposite.bodies.forEach((ball) => {
+      ball.getParent().setStatic(false);
+    });
     setSelectObject(null);
   };
 
-  const onClickReset = () => {
-    const startPost = { x: gameData.Ball.x, y: gameData.Ball.y };
-    ball.setStatic(true);
-    ball.setPosition(startPost);
-
-    setGameClear(false);
-    switchObject.setPosition({ x: gameData.Switch.x, y: gameData.Switch.y });
+  const onClickBallReset = () => {
+    matterEngine.clearComposite(ballComposite);
+    const ball = createObjects(gameData.Ball, "Ball");
+    matterEngine.registerObjectInComposite(ballComposite, ball);
   }
+
+  const onClickPlacementReset = () => {
+    matterEngine.clearComposite(userPlacementComposite);
+    const userPlacementObj = createObjects(gameData.UserPlacement, "User");
+    matterEngine.registerObjectInComposite(userPlacementComposite, userPlacementObj);
+  };
 
   return (
     <>
       {loading && <div>loading...</div>}
-      <div className='h-[800px] w-[1200px] m-auto mt-14'>
+      <div className={`h-[${GameHeight}px] w-[${GameWidth}px] m-auto mt-14 flex flex-col`}>
         <div className='w-full h-[60px] flex'>
-          <div className='w-1/4 flex flex-col'>
-            <h3 className='my-4 text-center'>配置オブジェクト</h3>
+          <div className='w-1/4 grid grid-flow-col items-center text-start'>
+            <button className='hover:bg-blue-200 bg-blue-400 hover:text-slate-500 text-slate-950 transition-all py-2' onClick={onClickPlacementReset}>Reset</button>
+            <h3 className='mx-auto'>You Placement</h3>
           </div>
           <div className='w-3/4 flex flex-col'>
             <div className='flex justify-between items-center mx-5'>
-              <button className='bg-blue-200 hover:bg-blue-400 text-slate-500 hover:text-slate-950 transition-all py-2 px-4 my-2' onClick={onClickReset}>BallReset</button>
-              <h3>ゲーム画面</h3>
-              <button className='text-slate-500 hover:text-slate-950 bg-red-200 hover:bg-red-400 transition-all py-2 px-4 my-2' onClick={onClickPlay}>▶</button>
+              <button className='hover:bg-blue-200 bg-blue-400 hover:text-slate-500 text-slate-950 transition-all py-2 px-4 my-2' onClick={onClickBallReset}>BallReset</button>
+              <h3>{gameData.title}</h3>
+              <button className='hover:text-slate-500 text-slate-950 hover:bg-red-200 bg-red-400 transition-all py-2 px-4 my-2' onClick={onClickPlay}>▶</button>
             </div>
           </div>
         </div>
-        <div id="Game" className='w-full h-[740px] bg-white overflow-hidden'>
+        <div id="Game" className={`w-full h-[calc(100%-60px)] bg-white overflow-hidden`}>
         </div>
       </div>
     </>
@@ -234,7 +214,8 @@ export const GamePlay = () => {
 const Data = {
   "name": "Sample1",
   "version": "1.0.0",
-  "description": "ボール出現サンプル",
+  "title": "Tutorial",
+  "description": "どんなゲーム？",
   "Stage": [
     {
       "bodiesType": "Rectangle",

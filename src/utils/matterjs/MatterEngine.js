@@ -61,8 +61,26 @@ class MatterEngine {
     Composite.add(this.engine.world, object);
   }
 
-  registerObjectAndComposite(object, composite) {
+  createComposite() {
+    return Composite.create();
+  }
+
+  registerObjectInComposite(composite, object) {
+    if (Array.isArray(object)) {
+      object.forEach((item) => {
+        if (typeof item.getObject === 'function') {
+          Composite.add(composite, item.getObject());
+          return
+        }
+        Composite.add(composite, item);
+      });
+      return;
+    }
     Composite.add(composite, object);
+  }
+
+  clearComposite(composite) {
+    Composite.clear(composite);
   }
 
   /**
@@ -71,10 +89,6 @@ class MatterEngine {
    */
   unregisterObjects() {
     Composite.clear(this.engine.world, false, true);
-  }
-
-  registerComposite(composite) {
-    Composite.add(this.engine.world, composite);
   }
 
   /* ゲッター */

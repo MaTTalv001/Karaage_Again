@@ -24,6 +24,10 @@ const mapper = {
 
 // 複数オブジェクト作成
 const createObjects = (datas, type = "default") => {
+  if (Array.isArray(datas) === false) {
+    datas = [datas];
+  }
+
   const stageObjects = [];
 
   for (let data of datas) {
