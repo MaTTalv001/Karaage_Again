@@ -4,7 +4,7 @@ import CollisionEvents from 'utils/matterjs/CollisionEvents';
 import MatterEngine from 'utils/matterjs/MatterEngine';
 import MouseEvents from 'utils/matterjs/MouseEvents';
 import { createObject, createObjects } from 'utils/matterjs/objects/CreateObjects';
-import { GameHeight, GameWidth, ObjectType, UserPlacementBox, WallX } from 'utils/GameSetting';
+import { GameWidth, ObjectType, UserPlacementBox, WallX } from 'utils/GameSetting';
 
 export const GamePlay = () => {
   //const { id } = useParams(); // ゲームID
@@ -125,7 +125,7 @@ export const GamePlay = () => {
     }, 1000 / 30);
   };
 
-  // ゲーム病が域内のクリックイベント
+  // ゲーム描画域内のクリックイベント
   // NOTE : ゲーム描画域外のクリックイベントはここには書かない
   const handleClick = (e) => {
     const target = e.source.body;
@@ -203,12 +203,12 @@ export const GamePlay = () => {
   return (
     <>
       {loading && <div>loading...</div>}
-      <div className='w-full'>
-        <div className={`h-[${GameHeight}px] w-[${GameWidth}px] m-auto mt-14 flex flex-col`}>
-          <div className='w-full h-[60px] flex'>
+      <div className={`w-[${GameWidth}px] mx-auto`}>
+        <div className="w-full m-auto mt-14 flex flex-col">
+          <div className='w-full flex'>
             <div className='w-1/4 grid grid-flow-col items-center text-start'>
               <button className='hover:bg-blue-200 bg-blue-400 hover:text-slate-500 text-slate-950 transition-all py-2' onClick={onClickPlacementReset}>Reset</button>
-              <h3 className='mx-auto'>You Placement</h3>
+              <h3 className='mx-auto'>Placement</h3>
             </div>
             <div className='w-3/4 flex flex-col'>
               <div className='flex justify-between items-center mx-5'>
@@ -218,7 +218,7 @@ export const GamePlay = () => {
               </div>
             </div>
           </div>
-          <div id="Game" className={`w-[${GameWidth}px] h-[${GameHeight}px] bg-white overflow-hidden`}>
+          <div id="Game" className={`w-full m-auto bg-white overflow-hidden`}>
           </div>
         </div>
       </div>

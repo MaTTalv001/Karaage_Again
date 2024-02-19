@@ -1,7 +1,7 @@
 
 // ゲーム画面
 export const GameWidth = 1200;
-export const GameHeight = 800;
+export const GameHeight = 800 - 56; // 高さ - 親要素のmtのpx
 
 // ユーザー配置とピタゴラスペースの仕切りX座標
 export const WallX = 304;
@@ -25,7 +25,7 @@ export const UserPlacementBox = [
   {
     "bodiesType": "Rectangle",
     "x": WallX / 2,
-    "y": GameHeight - 54 - 15, // 高さ - 親要素のmtのpx - オブジェクトの高さの半分
+    "y": GameHeight - 15, // 高さ - オブジェクトの高さの半分
     "width": WallX,
     "height": 30,
     "option": {

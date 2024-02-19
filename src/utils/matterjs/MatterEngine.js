@@ -1,4 +1,5 @@
 import { Composite, Engine, Render, Runner } from "matter-js";
+import { GameHeight, GameWidth } from "utils/GameSetting";
 
 class MatterEngine {
   constructor() {
@@ -16,13 +17,13 @@ class MatterEngine {
       element: parent,
       engine: this.engine,
       options: {
-        width: parent.offsetWidth,
-        height: parent.offsetHeight,
+        width: GameWidth,
+        height: GameHeight,
         wireframes: false,
         background: "transparent",
       },
     });
-    Render.run(this.render, this.engine);
+    Render.run(this.render);
   }
 
   /**
@@ -31,10 +32,6 @@ class MatterEngine {
    */
   run() {
     Runner.run(Runner.create(), this.engine);
-  }
-
-  stop() {
-    Runner.stop(this.engine);
   }
 
   /**
