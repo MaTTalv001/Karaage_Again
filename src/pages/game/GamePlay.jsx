@@ -28,6 +28,7 @@ export const GamePlay = () => {
     setLoading(false);
 
     return () => {
+      // イベントリスナのクリーンアップ
       collisionEvents && collisionEvents.clear();
       mouseEvents && mouseEvents.clear();
     };
@@ -40,20 +41,23 @@ export const GamePlay = () => {
     }
   }, [gameClear]);
 
+  // オブジェクトドラッグ時の処理
   useEffect(() => {
+    // ドラッグしているオブジェクトがなければ何もしない
     if (selectObjectRef.current === null || isDragObjectRef.current === false) return;
     let parent = getSelectObjectParent();
     if (isMousePosXLeft) {
+      // マウスが左側にあれば選択しているオブジェクトのスケールを半分にする
       parent.multiplyScale(0.5);
-      parent.setStatic(true);
       return;
     }
+    // マウスが右側にあれば選択しているオブジェクトのスケールを初期のサイズに戻す
     parent.multiplyScale(2);
   }, [isMousePosXLeft]);
 
 
   const fetchData = async () => {
-    // supabaseからデータを取得する処理をここに書く
+    // Supabaseからデータを取得する処理をここに書く
     // 今回は確認用データを使う
     const data = Data;
 
@@ -62,27 +66,33 @@ export const GamePlay = () => {
 
   const matterInitialize = async (data) => {
     const mEngine = new MatterEngine();
-    mEngine.setup("#Game");
+    mEngine.setup("#Game"); // ゲームを描画するタグのID
 
+    // 初期データの保持
     setGameData(data);
 
     const switchObj = createObject(data.Switch, ObjectType.Switch);
 
+    // ボールは複数になる可能性を考えてCompositeで管理
     const ball = createObjects(data.Ball, ObjectType.Ball);
     const ballComposite = mEngine.createComposite();
     mEngine.registerObjectInComposite(ballComposite, ball);
     setBallComposite(ballComposite);
 
+    // ユーザーが配置するオブジェクト
+    // 配置リセットがしやすいのでCompositeで管理
     const userPlacementObj = createObjects(data.UserPlacement, ObjectType.User);
     const userPlacementComposite = mEngine.createComposite();
     mEngine.registerObjectInComposite(userPlacementComposite, userPlacementObj);
     setUserPlacementComposite(userPlacementComposite);
 
+    // 衝突判定のイベント
     const colEvents = new CollisionEvents(mEngine.getEngine());
     colEvents.pushSwitch(() => handleSwitch(switchObj, data.Switch.y));
     colEvents.onTouchEvents();
     setCollisionEvents(colEvents);
 
+    // マウスのイベント。クリック、ドラッグ、クリックアップ
     const mouseEvents = new MouseEvents(mEngine.getRender(), mEngine.getEngine());
     mouseEvents.registerClickEvent(handleClick);
     mouseEvents.onClickEvents();
@@ -92,12 +102,18 @@ export const GamePlay = () => {
     mouseEvents.onClickUpEvents();
     setMouseEvents(mouseEvents);
 
+    // マウスをmatter.jsのレンダーに設定。これをしないと物理オブジェクトの移動ができない
     mEngine.setRenderMouse(mouseEvents.getMouse());
+
+    // オブジェクトの登録
     mEngine.registerObject([switchObj, ...createObjects(data.Stage), ballComposite, userPlacementComposite, ...createObjects(UserPlacementBox, ObjectType.Wall), mouseEvents.getMouseConstraint()]);
+
+    // エンジンの実行
     mEngine.run();
     setMatterEngine(mEngine);
   }
 
+  // スイッチ押下イベント
   const handleSwitch = (switchObj, startPos_y) => {
     const intervalId = setInterval(() => {
       const pos = switchObj.getPosition();
@@ -109,6 +125,8 @@ export const GamePlay = () => {
     }, 1000 / 30);
   };
 
+  // ゲーム病が域内のクリックイベント
+  // NOTE : ゲーム描画域外のクリックイベントはここには書かない
   const handleClick = (e) => {
     const target = e.source.body;
     if (setSelectObject(target)) {
@@ -118,6 +136,7 @@ export const GamePlay = () => {
     }
   }
 
+  // 現在選択されているオブジェクト設定
   const setSelectObject = (target) => {
     if (target == null || !target.label.match(/user(.*)/g)) {
       if (selectObjectRef.current) {
@@ -129,12 +148,14 @@ export const GamePlay = () => {
     if (selectObjectRef.current && target !== selectObjectRef.current) {
       selectObjectRef.current.render.lineWidth = 0;
     }
+    // ユーザーが配置できるオブジェクトは選択時に赤く縁取る
     target.render.lineWidth = 5;
     target.render.strokeStyle = "red";
     selectObjectRef.current = target;
     return true;
   };
 
+  // オブジェクトのドラッグイベント。選択されているものがあればドラッグで移動できる
   const handleDrag = (e) => {
     setIsMousePosXLeft(e.source.mouse.position.x < WallX);
     const target = e.source.body;
@@ -154,20 +175,13 @@ export const GamePlay = () => {
     }
   };
 
+  // クリックを止めた時のイベント
   const handleClickUp = (e) => {
     isDragObjectRef.current = false;
-    if (!selectObjectRef.current || selectObjectRef.current.label !== "userMove") return;
-    const parent = getSelectObjectParent();
-    // FIX : 左側のユーザー配置エリアに戻すと物理判定がバグるためオフにしてます。
-    // const x = e.mouse.position.x;
-    // if (x < WallX) {
-    //   parent.setStatic(true);
-    //   return;
-    // }
-    parent.setStatic(false);
   }
 
   const onClickPlay = () => {
+    // ステージに初期配置されているボールの物理を働かせる
     ballComposite.bodies.forEach((ball) => {
       ball.getParent().setStatic(false);
     });
@@ -213,6 +227,7 @@ export const GamePlay = () => {
 }
 
 // 確認用データ
+// DB連携できたら消す
 const Data = {
   "name": "Sample1",
   "version": "1.0.0",

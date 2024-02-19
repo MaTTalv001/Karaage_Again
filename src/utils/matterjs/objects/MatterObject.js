@@ -112,9 +112,9 @@ export class MatterObject {
   getOptionAddColor(option) {
     let isStatic = option && option.isStatic !== undefined;
     if (option) {
-      return { ...option, render: this.getColor(this.type, isStatic) };
+      return { ...option, render: this.getColor(isStatic) };
     }
-    return { render: this.getColor(this.type, isStatic) };
+    return { render: this.getColor(isStatic) };
   }
 
   setResetPosition() {
