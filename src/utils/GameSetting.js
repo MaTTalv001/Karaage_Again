@@ -11,9 +11,9 @@ export const UserPlacementBox = [
   {
     bodiesType: "Rectangle",
     x: WallX,
-    y: 370,
+    y: GameHeight / 2,
     width: 30,
-    height: 740,
+    height: GameHeight,
     option: {
       isStatic: true,
       collisionFilter: {
@@ -24,8 +24,8 @@ export const UserPlacementBox = [
   },
   {
     "bodiesType": "Rectangle",
-    "x": 152,
-    "y": 730,
+    "x": WallX / 2,
+    "y": GameHeight - 54 - 15, // 高さ - 親要素のmtのpx - オブジェクトの高さの半分
     "width": WallX,
     "height": 30,
     "option": {
@@ -39,7 +39,7 @@ export const UserPlacementBox = [
   {
     bodiesType: "Rectangle",
     x: -30,
-    y: 370,
+    y: GameHeight / 2,
     width: 30,
     height: 740,
     option: {
@@ -52,7 +52,7 @@ export const UserPlacementBox = [
   },
   {
     "bodiesType": "Rectangle",
-    "x": 152,
+    "x": WallX / 2,
     "y": -30,
     "width": WallX,
     "height": 30,
@@ -66,11 +66,20 @@ export const UserPlacementBox = [
   },
 ]
 
+// オブジェクトの種類
+export const ObjectType = {
+  Stage: "Stage",
+  Switch: "Switch",
+  User: "User",
+  Ball: "Ball",
+  Wall: "Wall",
+}
+
 // オブジェクトの配色
 export const ColorSetting = {
-  Static: "gray",
+  StageStatic: "gray",
+  StageMove: "yellow",
   Switch: "red",
-  Move: "yellow",
   UserStatic: "blue",
   UserMove: "green",
   Ball: "cyan",

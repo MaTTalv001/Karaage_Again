@@ -1,4 +1,4 @@
-import { ColorSetting } from "utils/GameSetting";
+import { ColorSetting, ObjectType } from "utils/GameSetting";
 import { Body, Composite } from "matter-js";
 
 export class MatterObject {
@@ -122,25 +122,25 @@ export class MatterObject {
   }
 
   // 配色設定
-  getColor = (type, isStatic) => {
+  getColor = (isStatic) => {
     let colorSet = {};
-    switch (type) {
-      case "default":
-        if (isStatic) colorSet = { fillStyle: ColorSetting.Static }; // 初期配置且つ動かない
-        else colorSet = { fillStyle: ColorSetting.Move }; // 初期配置且つ動く
+    switch (this.type) {
+      case ObjectType.Stage:
+        if (isStatic) colorSet = { fillStyle: ColorSetting.StageStatic };
+        else colorSet = { fillStyle: ColorSetting.StageMove };
         break;
-      case "Switch":
-        colorSet = { fillStyle: ColorSetting.Switch }; // スイッチ
+      case ObjectType.Switch:
+        colorSet = { fillStyle: ColorSetting.Switch };
         break;
-      case "User":
-        if (isStatic) colorSet = { fillStyle: ColorSetting.UserStatic }; // ユーザー配置且つ動かない
-        else colorSet = { fillStyle: ColorSetting.UserMove };  // ユーザー配置且つ動く
+      case ObjectType.User:
+        if (isStatic) colorSet = { fillStyle: ColorSetting.UserStatic };
+        else colorSet = { fillStyle: ColorSetting.UserMove };
         break;
-      case "Ball":
-        colorSet = { fillStyle: ColorSetting.Ball }; // ボール
+      case ObjectType.Ball:
+        colorSet = { fillStyle: ColorSetting.Ball };
         break;
-      case "Wall":
-        colorSet = { fillStyle: ColorSetting.Wall }; // 壁
+      case ObjectType.Wall:
+        colorSet = { fillStyle: ColorSetting.Wall };
         break;
     }
 

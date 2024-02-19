@@ -2,6 +2,7 @@ import { Rectangle } from "./Rectangle";
 import { Circle } from "./Circle";
 import { Triangle } from "./Triangle";
 import { Polygon } from "./Polygon";
+import { ObjectType } from "utils/GameSetting";
 
 // 引数作成のマッパー
 const mapper = {
@@ -23,7 +24,7 @@ const mapper = {
 };
 
 // 複数オブジェクト作成
-const createObjects = (datas, type = "default") => {
+const createObjects = (datas, type = ObjectType.Stage) => {
   if (Array.isArray(datas) === false) {
     datas = [datas];
   }
@@ -38,7 +39,7 @@ const createObjects = (datas, type = "default") => {
 };
 
 // 単数オブジェクト作成
-const createObject = (data, type = "default") => {
+const createObject = (data, type = ObjectType.Stage) => {
   const Class = {
     Rectangle,
     Circle,

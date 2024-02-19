@@ -4,7 +4,7 @@ import CollisionEvents from 'utils/matterjs/CollisionEvents';
 import MatterEngine from 'utils/matterjs/MatterEngine';
 import MouseEvents from 'utils/matterjs/MouseEvents';
 import { createObject, createObjects } from 'utils/matterjs/objects/CreateObjects';
-import { GameHeight, GameWidth, UserPlacementBox, WallX } from 'utils/GameSetting';
+import { GameHeight, GameWidth, ObjectType, UserPlacementBox, WallX } from 'utils/GameSetting';
 
 export const GamePlay = () => {
   //const { id } = useParams(); // ゲームID
@@ -66,14 +66,14 @@ export const GamePlay = () => {
 
     setGameData(data);
 
-    const switchObj = createObject(data.Switch, "Switch");
+    const switchObj = createObject(data.Switch, ObjectType.Switch);
 
-    const ball = createObjects(data.Ball, "Ball");
+    const ball = createObjects(data.Ball, ObjectType.Ball);
     const ballComposite = mEngine.createComposite();
     mEngine.registerObjectInComposite(ballComposite, ball);
     setBallComposite(ballComposite);
 
-    const userPlacementObj = createObjects(data.UserPlacement, "User");
+    const userPlacementObj = createObjects(data.UserPlacement, ObjectType.User);
     const userPlacementComposite = mEngine.createComposite();
     mEngine.registerObjectInComposite(userPlacementComposite, userPlacementObj);
     setUserPlacementComposite(userPlacementComposite);
@@ -93,7 +93,7 @@ export const GamePlay = () => {
     setMouseEvents(mouseEvents);
 
     mEngine.setRenderMouse(mouseEvents.getMouse());
-    mEngine.registerObject([switchObj, ...createObjects(data.Stage), ballComposite, userPlacementComposite, ...createObjects(UserPlacementBox, "Wall"), mouseEvents.getMouseConstraint()]);
+    mEngine.registerObject([switchObj, ...createObjects(data.Stage), ballComposite, userPlacementComposite, ...createObjects(UserPlacementBox, ObjectType.Wall), mouseEvents.getMouseConstraint()]);
     mEngine.run();
     setMatterEngine(mEngine);
   }
@@ -176,34 +176,36 @@ export const GamePlay = () => {
 
   const onClickBallReset = () => {
     matterEngine.clearComposite(ballComposite);
-    const ball = createObjects(gameData.Ball, "Ball");
+    const ball = createObjects(gameData.Ball, ObjectType.Ball);
     matterEngine.registerObjectInComposite(ballComposite, ball);
   }
 
   const onClickPlacementReset = () => {
     matterEngine.clearComposite(userPlacementComposite);
-    const userPlacementObj = createObjects(gameData.UserPlacement, "User");
+    const userPlacementObj = createObjects(gameData.UserPlacement, ObjectType.User);
     matterEngine.registerObjectInComposite(userPlacementComposite, userPlacementObj);
   };
 
   return (
     <>
       {loading && <div>loading...</div>}
-      <div className={`h-[${GameHeight}px] w-[${GameWidth}px] m-auto mt-14 flex flex-col`}>
-        <div className='w-full h-[60px] flex'>
-          <div className='w-1/4 grid grid-flow-col items-center text-start'>
-            <button className='hover:bg-blue-200 bg-blue-400 hover:text-slate-500 text-slate-950 transition-all py-2' onClick={onClickPlacementReset}>Reset</button>
-            <h3 className='mx-auto'>You Placement</h3>
-          </div>
-          <div className='w-3/4 flex flex-col'>
-            <div className='flex justify-between items-center mx-5'>
-              <button className='hover:bg-blue-200 bg-blue-400 hover:text-slate-500 text-slate-950 transition-all py-2 px-4 my-2' onClick={onClickBallReset}>BallReset</button>
-              <h3>{gameData.title}</h3>
-              <button className='hover:text-slate-500 text-slate-950 hover:bg-red-200 bg-red-400 transition-all py-2 px-4 my-2' onClick={onClickPlay}>▶</button>
+      <div className='w-full'>
+        <div className={`h-[${GameHeight}px] w-[${GameWidth}px] m-auto mt-14 flex flex-col`}>
+          <div className='w-full h-[60px] flex'>
+            <div className='w-1/4 grid grid-flow-col items-center text-start'>
+              <button className='hover:bg-blue-200 bg-blue-400 hover:text-slate-500 text-slate-950 transition-all py-2' onClick={onClickPlacementReset}>Reset</button>
+              <h3 className='mx-auto'>You Placement</h3>
+            </div>
+            <div className='w-3/4 flex flex-col'>
+              <div className='flex justify-between items-center mx-5'>
+                <button className='hover:bg-blue-200 bg-blue-400 hover:text-slate-500 text-slate-950 transition-all py-2 px-4 my-2' onClick={onClickBallReset}>BallReset</button>
+                <h3>{gameData.title}</h3>
+                <button className='hover:text-slate-500 text-slate-950 hover:bg-red-200 bg-red-400 transition-all py-2 px-4 my-2' onClick={onClickPlay}>▶</button>
+              </div>
             </div>
           </div>
-        </div>
-        <div id="Game" className={`w-full h-[calc(100%-60px)] bg-white overflow-hidden`}>
+          <div id="Game" className={`w-[${GameWidth}px] h-[${GameHeight}px] bg-white overflow-hidden`}>
+          </div>
         </div>
       </div>
     </>
