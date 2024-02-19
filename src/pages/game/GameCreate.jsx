@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 
 export const GameCreate = () => {
   return (
-    <div className="max-w-screen-xl max-h-screen-lg relative font-[DotGothic16] mt-14">
-      <Link to="/game/make">
+    <div className="w-full relative font-[DotGothic16] mt-14">
+      <Link to="RoutePath.gameMake.path">
         <h1 className="font-bold text-4xl flex mb-7">Create</h1>
       </Link>
         <h1 className="font-bold text-4xl flex ">Edit</h1>

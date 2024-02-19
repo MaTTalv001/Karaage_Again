@@ -4,7 +4,7 @@ import SignUpPage from "pages/SignUp";
 import { StageSelectPage } from "pages/game";
 import UsersIndex from "pages/users/UsersIndex";
 import { GameCreate } from "pages/game/GameCreate";
-import { GameStageCreate } from "pages/game/GameStageCreate";
+import { GameMake } from "pages/game/GameMake";
 import { GameEdit } from "pages/game/GameEdit";
 import { GamePlay } from "pages/game/GamePlay";
 import { UserProfile } from "pages/users/UserProfile";
@@ -76,7 +76,7 @@ export const RouteSetting = [
   },
   {
     path: Path.gameMake,
-    component: <GameStageCreate />,
+    component: <GameMake />,
   },
 ];
 
