@@ -29,7 +29,7 @@ const Path = {
   stageSelect: "/game",
   gamePlay: "/game/:id",
   gameEdit: "/game/:id/edit",
-  gameNew: "/game/new",
+  gameProduction: "/game/user/:id",
   gameMake: "/game/make",
 };
 
@@ -71,7 +71,7 @@ export const RouteSetting = [
     component: <GameEdit />,
   },
   {
-    path: Path.gameNew,
+    path: Path.gameProduction,
     component: <GameProduction />,
   },
   {
@@ -118,7 +118,7 @@ export const RoutePath = {
     name: "ゲーム編集",
   },
   gameNew: {
-    path: Path.gameNew,
+    path: Path.gameProduction,
     name: "ゲーム制作画面",
   },
   gameMake: {
