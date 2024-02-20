@@ -48,7 +48,7 @@ jobs:
                 username = payload.pull_request_review.user.login;
                 title = payload.pull_request.title;
                 url = payload.pull_request_review.html_url;
-                const comment = payload.pull_request_review.comments.body;
+                const comment = payload.pull_request_review.body;
                 message = `**${username}**さんが[${title}](${url})にコメントしました。\n${comment}`;
             }
             
