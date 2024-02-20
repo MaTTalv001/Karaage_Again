@@ -4,10 +4,8 @@ on:
     types: [opened, assigned, closed]
   issue_comment:
     types: [created]
-  pull_request_review:
-    types: [submitted]
   pull_request_review_comment:
-    types: [created]
+    types: [edited]
 
 jobs:
   notify:
@@ -46,7 +44,7 @@ jobs:
               const comment = payload.comment.body;
               message = `**${username}**さんが[${title}](${url})にコメントしました。\n${comment}`;
             } 
-            if (context.eventName === 'pull_request_review_comment'){
+            if (payload.action === 'edited'){
              username = payload.comment.user.login;
               title = payload.pull_request.title;
               url = payload.comment.html_url;
