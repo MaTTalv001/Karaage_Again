@@ -44,7 +44,7 @@ jobs:
               url = payload.issue.html_url;
               const comment = payload.comment.body;
               message = `**${username}**さんが[${title}](${url})にコメントしました。\n${comment}`;
-            } else if (context.eventName === 'pull_request_review' && payload.review.state === 'submitted') {
+            } else if (payload.review.state === 'submitted') {
                 username = payload.pull_request_review.user.login;
                 title = payload.pull_request.title;
                 url = payload.pull_request_review.html_url;
