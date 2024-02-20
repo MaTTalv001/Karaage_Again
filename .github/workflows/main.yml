@@ -4,6 +4,8 @@ on:
     types: [opened, assigned, closed]
   issue_comment:
     types: [created]
+  pull_request_review_comment:
+    types: [created, deleted]
 
 jobs:
   notify:
@@ -43,6 +45,14 @@ jobs:
               const comment = payload.comment.body;
               message = `**${username}**さんが[${title}](${url})にコメントしました。\n${comment}`;
             }
+            if ( context.eventName === 'pull_request_review_comment' && payload.action === 'created') {
+              username = payload.pull_request_review_comment.user.login;
+              title = payload.pull_request.title
+              url = payload.pull_request_review_comment.html_url;
+              const comment = payload.pull_request_review_comment.body;
+              message = `**${username}**さんが[${title}](${url})にコメントしました。\n${comment}`;
+            }
+            
 
             await github.request({
               url: mattermostWebhookUrl,
