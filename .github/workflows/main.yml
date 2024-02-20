@@ -4,8 +4,8 @@ on:
     types: [opened, assigned, closed]
   issue_comment:
     types: [created]
-  pull_request_review_comment:
-    types: [created, deleted]
+  pull_request_review:
+    types: [submitted, edited]
 
 jobs:
   notify:
@@ -44,11 +44,11 @@ jobs:
               url = payload.issue.html_url;
               const comment = payload.comment.body;
               message = `**${username}**さんが[${title}](${url})にコメントしました。\n${comment}`;
-            } else if (context.eventName === 'pull_request_review_comment' && payload.action === 'created') {
-                username = payload.pull_request_review_comment.user.login;
+            } else if (context.eventName === 'pull_request_review' && payload.action === 'submitted') {
+                username = payload.pull_request_review.user.login;
                 title = payload.pull_request.title;
-                url = payload.pull_request_review_comment.html_url;
-                const comment = payload.pull_request_review_comment.body;
+                url = payload.pull_request_review.html_url;
+                const comment = payload.pull_request_review.body;
                 message = `**${username}**さんが[${title}](${url})にコメントしました。\n${comment}`;
             }
             
