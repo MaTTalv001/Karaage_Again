@@ -2,28 +2,33 @@ import { Rectangle } from "./Rectangle";
 import { Circle } from "./Circle";
 import { Triangle } from "./Triangle";
 import { Polygon } from "./Polygon";
+import { ObjectType } from "utils/GameSetting";
 
 // 引数作成のマッパー
 const mapper = {
-  Rectangle: (stage, type) => {
-    return [stage.x, stage.y, type, stage.width, stage.height, stage.option];
+  Rectangle: (object, type, size) => {
+    return [object.x, object.y, type, object.width * size, object.height * size, object.option];
   },
 
-  Circle: (stage, type) => {
-    return [stage.x, stage.y, type, stage.radius, stage.option];
+  Circle: (object, type, size) => {
+    return [object.x, object.y, type, object.radius * size, object.option];
   },
 
-  Triangle: (stage, type) => {
-    return [stage.x, stage.y, type, stage.height, stage.option];
+  Triangle: (object, type, size) => {
+    return [object.x, object.y, type, object.height * size, object.option];
   },
 
-  Polygon: (stage, type) => {
-    return [stage.x, stage.y, type, stage.sides, stage.radius, stage.option];
+  Polygon: (object, type, size) => {
+    return [object.x, object.y, type, object.sides, object.radius * size, object.option];
   },
 };
 
 // 複数オブジェクト作成
-const createObjects = (datas, type = "default") => {
+const createObjects = (datas, type = ObjectType.Stage) => {
+  if (Array.isArray(datas) === false) {
+    datas = [datas];
+  }
+
   const stageObjects = [];
 
   for (let data of datas) {
@@ -34,14 +39,15 @@ const createObjects = (datas, type = "default") => {
 };
 
 // 単数オブジェクト作成
-const createObject = (data, type = "default") => {
+const createObject = (data, type = ObjectType.Stage) => {
   const Class = {
     Rectangle,
     Circle,
     Triangle,
     Polygon,
   }[data.bodiesType];
-  const args = mapper[data.bodiesType](data, type);
+  const size = type === "User" ? 0.5 : 1;
+  const args = mapper[data.bodiesType](data, type, size);
   return new Class(...args);
 }
 

@@ -1,30 +1,34 @@
-import { Body } from 'matter-js';
 import React, { useEffect, useRef, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom';
+// import { useParams, useNavigate } from 'react-router-dom'; // ページ遷移用
 import CollisionEvents from 'utils/matterjs/CollisionEvents';
 import MatterEngine from 'utils/matterjs/MatterEngine';
 import MouseEvents from 'utils/matterjs/MouseEvents';
 import { createObject, createObjects } from 'utils/matterjs/objects/CreateObjects';
+import { GameWidth, ObjectType, UserPlacementBox, WallX } from 'utils/GameSetting';
 
 export const GamePlay = () => {
-  const { id } = useParams();
+  //const { id } = useParams(); // ゲームID
   const [gameClear, setGameClear] = useState(false);
   const [loading, setLoading] = useState(true);
   const [gameData, setGameData] = useState({});
-  const [stageData, setStageData] = useState([]);
-  const [switchObject, setSwitchObject] = useState({});
-  const [userPlacement, setUserPlacement] = useState([]);
-  const selectObjectRef = useRef(null);
+  const [matterEngine, setMatterEngine] = useState();
+  const [userPlacementComposite, setUserPlacementComposite] = useState([]);
+  const [ballComposite, setBallComposite] = useState([]);
+  const [isMousePosXLeft, setIsMousePosXLeft] = useState(true);
   const [collisionEvents, setCollisionEvents] = useState(null);
   const [mouseEvents, setMouseEvents] = useState(null);
+  const isDragObjectRef = useRef(false);
   const mouseClickPosition = useRef({ x: 0, y: 0 });
-  const navigator = useNavigate();
+  const selectObjectRef = useRef(null);
+  const getSelectObjectParent = () => selectObjectRef.current ? selectObjectRef.current.getParent() : null;
+  //const navigator = useNavigate(); // ページ遷移用
 
   useEffect(() => {
     fetchData();
     setLoading(false);
 
     return () => {
+      // イベントリスナのクリーンアップ
       collisionEvents && collisionEvents.clear();
       mouseEvents && mouseEvents.clear();
     };
@@ -37,44 +41,79 @@ export const GamePlay = () => {
     }
   }, [gameClear]);
 
+  // オブジェクトドラッグ時の処理
+  useEffect(() => {
+    // ドラッグしているオブジェクトがなければ何もしない
+    if (selectObjectRef.current === null || isDragObjectRef.current === false) return;
+    let parent = getSelectObjectParent();
+    if (isMousePosXLeft) {
+      // マウスが左側にあれば選択しているオブジェクトのスケールを半分にする
+      parent.multiplyScale(0.5);
+      return;
+    }
+    // マウスが右側にあれば選択しているオブジェクトのスケールを初期のサイズに戻す
+    parent.multiplyScale(2);
+  }, [isMousePosXLeft]);
+
+
   const fetchData = async () => {
-    // supabaseからデータを取得する処理をここに書く
+    // Supabaseからデータを取得する処理をここに書く
     // 今回は確認用データを使う
     const data = Data;
 
-    matterInitialize(data);
+    await matterInitialize(data);
   };
 
-  const matterInitialize = (data) => {
-    const matterEngine = new MatterEngine();
-    matterEngine.setup("#Game");
+  const matterInitialize = async (data) => {
+    const mEngine = new MatterEngine();
+    mEngine.setup("#Game"); // ゲームを描画するタグのID
 
+    // 初期データの保持
     setGameData(data);
 
-    const switchObj = createObject(data.Switch, "Switch");
-    setSwitchObject(switchObj);
-    const stageObj = createObjects(data.Stage);
-    setStageData(stageObj);
-    const userPlacementObj = createObjects(data.UserPlacement, "User");
-    setUserPlacement(data.UserPlacement);
-    const ball = createObject(data.Ball, "Ball");
-    matterEngine.registerObject([switchObj, ...stageObj, ...userPlacementObj, ball]);
+    const switchObj = createObject(data.Switch, ObjectType.Switch);
 
-    matterEngine.run();
+    // ボールは複数になる可能性を考えてCompositeで管理
+    const ball = createObjects(data.Ball, ObjectType.Ball);
+    const ballComposite = mEngine.createComposite();
+    mEngine.registerObjectInComposite(ballComposite, ball);
+    setBallComposite(ballComposite);
 
-    const colEvents = new CollisionEvents(matterEngine.getEngine());
+    // ユーザーが配置するオブジェクト
+    // 配置リセットがしやすいのでCompositeで管理
+    const userPlacementObj = createObjects(data.UserPlacement, ObjectType.User);
+    const userPlacementComposite = mEngine.createComposite();
+    mEngine.registerObjectInComposite(userPlacementComposite, userPlacementObj);
+    setUserPlacementComposite(userPlacementComposite);
+
+    // 衝突判定のイベント
+    const colEvents = new CollisionEvents(mEngine.getEngine());
     colEvents.pushSwitch(() => handleSwitch(switchObj, data.Switch.y));
     colEvents.onTouchEvents();
     setCollisionEvents(colEvents);
 
-    const mouseEvents = new MouseEvents(matterEngine.getRender(), matterEngine.getEngine());
+    // マウスのイベント。クリック、ドラッグ、クリックアップ
+    const mouseEvents = new MouseEvents(mEngine.getRender(), mEngine.getEngine());
     mouseEvents.registerClickEvent(handleClick);
     mouseEvents.onClickEvents();
     mouseEvents.registerDragEvent(handleDrag);
     mouseEvents.onDragEvents();
+    mouseEvents.registerClickUpEvent(handleClickUp);
+    mouseEvents.onClickUpEvents();
     setMouseEvents(mouseEvents);
+
+    // マウスをmatter.jsのレンダーに設定。これをしないと物理オブジェクトの移動ができない
+    mEngine.setRenderMouse(mouseEvents.getMouse());
+
+    // オブジェクトの登録
+    mEngine.registerObject([switchObj, ...createObjects(data.Stage), ballComposite, userPlacementComposite, ...createObjects(UserPlacementBox, ObjectType.Wall), mouseEvents.getMouseConstraint()]);
+
+    // エンジンの実行
+    mEngine.run();
+    setMatterEngine(mEngine);
   }
 
+  // スイッチ押下イベント
   const handleSwitch = (switchObj, startPos_y) => {
     const intervalId = setInterval(() => {
       const pos = switchObj.getPosition();
@@ -86,78 +125,118 @@ export const GamePlay = () => {
     }, 1000 / 30);
   };
 
+  // ゲーム描画域内のクリックイベント
+  // NOTE : ゲーム描画域外のクリックイベントはここには書かない
   const handleClick = (e) => {
     const target = e.source.body;
-    if (!target || !target.label.match(/user(.*)/g)) {
+    if (setSelectObject(target)) {
+      const diff_x = e.mouse.position.x - target.position.x;
+      const diff_y = e.mouse.position.y - target.position.y;
+      mouseClickPosition.current = { x: diff_x, y: diff_y };
+    }
+  }
+
+  // 現在選択されているオブジェクト設定
+  const setSelectObject = (target) => {
+    if (target == null || !target.label.match(/user(.*)/g)) {
       if (selectObjectRef.current) {
         selectObjectRef.current.render.lineWidth = 0;
       }
       selectObjectRef.current = null;
-      return;
+      return false;
     }
-
-    // もう一度同じオブジェクトを選択したら選択解除
-    if (target === selectObjectRef.current) {
+    if (selectObjectRef.current && target !== selectObjectRef.current) {
       selectObjectRef.current.render.lineWidth = 0;
-      selectObjectRef.current = null;
-      return;
     }
-
-    // TODO : もっといいやり方あったらリファクタリング
+    // ユーザーが配置できるオブジェクトは選択時に赤く縁取る
     target.render.lineWidth = 5;
     target.render.strokeStyle = "red";
     selectObjectRef.current = target;
+    return true;
+  };
 
-    const diff_x = e.mouse.position.x - target.position.x;
-    const diff_y = e.mouse.position.y - target.position.y;
-    mouseClickPosition.current = { x: diff_x, y: diff_y };
-  }
-
+  // オブジェクトのドラッグイベント。選択されているものがあればドラッグで移動できる
   const handleDrag = (e) => {
+    setIsMousePosXLeft(e.source.mouse.position.x < WallX);
     const target = e.source.body;
-    if (!target || target.label === "useMove") return;
+    if (!target) return;
+
+    isDragObjectRef.current = true;
+
+    if (!target.isStatic) return;
+
     if (selectObjectRef.current && selectObjectRef.current === target) {
       const position = e.source.mouse.position;
       const x = position.x - mouseClickPosition.current.x;
       const y = position.y - mouseClickPosition.current.y;
-      // TODO : BodyをMatterEngineとかでラップしたい
-      // あっちこっちにmatterjsがあると管理が大変なのでラップしたい
-      // FIX : たまに座標がずれる
-      Body.setPosition(selectObjectRef.current, { x, y });
+      // FIX : たまに座標がずれるかも
+      const parent = getSelectObjectParent();
+      parent.setPosition({ x, y });
     }
   };
 
+  // クリックを止めた時のイベント
+  const handleClickUp = (e) => {
+    isDragObjectRef.current = false;
+  }
+
+  const onClickPlay = () => {
+    // ステージに初期配置されているボールの物理を働かせる
+    ballComposite.bodies.forEach((ball) => {
+      ball.getParent().setStatic(false);
+    });
+    setSelectObject(null);
+  };
+
+  const onClickBallReset = () => {
+    matterEngine.clearComposite(ballComposite);
+    const ball = createObjects(gameData.Ball, ObjectType.Ball);
+    matterEngine.registerObjectInComposite(ballComposite, ball);
+  }
+
+  const onClickPlacementReset = () => {
+    matterEngine.clearComposite(userPlacementComposite);
+    const userPlacementObj = createObjects(gameData.UserPlacement, ObjectType.User);
+    matterEngine.registerObjectInComposite(userPlacementComposite, userPlacementObj);
+  };
+
   return (
-    <div className='h-[800px] w-[1200px] m-auto mt-14'>
-      <div className='w-full h-full flex gap-3'>
-        <div className='w-1/4 flex flex-col'>
-          <h3 className='my-4'>配置オブジェクト</h3>
-          <div id="Placement" className='h-full bg-white border-solid border-slate-400 hover:border-yellow-400 transition-all border-2'>
+    <>
+      {loading && <div>loading...</div>}
+      <div className={`w-[${GameWidth}px] mx-auto`}>
+        <div className="w-full m-auto mt-14 flex flex-col">
+          <div className='w-full flex'>
+            <div className='w-1/4 grid grid-flow-col items-center text-start'>
+              <button className='hover:bg-blue-200 bg-blue-400 hover:text-slate-500 text-slate-950 transition-all py-2' onClick={onClickPlacementReset}>Reset</button>
+              <h3 className='mx-auto'>Placement</h3>
+            </div>
+            <div className='w-3/4 flex flex-col'>
+              <div className='flex justify-between items-center mx-5'>
+                <button className='hover:bg-blue-200 bg-blue-400 hover:text-slate-500 text-slate-950 transition-all py-2 px-4 my-2' onClick={onClickBallReset}>BallReset</button>
+                <h3>{gameData.title}</h3>
+                <button className='hover:text-slate-500 text-slate-950 hover:bg-red-200 bg-red-400 transition-all py-2 px-4 my-2' onClick={onClickPlay}>▶</button>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className='w-3/4 flex flex-col'>
-          <div className='flex justify-between items-center mx-5'>
-            <button className='bg-blue-200 hover:bg-blue-400 text-slate-500 hover:text-slate-950 transition-all py-2 px-4 my-2'>Reset</button>
-            <h3>ゲーム画面</h3>
-            <button className='text-slate-500 hover:text-slate-950 bg-red-200 hover:bg-red-400 transition-all py-2 px-4 my-2'>▶</button>
-          </div>
-          <div id="Game" className='h-full bg-white border-solid hover:border-yellow-400 border-slate-400 transition-all border-2'>
+          <div id="Game" className={`w-full m-auto bg-white overflow-hidden`}>
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
 // 確認用データ
+// DB連携できたら消す
 const Data = {
   "name": "Sample1",
   "version": "1.0.0",
-  "description": "ボール出現サンプル",
+  "title": "Tutorial",
+  "description": "どんなゲーム？",
   "Stage": [
     {
       "bodiesType": "Rectangle",
-      "x": 448,
+      "x": 752,
       "y": 730,
       "width": 896,
       "height": 30,
@@ -171,12 +250,12 @@ const Data = {
     },
     {
       "bodiesType": "Rectangle",
-      "x": 600,
+      "x": 904,
       "y": 200,
-      "width": 500,
+      "width": 400,
       "height": 30,
       "option": {
-        "angle": -0.3,
+        "angle": -0.5,
         "isStatic": true,
         "collisionFilter": {
           "group": -1
@@ -187,7 +266,7 @@ const Data = {
   ],
   "Switch": {
     "bodiesType": "Rectangle",
-    "x": 600,
+    "x": 904,
     "y": 700,
     "width": 100,
     "height": 50,
@@ -202,28 +281,35 @@ const Data = {
   "UserPlacement": [
     {
       "bodiesType": "Rectangle",
-      "x": 300,
-      "y": 400,
+      "x": 150,
+      "y": 100,
       "width": 500,
       "height": 30,
       "option": {
-        "angle": 0.2,
+        "angle": 0.5,
         "isStatic": true,
-        "collisionFilter": {
-          "group": -1
-        },
         "label": "userStatic"
+      }
+    },
+    {
+      "bodiesType": "Circle",
+      "x": 150,
+      "y": 200,
+      "radius": 30,
+      "option": {
+        "label": "userMove",
+        "mass": 10,
       }
     }
   ],
   "Ball": {
     "bodiesType": "Circle",
-    "x": 600,
-    "y": 100,
+    "x": 1000,
+    "y": 80,
     "radius": 30,
     "option": {
       "label": "ball",
-      "mass": 50,
+      "isStatic": true,
     }
   }
 }

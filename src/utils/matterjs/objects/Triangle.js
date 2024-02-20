@@ -20,6 +20,8 @@ class Triangle extends MatterObject {
   ) {
     super(x, y, type);
     this.object = Bodies.polygon(x, y, 3, height, this.getOptionAddColor(option, type));
+    this.object.getParent = () => this;
+    this.initialScale = height;
   }
 }
 

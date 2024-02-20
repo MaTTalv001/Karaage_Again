@@ -1,7 +1,7 @@
-import getColor from "../ColorSetting";
+import { ColorSetting, ObjectType } from "utils/GameSetting";
 import { Body, Composite } from "matter-js";
 
-class MatterObject {
+export class MatterObject {
   /**
    * @method コンストラクタ
    * @param {Matter} Matter
@@ -20,7 +20,7 @@ class MatterObject {
    * @param {bool} bool 静止ならtrue
    */
   setStatic(bool) {
-    Body.setStatic(this.object, bool);
+    Body.setStatic(this.object, bool, { preserve: true });
   }
 
   /**
@@ -31,6 +31,23 @@ class MatterObject {
    */
   setPosition({ x, y }) {
     Body.setPosition(this.object, { x, y });
+  }
+
+  getId() {
+    return this.object.id;
+  }
+
+  getScale() {
+    return { x: this.object.render.sprite.xScale, y: this.object.render.sprite.yScale };
+  }
+
+  /**
+   * @method オブジェクトのスケール設定
+   * @param {number} number 乗算する数値
+   * @description オブジェクトのスケールを乗算
+   */
+  multiplyScale(number) {
+    Body.scale(this.object, number, number);
   }
 
   /**
@@ -88,31 +105,47 @@ class MatterObject {
   }
 
   /**
-   *  @method オブジェクトの色設定取得
-   * @param {object} option オプション
-   * @description オブジェクトの色設定を取得
-   *              オプションがあれば、オプションに色設定を追加して返却
-   *              オプションがなければ、色設定のみ返却
-   */
-  getColorSetting(option) {
-    let isStatic = option && option.isStatic !== undefined;
-    return getColor(this.type, isStatic)
-  }
-
-  /**
    * @method オプション取得
    * @param {object} option オプション
    * @description オプションに色設定を追加して返却
    */
   getOptionAddColor(option) {
-    let optionAddColor;
+    let isStatic = option && option.isStatic !== undefined;
     if (option) {
-      optionAddColor = { ...option, render: this.getColorSetting(option) };
-    } else {
-      optionAddColor = { render: this.getColorSetting(option) };
+      return { ...option, render: this.getColor(isStatic) };
     }
-    return optionAddColor;
+    return { render: this.getColor(isStatic) };
+  }
+
+  setResetPosition() {
+    this.setPosition({ x: this.posX, y: this.posY });
+  }
+
+  // 配色設定
+  getColor = (isStatic) => {
+    let colorSet = {};
+    switch (this.type) {
+      case ObjectType.Stage:
+        if (isStatic) colorSet = { fillStyle: ColorSetting.StageStatic };
+        else colorSet = { fillStyle: ColorSetting.StageMove };
+        break;
+      case ObjectType.Switch:
+        colorSet = { fillStyle: ColorSetting.Switch };
+        break;
+      case ObjectType.User:
+        if (isStatic) colorSet = { fillStyle: ColorSetting.UserStatic };
+        else colorSet = { fillStyle: ColorSetting.UserMove };
+        break;
+      case ObjectType.Ball:
+        colorSet = { fillStyle: ColorSetting.Ball };
+        break;
+      case ObjectType.Wall:
+        colorSet = { fillStyle: ColorSetting.Wall };
+        break;
+    }
+
+    return colorSet;
   }
 }
 
-export { MatterObject };
+
