@@ -46,13 +46,7 @@ jobs:
               const comment = payload.comment.body;
               message = `**${username}**さんが[${title}](${url})にコメントしました。\n${comment}`;
             } 
-            if (context.eventName === 'pull_request_review' && payload.review.body !== null) {
-              username = payload.review.user.login;
-              title = payload.pull_request.title;
-              url = payload.review.html_url;
-              const comment = payload.review.body;
-              message = `**${username}**さんが[${title}](${url})にコメントしました。\n${comment}`;
-            }else if (context.eventName === 'pull_request_review_comment'){
+            if (context.eventName === 'pull_request_review_comment'){
              username = payload.comment.user.login;
               title = payload.pull_request.title;
               url = payload.comment.html_url;
