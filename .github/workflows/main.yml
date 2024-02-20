@@ -44,11 +44,11 @@ jobs:
               url = payload.issue.html_url;
               const comment = payload.comment.body;
               message = `**${username}**さんが[${title}](${url})にコメントしました。\n${comment}`;
-            } else if (context.eventName === 'pull_request_review' && payload.action === 'submitted') {
+            } else if (context.eventName === 'pull_request_review' && payload.review.state === 'submitted') {
                 username = payload.pull_request_review.user.login;
                 title = payload.pull_request.title;
                 url = payload.pull_request_review.html_url;
-                const comment = payload.pull_request_review.body;
+                const comment = payload.pull_request_review.comments.body;
                 message = `**${username}**さんが[${title}](${url})にコメントしました。\n${comment}`;
             }
             
