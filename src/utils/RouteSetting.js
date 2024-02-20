@@ -117,7 +117,7 @@ export const RoutePath = {
     path: Path.gameEdit,
     name: "ゲーム編集",
   },
-  gameNew: {
+  TODOgameProduction: {
     path: Path.gameProduction,
     name: "ゲーム制作画面",
   },
