@@ -29,7 +29,7 @@ const Path = {
   stageSelect: "/game",
   gamePlay: "/game/:id",
   gameEdit: "/game/:id/edit",
-  gameProduction: "/game/new",
+  gameProduction: "/game/new",  // TODO : 本来はユーザーidが必要。暫定処理
   gameMake: "/game/make",
 };
 
@@ -117,7 +117,7 @@ export const RoutePath = {
     path: Path.gameEdit,
     name: "ゲーム編集",
   },
-  TODOgameProduction: {
+  gameProduction: {
     path: Path.gameProduction,
     name: "ゲーム制作画面",
   },
