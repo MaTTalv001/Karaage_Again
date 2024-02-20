@@ -29,7 +29,7 @@ const Path = {
   stageSelect: "/game",
   gamePlay: "/game/:id",
   gameEdit: "/game/:id/edit",
-  gameProduction: "/game/user/:id",
+  gameProduction: "/game/new",
   gameMake: "/game/make",
 };
 
