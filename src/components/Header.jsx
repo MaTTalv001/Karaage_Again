@@ -1,8 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext";
-import { RoutePath } from "../utils/RouteSetting";
+import { RoutePath } from "utils/RouteSetting";
 import supabase from "services/supabaseClient";
-import { useProfile } from "../contexts/ProfileContext";
+import { useProfile } from "contexts/ProfileContext";
 
 const Header = () => {
   const { user } = useAuth();
