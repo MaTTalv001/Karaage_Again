@@ -61,8 +61,8 @@ export const GamePlay = () => {
   const fetchData = async () => {
     let { result, data } = await getStageById(id);
     if (result === "error") {
-      // TODO : エラー処理
-      navigator(RoutePath.selectStage);
+      // TODO : エラー処理 暫定でステージ選択画面に遷移
+      navigator(RoutePath.stageSelect.path);
       return;
     }
 
@@ -70,7 +70,7 @@ export const GamePlay = () => {
     if (data.state !== State.release) {
       alert('存在しないページです');
       // 404ページに遷移させたい 現在ページがないので暫定
-      navigator(RoutePath.selectStage);
+      navigator(RoutePath.selectStage.path);
       return;
     }
 
