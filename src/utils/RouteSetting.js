@@ -3,7 +3,8 @@ import LogInPage from "pages/LogIn";
 import SignUpPage from "pages/SignUp";
 import { StageSelectPage } from "pages/game";
 import UsersIndex from "pages/users/UsersIndex";
-import { GameCreate } from "pages/game/GameCreate";
+import { GameProduction } from "pages/game/GameProduction";
+import { GameMake } from "pages/game/GameMake";
 import { GameEdit } from "pages/game/GameEdit";
 import { GamePlay } from "pages/game/GamePlay";
 import { UserProfile } from "pages/users/UserProfile";
@@ -28,7 +29,8 @@ const Path = {
   stageSelect: "/game",
   gamePlay: "/game/:id",
   gameEdit: "/game/:id/edit",
-  gameNew: "/game/new",
+  gameProduction: "/game/new",  // TODO : 本来はユーザーidが必要。暫定処理
+  gameMake: "/game/make",
 };
 
 // NOTE : ルーティング設定用
@@ -69,8 +71,12 @@ export const RouteSetting = [
     component: <GameEdit />,
   },
   {
-    path: Path.gameNew,
-    component: <GameCreate />,
+    path: Path.gameProduction,
+    component: <GameProduction />,
+  },
+  {
+    path: Path.gameMake,
+    component: <GameMake />,
   },
 ];
 
@@ -111,8 +117,12 @@ export const RoutePath = {
     path: Path.gameEdit,
     name: "ゲーム編集",
   },
-  gameNew: {
-    path: Path.gameNew,
+  gameProduction: {
+    path: Path.gameProduction,
+    name: "ゲーム制作画面",
+  },
+  gameMake: {
+    path: Path.gameMake,
     name: "ゲーム新規作成",
   }
 };
