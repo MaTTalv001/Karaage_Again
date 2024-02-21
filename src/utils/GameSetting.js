@@ -1,3 +1,10 @@
+// 公開状況
+// NOTE : enumはTypeScriptの書き方になるので、ここでは使えない
+export const State = {
+  draft: "下書き",
+  release: "公開",
+  private: "非公開",
+}
 
 // ゲーム画面
 export const GameWidth = 1200;
