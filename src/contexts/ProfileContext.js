@@ -20,7 +20,7 @@ export const ProfileProvider = ({ children }) => {
         // ユーザーがログインしている場合、Supabaseからプロファイル情報を取得
         const { data, error } = await supabase
           .from("profiles")
-          .select("name, role")
+          .select("name, role, bio")
           .eq("user_id", user.id)
           .single();
         if (error) {
