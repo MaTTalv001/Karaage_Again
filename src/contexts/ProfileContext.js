@@ -23,7 +23,7 @@ export const ProfileProvider = ({ children }) => {
           .select("name, role, bio")
           .eq("user_id", user.id)
           .single();
-        if (error) {
+        if (error || !data) {
           console.error("プロフィール情報の取得に失敗しました", error);
           return;
         }
