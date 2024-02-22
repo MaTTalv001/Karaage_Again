@@ -10,7 +10,15 @@ export const GameProduction = () => {
       <Link to={RoutePath.gameMake.path}>
         <h1 className="font-bold text-4xl flex mb-7">{RoutePath.gameMake.name}</h1>
       </Link>
-        <h1 className="font-bold text-4xl flex ">Edit</h1>
+      <div>
+        <h1 className="font-bold text-4xl">Edit</h1>
+        <ul>
+          <li>
+            <h1 className="font-bold">Title:aaaaa</h1>   {/* textは関数化する*/} 
+            <h1 className="font-bold">Open Now</h1> {/*textはstateで関数化する*/} 
+          </li>
+        </ul>
+      </div>
     </div>
   )
 }
