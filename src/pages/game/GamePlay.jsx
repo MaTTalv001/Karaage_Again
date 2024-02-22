@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import CollisionEvents from 'utils/matterjs/CollisionEvents';
 import MatterEngine from 'utils/matterjs/MatterEngine';
 import MouseEvents from 'utils/matterjs/MouseEvents';
 import { createObject, createObjects } from 'utils/matterjs/objects/CreateObjects';
-import { GameWidth, ObjectType, State, UserPlacementBox, WallX } from 'utils/GameSetting';
+import { ObjectType, State, UserPlacementBox, WallX } from 'utils/GameSetting';
 import { RoutePath } from 'utils/RouteSetting';
 import { getStageById } from 'services/supabaseStages';
 
@@ -217,7 +217,7 @@ export const GamePlay = () => {
   return (
     <>
       {loading && <div>loading...</div>}
-      <div className={`w-[${GameWidth}px] m-auto`}>
+      <div className={`w-[1200px] m-auto`}>
         <div className="w-full m-auto mt-14 flex flex-col font-[DotGothic16] ">
           <div className='w-full flex'>
             <div className='w-1/4 grid grid-flow-col items-center text-start'>
@@ -232,7 +232,7 @@ export const GamePlay = () => {
               </div>
             </div>
           </div>
-          <div id="Game" className={`w-[${GameWidth}px] m-auto bg-white overflow-hidden`}>
+          <div id="Game" className={`w-[1200px] m-auto bg-white overflow-hidden`}>
           </div>
         </div>
       </div>
