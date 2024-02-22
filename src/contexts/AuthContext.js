@@ -1,6 +1,4 @@
 import { useContext, useEffect, useState, createContext } from "react";
-
-// 作成したsupabaseクライアントを使用
 import supabase from "services/supabaseClient";
 
 const AuthContext = createContext();
