@@ -110,7 +110,7 @@ export const RoutePath = {
     name: "ステージ選択",
   },
   gamePlay: {
-    path: Path.gamePlay(),
+    path: (id) => Path.gamePlay(id),
     name: "ゲーム画面",
   },
   gameEdit: {
