@@ -1,6 +1,6 @@
 import { Events } from "matter-js";
 
-class CollisionEvents {
+export class CollisionEvents {
   constructor(engine) {
     this.engine = engine;
     this.touchEvents = [];
@@ -76,4 +76,4 @@ class CollisionEvents {
   }
 }
 
-export default CollisionEvents;
+

@@ -1,7 +1,7 @@
 import { Composite, Engine, Render, Runner } from "matter-js";
 import { GameHeight, GameWidth } from "utils/GameSetting";
 
-class MatterEngine {
+export class MatterEngine {
   constructor() {
     this.engine = Engine.create();
   }
@@ -32,6 +32,13 @@ class MatterEngine {
    */
   run() {
     Runner.run(Runner.create(), this.engine);
+  }
+
+  clear() {
+    Render.stop(this.render);
+    Runner.stop(this.engine);
+    this.clearComposite(this.engine.world);
+    this.unregisterObjects();
   }
 
   /**
@@ -101,5 +108,3 @@ class MatterEngine {
     this.render.mouse = mouse;
   }
 }
-
-export default MatterEngine;

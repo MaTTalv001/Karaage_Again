@@ -1,6 +1,6 @@
 import { Events, Mouse, MouseConstraint } from "matter-js";
 
-class MouseEvents {
+export class MouseEvents {
   /**
    * @method コンストラクタ
    * @description 初期化
@@ -117,5 +117,3 @@ class MouseEvents {
     this.clickUpEvents = [];
   }
 }
-
-export default MouseEvents;
