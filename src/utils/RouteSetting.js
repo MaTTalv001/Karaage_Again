@@ -25,10 +25,10 @@ const Path = {
   signup: "/signup",
   login: "/login",
   users: "/users",
-  usersProfile: "/users/:id",
+  usersProfile: (id = ':id') => `/users/${id}`,
   stageSelect: "/game",
-  gamePlay: "/game/:id",
-  gameEdit: "/game/:id/edit",
+  gamePlay: (id = ':id') => `/game/${id}`,
+  gameEdit: (id = ':id') => `/game/${id}/edit`,
   gameProduction: "/game/new",  // TODO : 本来はユーザーidが必要。暫定処理
   gameMake: "/game/make",
 };
@@ -54,7 +54,7 @@ export const RouteSetting = [
     component: <UsersIndex />,
   },
   {
-    path: Path.usersProfile,
+    path: Path.usersProfile(),
     component: <UserProfile />,
   },
   // ゲーム周り
@@ -63,11 +63,11 @@ export const RouteSetting = [
     component: <StageSelectPage />,
   },
   {
-    path: Path.gamePlay,
+    path: Path.gamePlay(),
     component: <GamePlay />,
   },
   {
-    path: Path.gameEdit,
+    path: Path.gameEdit(),
     component: <GameEdit />,
   },
   {
@@ -101,7 +101,7 @@ export const RoutePath = {
     name: "ユーザー一覧",
   },
   usersProfile: {
-    path: Path.usersProfile,
+    path: (id) => Path.usersProfile(id),
     name: "ユーザー詳細",
   },
   // ゲーム周り
@@ -110,11 +110,11 @@ export const RoutePath = {
     name: "ステージ選択",
   },
   gamePlay: {
-    path: Path.gamePlay,
+    path: (id) => Path.gamePlay(id),
     name: "ゲーム画面",
   },
   gameEdit: {
-    path: Path.gameEdit,
+    path: (id) => Path.gameEdit(id),
     name: "ゲーム編集",
   },
   gameProduction: {
