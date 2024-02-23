@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "components/Header";
-import { useState } from "react";
 import supabase from "services/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext";
@@ -31,10 +30,14 @@ const SignUpPage = () => {
       }
       // ユーザー登録が成功したらその場でログインしてプロファイル情報を追加
       // このアプリでは認証確認メールを介してユーザー登録する手順をスキップしています
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data, error: signInError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+      if (signInError) {
+        throw signInError;
+      }
       if (data) {
         const userId = data.user.id;
         const { error: profileError } = await supabase
