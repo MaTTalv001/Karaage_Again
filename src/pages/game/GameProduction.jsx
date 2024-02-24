@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { IconContext } from 'react-icons'
 import { FiEdit2 } from "react-icons/fi";
 import { FiTrash2 } from "react-icons/fi";
-import { FiPlay } from "react-icons/fi";
+import { HiMiniPlay } from "react-icons/hi2";
 
 
 
@@ -31,11 +31,15 @@ export const GameProduction = () => {
                     <FiTrash2 size={40}/>
                   </div>            
               </div>
-              <div className="flex-col">
-                <h1 className="font-bold text-2xl py-12 px-8 bg-red-400"><FiPlay />Test</h1>   {/* textは関数化する*/} 
+              <div >
+                <h1 className="font-bold text-2xl py-12 px-8 text-yellow-200">
+                  <div className="bg-red-500 flex rounded-lg px-4 py-2">
+                  <HiMiniPlay />Test
+                  </div>
+                </h1>
               </div>
               <div className="flex-col">
-                <h1 className="font-bold text-2xl py-12 px-8">画像</h1>   {/* textは関数化する*/}               
+                <h1 className="font-bold text-2xl py-12 px-8"><img src="/NotSet.png" alt="NotSet" className="w-30 h-15" /></h1>   {/* textは関数化する*/}               
               </div>
             </div>
           </li>
