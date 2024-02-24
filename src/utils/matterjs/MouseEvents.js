@@ -36,20 +36,20 @@ export class MouseEvents {
     this.offClickUpEvents();
   }
 
+  onEvents(onClickEvents, onDragEvents, onClickUpEvents) {
+    this.onClickEvent(onClickEvents);
+    this.onDragEvent(onDragEvents);
+    this.onClickUpEvent(onClickUpEvents);
+  }
+
   /**
    * @method クリックイベント登録
    * @param {function} events 登録したいイベントコールバック
    * @description クリックイベントを登録する。配列も可能。引数はイベント
    */
-  registerClickEvent(callback) {
+  onClickEvent(callback) {
+    if (!callback) return;
     this.clickEvents.push(callback);
-  }
-
-  /**
-   * @method クリックイベント実行
-   * @description クリックイベントを実行する
-   */
-  onClickEvents() {
     this.clickCallback = (e) => {
       this.clickEvents.forEach((event) => {
         event(e);
@@ -73,15 +73,9 @@ export class MouseEvents {
    * @method ドラッグイベント登録
    * @param {function} callback 登録したいイベントコールバック
    */
-  registerDragEvent(callback) {
+  onDragEvent(callback) {
+    if (!callback) return;
     this.dragEvents.push(callback);
-  }
-
-  /**
-   * @method ドラッグイベント実行
-   * @description ドラッグイベントを実行する
-   */
-  onDragEvents() {
     this.dragCallback = (e) => {
       this.dragEvents.forEach((event) => {
         event(e);
@@ -97,11 +91,9 @@ export class MouseEvents {
     this.dragEvents = [];
   }
 
-  registerClickUpEvent(callback) {
+  onClickUpEvent(callback) {
+    if (!callback) return;
     this.clickUpEvents.push(callback);
-  }
-
-  onClickUpEvents() {
     this.clickUpCallback = (e) => {
       this.clickUpEvents.forEach((event) => {
         event(e);

@@ -5,114 +5,127 @@ import { MouseEvents } from 'utils/matterjs/MouseEvents';
 import { createObject, createObjects } from 'utils/matterjs/objects/CreateObjects';
 import { ObjectType, UserPlacementBox, WallX } from 'utils/GameSetting';
 
-export const Game = ({ stageData, setOnClickPlay, setOnClickPlacementReset, setOnClickBallReset, setGameClear }) => {
-  const [gameData, setGameData] = useState(null);
-  const [matterEngine, setMatterEngine] = useState();
-  const [userPlacementComposite, setUserPlacementComposite] = useState(null);
-  const [ballComposite, setBallComposite] = useState(null);
+export const Game = memo(({ stageData, setOnClickPlay, setOnClickPlacementReset, setOnClickBallReset, setGameClear }) => {
   const [isMousePosXLeft, setIsMousePosXLeft] = useState(true);
-  const [collisionEvents, setCollisionEvents] = useState(null);
-  const [mouseEvents, setMouseEvents] = useState(null);
+  const gameDataRef = useRef();
+  const matterEngineRef = useRef();
+  const userPlacementCompositeRef = useRef();
+  const ballCompositeRef = useRef();
+  const collisionEventsRef = useRef();
+  const mouseEventsRef = useRef();
   const isDragObjectRef = useRef(false);
   const mouseClickPosition = useRef({ x: 0, y: 0 });
   const selectObjectRef = useRef(null);
   const getSelectObjectParent = () => selectObjectRef.current ? selectObjectRef.current.getParent() : null;
+  const HALF_SCALE = 0.5;
+  const MULTIPLY_SCALE = 2;
+  const FPS30 = 1000 / 30;
+  const PUSH_SWITCH_MOVEMENT = 15;
+  const SELECT_OBJECT_OUTLINE_WIDTH = 5;
 
   useEffect(() => {
-    fetchData();
+    try {
+      fetchData();
+    } catch (error) {
+      // TODO : エラー処理
+      console.error(error);
+    }
 
     return () => {
-      collisionEvents && collisionEvents.clear();
-      mouseEvents && mouseEvents.clear();
-      matterEngine && matterEngine.clear();
+      collisionEventsRef.current && collisionEventsRef.current.clear();
+      mouseEventsRef.current && mouseEventsRef.current.clear();
+      matterEngineRef.current && matterEngineRef.current.clear();
     };
   }, []);
-
-  useEffect(() => {
-    if (!matterEngine) return;
-
-    if (ballComposite) {
-      setOnClickPlay.current = play;
-      setOnClickBallReset.current = resetBall;
-    }
-
-    if (userPlacementComposite) {
-      setOnClickPlacementReset.current = resetPlacement;
-    }
-
-  }, [matterEngine, ballComposite, userPlacementComposite]);
 
   useEffect(() => {
     if (selectObjectRef.current === null || isDragObjectRef.current === false) return;
     let parent = getSelectObjectParent();
     // ユーザーが配置できるオブジェクトはそのままのサイズだと配置画面からはみ出るので、スケールを縮小している
     if (isMousePosXLeft) {
-      parent.multiplyScale(0.5);
+      parent.multiplyScale(HALF_SCALE);
       return;
     }
     // 初期配置はすべて半分のサイズなのでピタゴラスペースへ移動させるときはサイズを戻す
-    parent.multiplyScale(2);
+    parent.multiplyScale(MULTIPLY_SCALE);
   }, [isMousePosXLeft]);
 
   const fetchData = async () => {
-    await matterInitialize();
+    try {
+      await matterInitialize();
+    } catch (error) {
+      // TODO : エラー処理
+      console.error(error);
+    }
   };
 
   const matterInitialize = async () => {
-    const mEngine = new MatterEngine();
-    mEngine.setup("#Game");
+    matterEngineRef.current = new MatterEngine();
+    matterEngineRef.current.setup("#Game");
+    gameDataRef.current = stageData;
 
-    setGameData(stageData);
+    // スイッチ作成
     const switchObj = createObject(stageData.Switch, ObjectType.Switch);
 
-    const ball = createObjects(stageData.Ball, ObjectType.Ball);
-    const ballComposite = mEngine.createComposite();
-    mEngine.registerObjectInComposite(ballComposite, ball);
-    setBallComposite(ballComposite);
+    // ボールとユーザー配置作成
+    createBall(stageData.Ball);
+    createUserPlacement(stageData.UserPlacement);
 
-    // ユーザーが配置するオブジェクト
-    // 配置リセットがしやすいのでCompositeで管理
-    const userPlacementObj = createObjects(stageData.UserPlacement, ObjectType.User);
-    const userPlacementComposite = mEngine.createComposite();
-    mEngine.registerObjectInComposite(userPlacementComposite, userPlacementObj);
-    setUserPlacementComposite(userPlacementComposite);
-
-    const colEvents = new CollisionEvents(mEngine.getEngine());
+    // 衝突イベント登録
+    const colEvents = new CollisionEvents(matterEngineRef.current.getEngine());
     colEvents.pushSwitch(() => handleSwitch(switchObj, stageData.Switch.y));
     colEvents.onTouchEvents();
-    setCollisionEvents(colEvents);
+    collisionEventsRef.current = colEvents;
 
-    const mouseEvents = new MouseEvents(mEngine.getRender(), mEngine.getEngine());
-    mouseEvents.registerClickEvent(handleClick);
-    mouseEvents.onClickEvents();
-    mouseEvents.registerDragEvent(handleDrag);
-    mouseEvents.onDragEvents();
-    mouseEvents.registerClickUpEvent(handleClickUp);
-    mouseEvents.onClickUpEvents();
-    setMouseEvents(mouseEvents);
+    // マウスイベント登録
+    const mouseEvents = new MouseEvents(matterEngineRef.current.getRender(), matterEngineRef.current.getEngine());
+    mouseEvents.onEvents(handleClick, handleDrag, handleClickUp);
+    mouseEventsRef.current = mouseEvents;
 
     // マウスをmatter.jsのレンダーに設定。これをしないと物理オブジェクトの移動ができない
-    mEngine.setRenderMouse(mouseEvents.getMouse());
+    matterEngineRef.current.setRenderMouse(mouseEvents.getMouse());
 
-    mEngine.registerObject([switchObj, ...createObjects(stageData.Stage), ballComposite, userPlacementComposite, ...createObjects(UserPlacementBox, ObjectType.Wall), mouseEvents.getMouseConstraint()]);
+    // オブジェクト登録
+    matterEngineRef.current.registerObject([switchObj, ...createObjects(stageData.Stage), ballCompositeRef.current, userPlacementCompositeRef.current, ...createObjects(UserPlacementBox, ObjectType.Wall), mouseEvents.getMouseConstraint()]);
 
-    mEngine.run();
-    setMatterEngine(mEngine);
+    // ゲーム実行
+    matterEngineRef.current.run();
+  }
+
+  const createBall = (ballData) => {
+    // ボールの位置を再設定するときにコンポージットをリセットしたほうが楽なのでコンポジットで管理
+    ballCompositeRef.current = createCompositeObject(ballData, ObjectType.Ball);
+    setOnClickPlay.current = play;
+    setOnClickBallReset.current = resetBall;
+  }
+
+  const createUserPlacement = (userPlacementData) => {
+    // ユーザーが配置できるオブジェクトの位置を再設定するときにコンポージットをリセットしたほうが楽なのでコンポジットで管理
+    userPlacementCompositeRef.current = createCompositeObject(userPlacementData, ObjectType.User);
+    setOnClickPlacementReset.current = resetPlacement;
+  }
+
+  const createCompositeObject = (objData, type) => {
+    const object = createObjects(objData, type);
+    const composite = matterEngineRef.current.createComposite();
+    matterEngineRef.current.registerObjectInComposite(composite, object);
+    return composite;
   }
 
   const handleSwitch = (switchObj, startPos_y) => {
     const intervalId = setInterval(() => {
       const pos = switchObj.getPosition();
-      const results = switchObj.setPositionAnimate(pos.x, startPos_y + 15);
+      const results = switchObj.setPositionAnimate(pos.x, startPos_y + PUSH_SWITCH_MOVEMENT);
       setGameClear(results);
       if (results) {
         clearInterval(intervalId);
       }
-    }, 1000 / 30);
+    }, FPS30);
   };
 
   const handleClick = (e) => {
     const target = e.source.body;
+    // クリックしたオブジェクトがユーザーが配置できるオブジェクトなら選択する
     if (setSelectObject(target)) {
       const diff_x = e.mouse.position.x - target.position.x;
       const diff_y = e.mouse.position.y - target.position.y;
@@ -121,6 +134,7 @@ export const Game = ({ stageData, setOnClickPlay, setOnClickPlacementReset, setO
   };
 
   const setSelectObject = (target) => {
+    // ラベルからユーザーが配置できるオブジェクトかチェック
     if (target == null || !target.label.match(/user(.*)/g)) {
       if (selectObjectRef.current) {
         selectObjectRef.current.render.lineWidth = 0;
@@ -132,7 +146,7 @@ export const Game = ({ stageData, setOnClickPlay, setOnClickPlacementReset, setO
       selectObjectRef.current.render.lineWidth = 0;
     }
     // ユーザーが配置できるオブジェクトは選択時に赤く縁取る
-    target.render.lineWidth = 5;
+    target.render.lineWidth = SELECT_OBJECT_OUTLINE_WIDTH;
     target.render.strokeStyle = "red";
     selectObjectRef.current = target;
     return true;
@@ -162,27 +176,28 @@ export const Game = ({ stageData, setOnClickPlay, setOnClickPlacementReset, setO
   };
 
   const resetBall = () => {
-    matterEngine.clearComposite(ballComposite);
-    const ball = createObjects(gameData.Ball, ObjectType.Ball);
-    matterEngine.registerObjectInComposite(ballComposite, ball);
+    // 親コンポーネントのボールリセットボタンの処理
+    matterEngineRef.current.clearComposite(ballCompositeRef.current);
+    const ball = createObjects(gameDataRef.current.Ball, ObjectType.Ball);
+    matterEngineRef.current.registerObjectInComposite(ballCompositeRef.current, ball);
   };
 
   const play = () => {
-    ballComposite.bodies.forEach((ball) => {
+    // 親コンポーネントのプレイボタンの処理
+    ballCompositeRef.current.bodies.forEach((ball) => {
       ball.getParent().setStatic(false);
     });
     setSelectObject(null);
   };
 
   const resetPlacement = () => {
-    matterEngine.clearComposite(userPlacementComposite);
-    const userPlacementObj = createObjects(gameData.UserPlacement, ObjectType.User);
-    matterEngine.registerObjectInComposite(userPlacementComposite, userPlacementObj);
+    // 親コンポーネントの配置リセットボタンの処理
+    matterEngineRef.current.clearComposite(userPlacementCompositeRef.current);
+    const userPlacementObj = createObjects(gameDataRef.current.UserPlacement, ObjectType.User);
+    matterEngineRef.current.registerObjectInComposite(userPlacementCompositeRef.current, userPlacementObj);
   };
 
   return (
     <div id="Game" className={`w-[1200px] m-auto bg-white overflow-hidden`}></div>
   );
-}
-
-export default memo(Game);
+});
