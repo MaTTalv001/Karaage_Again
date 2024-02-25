@@ -17,7 +17,7 @@ export const GameProduction = () => {
       <div>
         <h1 className="font-bold text-4xl items-center justify-center flex">Edit</h1>
         <ul className="flex-col">
-          <li className="flex my-14 items-center justify-center">
+          <li className="flex mt-14 items-center justify-center">
             <div className="bg-gray-300 flex">
               <div className="flex-col">
                 <h1 className="font-bold text-2xl py-4 px-8">Title:aaaaa</h1>   {/* textは関数化する*/} 
@@ -39,15 +39,67 @@ export const GameProduction = () => {
                 </h1>
               </div>
               <div className="flex-col">
-                <h1 className="font-bold text-2xl py-12 px-8"><img src="/NotSet.png" alt="NotSet" className="w-30 h-15" /></h1>   {/* textは関数化する*/}               
+                <h1 className="font-bold text-2xl pt-9 px-8">
+                  <img src="/NotSet.png" alt="NotSet" style={{ width: "150px", height: "auto" }} /> {/* コンテンツを埋込可能にする*/} 
+                </h1>             
               </div>
             </div>
           </li>
           <li className="flex my-7 items-center justify-center">
-
+          <div className="bg-gray-300 flex">
+              <div className="flex-col">
+                <h1 className="font-bold text-2xl py-4 px-8">Title:aaaaa</h1>   {/* textは関数化する*/} 
+                <h1 className="font-bold text-2xl py-4 px-8">Open Now</h1> {/*textはstateで関数化する*/} 
+              </div>
+              <div className="flex-col">
+                  <div className="pt-4 px-8">
+                    <FiEdit2 size={40}/>
+                  </div>
+                  <div className="pt-4 px-8">
+                    <FiTrash2 size={40}/>
+                  </div>            
+              </div>
+              <div >
+                <h1 className="font-bold text-2xl py-12 px-8 text-yellow-200">
+                  <div className="bg-red-500 flex rounded-lg px-4 py-2">
+                  <HiMiniPlay />Test
+                  </div>
+                </h1>
+              </div>
+              <div className="flex-col">
+                <h1 className="font-bold text-2xl pt-9 px-8">
+                  <img src="/NotSet.png" alt="NotSet" style={{ width: "150px", height: "auto" }} /> {/* コンテンツを埋込可能にする*/} 
+                </h1>             
+              </div>
+            </div>
           </li>
           <li className="flex my-7 items-center justify-center">
-
+          <div className="bg-gray-300 flex">
+              <div className="flex-col">
+                <h1 className="font-bold text-2xl py-4 px-8">Title:aaaaa</h1>   {/* textは関数化する*/} 
+                <h1 className="font-bold text-2xl py-4 px-8">Open Now</h1> {/*textはstateで関数化する*/} 
+              </div>
+              <div className="flex-col">
+                  <div className="pt-4 px-8">
+                    <FiEdit2 size={40}/>
+                  </div>
+                  <div className="pt-4 px-8">
+                    <FiTrash2 size={40}/>
+                  </div>            
+              </div>
+              <div >
+                <h1 className="font-bold text-2xl py-12 px-8 text-yellow-200">
+                  <div className="bg-red-500 flex rounded-lg px-4 py-2">
+                  <HiMiniPlay />Test
+                  </div>
+                </h1>
+              </div>
+              <div className="flex-col">
+                <h1 className="font-bold text-2xl pt-9 px-8">
+                  <img src="/NotSet.png" alt="NotSet" style={{ width: "150px", height: "auto" }} /> {/* コンテンツを埋込可能にする*/} 
+                </h1>             
+              </div>
+            </div>
           </li>
         </ul>
       </div>
