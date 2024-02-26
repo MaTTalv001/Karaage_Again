@@ -3,9 +3,13 @@ import { StageCard } from "components/StageCard";
 
 export const StageSelectPage = () => {
 
+  // ここにステージのデータを追加していく
+  // 画像データは一時的なイメージ、後ほど置き換える
   const stages = [
-    { stageNumber: 1, imageUrl: 'path/to/image1.jpg' },
-    { stageNumber: 2, imageUrl: 'path/to/image2.jpg' }
+    { stageNumber: 1, imageUrl: '/image1.png' },
+    { stageNumber: 2, imageUrl: '/image2.png' },
+    { stageNumber: 3, imageUrl: '/image3.png' },
+    { stageNumber: 4, imageUrl: '/image4.png' },
   ];
 
   return (
