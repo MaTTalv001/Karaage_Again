@@ -14,7 +14,7 @@ const ListItem = ({ title, subTitle, imageSrc }) => {
           {title}
         </h1>
         <h1 className="font-bold text-2xl py-4 px-8">
-          <span className="bg-blue-500 text-yellow-200 flex rounded-lg justify-center">{subTitle}</span>
+          <span className="bg-blue-500 text-yellow-200 flex rounded-lg justify-center">{subTitle}</span>  {/*TODO:冗談のTitleと幅が同じになってしまう事象は改善したほうが良いか?*/}
         </h1>
       </div>
         <div className="flex-col">
@@ -59,7 +59,7 @@ const List = ({ items }) => {
 
 export const GameProduction = () => {
   const items = [
-    { title: "Title: aaaaaあああああああああああああああああっ！", subTitle: "Open Now", imageSrc: "/NotSet.png" },
+    { title: "Title: aaaaaあああああああああああああああああっ！", subTitle: "Open Now", imageSrc: "/NotSet.png" },  /* TODO:DBが使用できる状態になり次第、DBから引用されるように変更予定 */
     { title: "Title: 冬は乾燥の季節", subTitle: "To Open", imageSrc: "/NotSet.png" },
     { title: "Title: 春は出会い", subTitle: "To Open", imageSrc: "/NotSet.png" }
     // 他のアイテムも追加できます
