@@ -1,108 +1,80 @@
-import React from 'react'
 import { RoutePath } from "utils/RouteSetting";
 import { Link } from 'react-router-dom';
-import { IconContext } from 'react-icons'
 import { FiEdit2 } from "react-icons/fi";
 import { FiTrash2 } from "react-icons/fi";
 import { HiMiniPlay } from "react-icons/hi2";
 
 
+const ListItem = ({ title, subTitle, imageSrc }) => {
+  return (
+    <li className="flex my-7 items-center justify-center">
+      <div className="bg-gray-300 flex">
+      <div className="flex-col">
+        <h1 className="font-bold text-2xl py-4 px-8">
+          {title}
+        </h1>
+        <h1 className="font-bold text-2xl py-4 px-8">
+          <span className="bg-blue-500 text-yellow-200 flex rounded-lg justify-center">{subTitle}</span>
+        </h1>
+      </div>
+        <div className="flex-col">
+          <div className="pt-4 px-8">
+            <FiEdit2 size={40}/>
+          </div>
+          <div className="pt-4 px-8">
+            <FiTrash2 size={40}/>
+          </div>
+        </div>
+        <div >
+          <h1 className="font-bold text-2xl py-12 px-8 text-yellow-200">
+            <div className="bg-red-500 flex rounded-lg px-4 py-2">
+              <HiMiniPlay />Test
+            </div>
+          </h1>
+        </div>
+        <div className="flex-col">
+          <h1 className="font-bold text-2xl pt-9 px-8">
+            <img src={imageSrc} alt="NotSet" style={{ width: "150px", height: "auto" }} />
+          </h1>
+        </div>
+      </div>
+    </li>
+  );
+}
+
+const List = ({ items }) => {
+  return (
+    <ul className="flex-col">
+      {items.map((item, index) => (
+        <ListItem
+          key={index}
+          title={item.title}
+          subTitle={item.subTitle}
+          imageSrc={item.imageSrc}
+        />
+      ))}
+    </ul>
+  )
+}
 
 export const GameProduction = () => {
-  return (
-    <div className="w-full relative font-[DotGothic16] mt-14">
-      <Link to={RoutePath.gameMake.path}>
-        <h1 className="font-bold text-4xl flex mb-7">{RoutePath.gameMake.name}</h1>
-      </Link>
-      <div>
-        <h1 className="font-bold text-4xl items-center justify-center flex">Edit</h1>
-        <ul className="flex-col">
-          <li className="flex mt-14 items-center justify-center">
-            <div className="bg-gray-300 flex">
-              <div className="flex-col">
-                <h1 className="font-bold text-2xl py-4 px-8">Title:aaaaa</h1>   {/* textは関数化する*/} 
-                <h1 className="font-bold text-2xl py-4 px-8">Open Now</h1> {/*textはstateで関数化する*/} 
-              </div>
-              <div className="flex-col">
-                  <div className="pt-4 px-8">
-                    <FiEdit2 size={40}/>
-                  </div>
-                  <div className="pt-4 px-8">
-                    <FiTrash2 size={40}/>
-                  </div>            
-              </div>
-              <div >
-                <h1 className="font-bold text-2xl py-12 px-8 text-yellow-200">
-                  <div className="bg-red-500 flex rounded-lg px-4 py-2">
-                  <HiMiniPlay />Test
-                  </div>
-                </h1>
-              </div>
-              <div className="flex-col">
-                <h1 className="font-bold text-2xl pt-9 px-8">
-                  <img src="/NotSet.png" alt="NotSet" style={{ width: "150px", height: "auto" }} /> {/* コンテンツを埋込可能にする*/} 
-                </h1>             
-              </div>
-            </div>
-          </li>
-          <li className="flex my-7 items-center justify-center">
-          <div className="bg-gray-300 flex">
-              <div className="flex-col">
-                <h1 className="font-bold text-2xl py-4 px-8">Title:aaaaa</h1>   {/* textは関数化する*/} 
-                <h1 className="font-bold text-2xl py-4 px-8">Open Now</h1> {/*textはstateで関数化する*/} 
-              </div>
-              <div className="flex-col">
-                  <div className="pt-4 px-8">
-                    <FiEdit2 size={40}/>
-                  </div>
-                  <div className="pt-4 px-8">
-                    <FiTrash2 size={40}/>
-                  </div>            
-              </div>
-              <div >
-                <h1 className="font-bold text-2xl py-12 px-8 text-yellow-200">
-                  <div className="bg-red-500 flex rounded-lg px-4 py-2">
-                  <HiMiniPlay />Test
-                  </div>
-                </h1>
-              </div>
-              <div className="flex-col">
-                <h1 className="font-bold text-2xl pt-9 px-8">
-                  <img src="/NotSet.png" alt="NotSet" style={{ width: "150px", height: "auto" }} /> {/* コンテンツを埋込可能にする*/} 
-                </h1>             
-              </div>
-            </div>
-          </li>
-          <li className="flex my-7 items-center justify-center">
-          <div className="bg-gray-300 flex">
-              <div className="flex-col">
-                <h1 className="font-bold text-2xl py-4 px-8">Title:aaaaa</h1>   {/* textは関数化する*/} 
-                <h1 className="font-bold text-2xl py-4 px-8">Open Now</h1> {/*textはstateで関数化する*/} 
-              </div>
-              <div className="flex-col">
-                  <div className="pt-4 px-8">
-                    <FiEdit2 size={40}/>
-                  </div>
-                  <div className="pt-4 px-8">
-                    <FiTrash2 size={40}/>
-                  </div>            
-              </div>
-              <div >
-                <h1 className="font-bold text-2xl py-12 px-8 text-yellow-200">
-                  <div className="bg-red-500 flex rounded-lg px-4 py-2">
-                  <HiMiniPlay />Test
-                  </div>
-                </h1>
-              </div>
-              <div className="flex-col">
-                <h1 className="font-bold text-2xl pt-9 px-8">
-                  <img src="/NotSet.png" alt="NotSet" style={{ width: "150px", height: "auto" }} /> {/* コンテンツを埋込可能にする*/} 
-                </h1>             
-              </div>
-            </div>
-          </li>
-        </ul>
+  const items = [
+    { title: "Title: aaaaaあああああああああああああああああっ！", subTitle: "Open Now", imageSrc: "/NotSet.png" },
+    { title: "Title: 冬は乾燥の季節", subTitle: "To Open", imageSrc: "/NotSet.png" },
+    { title: "Title: 春は出会い", subTitle: "To Open", imageSrc: "/NotSet.png" }
+    // 他のアイテムも追加できます
+  ];
+    return (
+      <div className="w-full relative font-[DotGothic16] mt-14">
+        <Link to={RoutePath.gameMake.path}>
+          <h1 className="font-bold text-4xl flex mb-7">{RoutePath.gameMake.name}</h1>
+        </Link>
+        <div>
+          <h1 className="font-bold text-4xl items-center justify-center flex">
+            Edit
+          </h1>
+          <List items={items} />;
+        </div>
       </div>
-    </div>
   )
 }
