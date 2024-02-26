@@ -1,3 +1,4 @@
+// TODO : ローディング確認用。今後の実装で変更あり
 import React, { useEffect, useState } from "react";
 import supabase from "services/supabaseClient";
 import { useAuth } from "contexts/AuthContext";

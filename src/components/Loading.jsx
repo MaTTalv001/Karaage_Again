@@ -1,3 +1,4 @@
+// TODO : MatterEngineへの置き換え修正
 import React, { useEffect, useRef } from "react";
 import Matter from "matter-js";
 
@@ -25,6 +26,7 @@ const Loading = () => {
       });
       Matter.World.add(engine.world, [ground]);
 
+      // TODO <確認>　ボール生成をcompositeに変更
       // ボールを生成して追加する関数
       const createFallingBalls = () => {
         const x = Math.random() * 1200; // レンダリング範囲内でランダムにX座標を選択
@@ -34,7 +36,12 @@ const Loading = () => {
             fillStyle: "#F35e66",
           },
         });
-        Matter.World.add(engine.world, ball);
+
+        const ballComposite = Matter.Composite.create();
+        Matter.Composite.add(ballComposite, ball);
+
+        // そのCompositeを世界に追加
+        Matter.World.add(engine.world, ballComposite);
       };
 
       // エンジンとレンダリングの開始
