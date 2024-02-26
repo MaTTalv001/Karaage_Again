@@ -51,16 +51,32 @@ export const StageSelectPage = () => {
     }
   };
 
+  const getTabButtonClass = (tabName) => {
+    switch (tabName) {
+      case 'Default':
+        return "bg-teal-100";
+      case 'User\'s':
+        return "bg-yellow-300";
+      case 'My idea':
+        return "bg-red-500";
+      default:
+        return "bg-gray-200";
+    }
+  };
+
   return (
     <>
-     <div className={`${getTabContentClass()} p-4 h-[720px] w-[1280px] m-auto mt-36`}>
+     <div className={`${activeTab === 'Default' ? "bg-teal-100" : activeTab === "User's" ? "bg-yellow-300" : "bg-red-500"} p-4 h-[720px] w-[1280px] m-auto mt-36`}>
       {/* タブコントロール */}
-      <div className="flex justify-center space-x-4 mb-4">
+      <div className="space-x-4 mb-4">
         {tabs.map(tab => (
           <button
             key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 text-lg font-semibold rounded-md transition-colors duration-300 ${activeTab === tab ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => {
+              setActiveTab(tab);
+              setCurrentPage(1); // タブを切り替えたら1ページ目にリセット
+            }}
+            className={`px-4 py-2 text-3xl font-semibold rounded-md transition-colors duration-300 ${activeTab === tab ? getTabButtonClass(tab) : 'bg-gray-200 text-black'}`}
           >
             {tab}
           </button>
