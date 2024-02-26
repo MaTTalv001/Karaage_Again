@@ -3,7 +3,8 @@ import LogInPage from "pages/LogIn";
 import SignUpPage from "pages/SignUp";
 import { StageSelectPage } from "pages/game";
 import UsersIndex from "pages/users/UsersIndex";
-import { GameCreate } from "pages/game/GameCreate";
+import { GameProduction } from "pages/game/GameProduction";
+import { GameMake } from "pages/game/GameMake";
 import { GameEdit } from "pages/game/GameEdit";
 import { GamePlay } from "pages/game/GamePlay";
 import { UserProfile } from "pages/users/UserProfile";
@@ -24,11 +25,12 @@ const Path = {
   signup: "/signup",
   login: "/login",
   users: "/users",
-  usersProfile: "/users/:id",
+  usersProfile: (id = ':id') => `/users/${id}`,
   stageSelect: "/game",
-  gamePlay: "/game/:id",
-  gameEdit: "/game/:id/edit",
-  gameNew: "/game/new",
+  gamePlay: (id = ':id') => `/game/${id}`,
+  gameEdit: (id = ':id') => `/game/${id}/edit`,
+  gameProduction: "/game/new",  // TODO : 本来はユーザーidが必要。暫定処理
+  gameMake: "/game/make",
 };
 
 // NOTE : ルーティング設定用
@@ -52,7 +54,7 @@ export const RouteSetting = [
     component: <UsersIndex />,
   },
   {
-    path: Path.usersProfile,
+    path: Path.usersProfile(),
     component: <UserProfile />,
   },
   // ゲーム周り
@@ -61,16 +63,20 @@ export const RouteSetting = [
     component: <StageSelectPage />,
   },
   {
-    path: Path.gamePlay,
+    path: Path.gamePlay(),
     component: <GamePlay />,
   },
   {
-    path: Path.gameEdit,
+    path: Path.gameEdit(),
     component: <GameEdit />,
   },
   {
-    path: Path.gameNew,
-    component: <GameCreate />,
+    path: Path.gameProduction,
+    component: <GameProduction />,
+  },
+  {
+    path: Path.gameMake,
+    component: <GameMake />,
   },
 ];
 
@@ -95,7 +101,7 @@ export const RoutePath = {
     name: "ユーザー一覧",
   },
   usersProfile: {
-    path: Path.usersProfile,
+    path: (id) => Path.usersProfile(id),
     name: "ユーザー詳細",
   },
   // ゲーム周り
@@ -104,15 +110,19 @@ export const RoutePath = {
     name: "ステージ選択",
   },
   gamePlay: {
-    path: Path.gamePlay,
+    path: (id) => Path.gamePlay(id),
     name: "ゲーム画面",
   },
   gameEdit: {
-    path: Path.gameEdit,
+    path: (id) => Path.gameEdit(id),
     name: "ゲーム編集",
   },
-  gameNew: {
-    path: Path.gameNew,
+  gameProduction: {
+    path: Path.gameProduction,
+    name: "ゲーム制作画面",
+  },
+  gameMake: {
+    path: Path.gameMake,
     name: "ゲーム新規作成",
   }
 };

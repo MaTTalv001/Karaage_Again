@@ -1,4 +1,4 @@
-import { Bodies } from "matter-js";
+import { Bodies, Body } from "matter-js";
 import { MatterObject } from "./MatterObject";
 
 class Rectangle extends MatterObject {
@@ -25,6 +25,8 @@ class Rectangle extends MatterObject {
     super(x, y, type);
 
     this.object = Bodies.rectangle(x, y, width, height, this.getOptionAddColor(option, type));
+    this.object.getParent = () => this;
+    this.initialScale = { x: width, y: height };
   }
 }
 

@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "components/Header";
-import { useState } from "react";
 import supabase from "services/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext";
@@ -13,9 +12,14 @@ const SignUpPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
+  const [name, setName] = useState(""); // ユーザー名のステートを追加
 
   const signUpSubmit = async (e) => {
     e.preventDefault();
+    if (password !== passwordConf) {
+      alert("パスワードが一致しません。");
+      return;
+    }
     try {
       const { error: signUpError } = await supabase.auth.signUp({
         email: email,
@@ -24,22 +28,30 @@ const SignUpPage = () => {
       if (signUpError) {
         throw signUpError;
       }
-      // メール確認をスキップして、ユーザーが直接ログイン状態になる
+      // ユーザー登録が成功したらその場でログインしてプロファイル情報を追加
+      // このアプリでは認証確認メールを介してユーザー登録する手順をスキップしています
+      const { data, error: signInError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+      if (signInError) {
+        throw signInError;
+      }
+      if (data) {
+        const userId = data.user.id;
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .insert([{ user_id: userId, name: name, role: "一般" }]);
+        if (profileError) {
+          throw profileError;
+        }
+        alert("ユーザー登録とプロファイル設定が完了しました。");
+        setUser(data); // ユーザー情報を設定
+        navigate(RoutePath.stageSelect.path);
+      }
     } catch (error) {
       alert("エラーが発生しました: " + error.message);
-    }
-    // そのままログインする
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    console.log(data.user);
-    if (error) {
-      alert("Error: " + error.message);
-    } else {
-      alert("ユーザー登録完了しました");
-      setUser(data.user);
-      navigate(RoutePath.stageSelect.path);
     }
   };
 
@@ -55,7 +67,15 @@ const SignUpPage = () => {
               onSubmit={signUpSubmit}
             >
               <div className="flex w-full max-w-md items-center">
-                {/* <input type="text" id="username" placeholder="Username" className="w-full p-2 rounded" /> */}
+                <input
+                  type="text"
+                  id="name"
+                  placeholder="name"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full p-2 rounded"
+                />
               </div>
 
               <div className="flex w-full max-w-md items-center">
