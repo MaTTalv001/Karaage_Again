@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { StageCard } from "components/StageCard";
 
+const tabs = ['Default', 'User\'s', 'My idea'];
+
 export const StageSelectPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4; // 1ページあたりのアイテム数
+  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const itemsPerPage = 4;
 
   // ここにステージのデータを追加していく
   // 画像データは320x242（適当）
@@ -26,7 +29,7 @@ export const StageSelectPage = () => {
     { stageNumber: 16, imageUrl: '/image4.png' },
   ];
 
-  // 現在のページに基づいてステージをスライスする
+ // 現在のページに基づいてステージをスライスする
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = stages.slice(indexOfFirstItem, indexOfLastItem);
@@ -34,35 +37,67 @@ export const StageSelectPage = () => {
   // ページを変更するハンドラー
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  // タブに応じた背景色を返す関数
+  const getTabContentClass = () => {
+    switch (activeTab) {
+      case 'Default':
+        return "bg-teal-100";
+      case 'User\'s':
+        return "bg-yellow-300";
+      case 'My idea':
+        return "bg-red-500"; 
+      default:
+        return "";
+    }
+  };
+
   return (
     <>
-      <div className="bg-teal-100 p-4 h-[720px] w-[1280px] m-auto mt-36">
-        <div className="grid grid-cols-2 h-[300px] w-[1250px]">
-          {currentItems.map((stage) => (
-            <StageCard
-              key={`stage-${stage.stageNumber}`}
-              stageNumber={stage.stageNumber}
-              imageUrl={stage.imageUrl}
-            />
-          ))}
+     <div className={`${getTabContentClass()} p-4 h-[720px] w-[1280px] m-auto mt-36`}>
+      {/* タブコントロール */}
+      <div className="flex justify-center space-x-4 mb-4">
+        {tabs.map(tab => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-4 py-2 text-lg font-semibold rounded-md transition-colors duration-300 ${activeTab === tab ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+      
+      {/* タブコンテンツ */}
+      <div className="grid grid-cols-2 gap-4">
+        {currentItems.map((stage) => (
+          <StageCard
+            key={`stage-${stage.stageNumber}`}
+            stageNumber={stage.stageNumber}
+            imageUrl={stage.imageUrl}
+          />
+        ))}
+      </div>
+    </div>
+
+      {/* ページネーション */}
+      {activeTab === 'Default' && (
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="bg-gray-200 text-black px-4 py-2 rounded-l hover:bg-gray-400 disabled:opacity-50"
+          >
+            前へ
+          </button>
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === Math.ceil(stages.length / itemsPerPage)}
+            className="bg-gray-200 text-black px-4 py-2 rounded-r hover:bg-gray-400 disabled:opacity-50"
+          >
+            次へ
+          </button>
         </div>
-      </div>
-      <div className="flex justify-center mt-8">
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="bg-gray-200 text-black px-4 py-2 rounded-l hover:bg-gray-400 disabled:opacity-50"
-        >
-          前へ
-        </button>
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          disabled={currentPage === Math.ceil(stages.length / itemsPerPage)}
-          className="bg-gray-200 text-black px-4 py-2 rounded-r hover:bg-gray-400 disabled:opacity-50"
-        >
-          次へ
-        </button>
-      </div>
+      )}
     </>
   );
 };
