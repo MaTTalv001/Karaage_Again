@@ -1,60 +1,70 @@
-import React from "react";
+import React, { useState } from "react";
 import { StageCard } from "components/StageCard";
 
 export const StageSelectPage = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4; // 1ページあたりのアイテム数
 
   // ここにステージのデータを追加していく
-  // 画像データは一時的なイメージ、後ほど置き換える
+  // 画像データは320x242（適当）
   const stages = [
     { stageNumber: 1, imageUrl: '/image1.png' },
     { stageNumber: 2, imageUrl: '/image2.png' },
     { stageNumber: 3, imageUrl: '/image3.png' },
     { stageNumber: 4, imageUrl: '/image4.png' },
+    { stageNumber: 5, imageUrl: '/image1.png' },
+    { stageNumber: 6, imageUrl: '/image2.png' },
+    { stageNumber: 7, imageUrl: '/image3.png' },
+    { stageNumber: 8, imageUrl: '/image4.png' },
+    { stageNumber: 9, imageUrl: '/image1.png' },
+    { stageNumber: 10, imageUrl: '/image2.png' },
+    { stageNumber: 11, imageUrl: '/image3.png' },
+    { stageNumber: 12, imageUrl: '/image4.png' },
+    { stageNumber: 13, imageUrl: '/image1.png' },
+    { stageNumber: 14, imageUrl: '/image2.png' },
+    { stageNumber: 15, imageUrl: '/image3.png' },
+    { stageNumber: 16, imageUrl: '/image4.png' },
   ];
 
+  // 現在のページに基づいてステージをスライスする
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = stages.slice(indexOfFirstItem, indexOfLastItem);
+
+  // ページを変更するハンドラー
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
-    <div className="bg-teal-100 p-4 h-[720px] w-[1280px] m-auto mt-36">
-      <div className="grid grid-cols-2 h-[300px] w-[1250px]">
-        {stages.map((stage) => (
-          <StageCard
-            key={`stage-${stage.stageNumber}`}
-            stageNumber={stage.stageNumber}
-            imageUrl={stage.imageUrl}
-          />
-        ))}
+    <>
+      <div className="bg-teal-100 p-4 h-[720px] w-[1280px] m-auto mt-36">
+        <div className="grid grid-cols-2 h-[300px] w-[1250px]">
+          {currentItems.map((stage) => (
+            <StageCard
+              key={`stage-${stage.stageNumber}`}
+              stageNumber={stage.stageNumber}
+              imageUrl={stage.imageUrl}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+      <div className="flex justify-center mt-8">
+        <button
+          onClick={() => paginate(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="bg-gray-200 text-black px-4 py-2 rounded-l hover:bg-gray-400 disabled:opacity-50"
+        >
+          前へ
+        </button>
+        <button
+          onClick={() => paginate(currentPage + 1)}
+          disabled={currentPage === Math.ceil(stages.length / itemsPerPage)}
+          className="bg-gray-200 text-black px-4 py-2 rounded-r hover:bg-gray-400 disabled:opacity-50"
+        >
+          次へ
+        </button>
+      </div>
+    </>
   );
-  // return (
-  //   <div>
-  //     <div className='font-[DotGothic16] '>
-  //       <div class='container m-5 mx-auto'>
-  //         <div class='bg-blue-200 h-[720px] w-[1280px] m-auto mt-36'>
-  //           <nav class='flex flex-col sm:flex-row max-w-screen-lg'>
-  //             <button class='mr-1 bg-blue-200 text-gray-600 py-4 px-16 block hover:text-blue-300'>
-  //               Default
-  //             </button>
-  //             <button class='mr-1 bg-yellow-300 text-gray-600 py-4 px-16 block hover:text-blue-300'>
-  //               User's
-  //             </button>
-  //             <button class='mr-1 bg-red-300 text-gray-600 py-4 px-16 block hover:text-blue-300'>
-  //               My idea
-  //             </button>
-  //           </nav>
-  //           <div class='flex'>
-  //             <div class='bg-white h-[200px] w-[500px]'></div>
-  //             <div class='bg-white h-[200px] w-[500px]'></div>
-  //           </div>
-  //         </div>
-  //         <div className='text-center'>
-  //           {/* {activeTab === 'tab1' && <DefaultStages />}
-  //           {activeTab === 'tab2' && <UserCreates />} */}
-  //         </div>
-  //       </div>
-  //       {/* <div className='bg-blue-100 h-[700px] w-[1200px] m-auto mt-40'></div> */}
-  //     </div>
-  //   </div>
-  // );
 };
 
 export default StageSelectPage;

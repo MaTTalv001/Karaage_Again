@@ -8,7 +8,7 @@ export const StageCard = ({ stageNumber, imageUrl }) => {
         {/* ↓ここに各ステージのjsxを表示できるようにしたい */}
           <img src={imageUrl} alt={`Stage ${stageNumber}`} />
         </div>
-        <p className="absolute top-16 left-10 text-6xl font-bold">Stage{stageNumber}</p>
+        <p className="absolute top-16 left-8 text-6xl font-bold">Stage{stageNumber}</p>
         <button className="absolute bottom-14 left-16 bg-red-500 text-yellow-300 px-4 py-2 rounded shadow hover:bg-red-600 focus:outline-none focus:ring text-4xl">
           ▶ Play
         </button>
