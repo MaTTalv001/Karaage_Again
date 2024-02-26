@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from "react";
-import { StageCard } from "components/StageCard";
+import { DefaultStageCard } from "components/DefaultStageCard";
+import { UsersStageCard } from "components/UsersStageCard";
+import { MyIdeaStageCard } from "components/MyIdeaStageCard";
 
 const tabs = ['Default', 'User\'s', 'My idea'];
 
@@ -51,6 +53,7 @@ export const StageSelectPage = () => {
 
   return (
     <>
+      {/* Default、User'sのタブボタン */}
      <div className={`${getTabButtonClass(activeTab)} p-4 h-[720px] w-[1280px] m-auto mt-36`}>
         <div className="flex justify-between mb-4">
           <div className="flex space-x-4">
@@ -64,6 +67,8 @@ export const StageSelectPage = () => {
               </button>
             ))}
           </div>
+          
+          {/* My ideaのタブボタンを右端に設置 */}
           <button
             onClick={() => handleTabClick('My idea')}
             className={`px-4 py-2 text-3xl font-semibold rounded-md transition-colors duration-300 ${activeTab === 'My idea' ? getTabButtonClass('My idea') : 'bg-gray-200 text-black'}`}
@@ -71,12 +76,16 @@ export const StageSelectPage = () => {
             My idea
           </button>
         </div>
+
+        {/* 各ステージ情報を表示 */}
         <div className="grid grid-cols-2 gap-4">
           {currentItems.map((stage) => (
-            <StageCard key={`stage-${stage.stageNumber}`} {...stage} />
+            <DefaultStageCard key={`stage-${stage.stageNumber}`} {...stage} />
           ))}
         </div>
       </div>
+
+      {/* ページネーション */}
       {activeTab === 'Default' && (
         <div className="flex justify-center mt-8">
           <button onClick={() => paginate(Math.max(1, currentPage - 1))} className="bg-gray-200 text-black px-4 py-2 rounded-l hover:bg-gray-400 disabled:opacity-50" disabled={currentPage === 1}>

@@ -1,8 +1,8 @@
 import React from "react";
 
-export const StageCard = ({ stageNumber, imageUrl }) => {
+export const UsersStageCard = ({ stageNumber, imageUrl }) => {
   return (
-    <div className="relative m-2 p-6 border border-gray-300 shadow-lg rounded-md bg-white">
+    <div className="relative m-2 p-6 border border-gray-300 shadow-lg rounded-md bg-yellow">
       <div className="flex">
         <div className="flex-grow"></div>
           <img src={imageUrl} alt={`Stage ${stageNumber}`} />
