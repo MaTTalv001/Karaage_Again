@@ -38,19 +38,6 @@ export const StageSelectPage = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // タブに応じた背景色を返す関数
-  const getTabContentClass = () => {
-    switch (activeTab) {
-      case 'Default':
-        return "bg-teal-100";
-      case 'User\'s':
-        return "bg-yellow-300";
-      case 'My idea':
-        return "bg-red-500"; 
-      default:
-        return "";
-    }
-  };
-
   const getTabButtonClass = (tabName) => {
     switch (tabName) {
       case 'Default':
@@ -66,10 +53,26 @@ export const StageSelectPage = () => {
 
   return (
     <>
-     <div className={`${activeTab === 'Default' ? "bg-teal-100" : activeTab === "User's" ? "bg-yellow-300" : "bg-red-500"} p-4 h-[720px] w-[1280px] m-auto mt-36`}>
+    <div className={`${activeTab === 'Default' ? "bg-teal-100" : activeTab === "User's" ? "bg-yellow-300" : "bg-red-500"} p-4 h-[720px] w-[1280px] m-auto mt-36`}>
       {/* タブコントロール */}
-      <div className="space-x-4 mb-4">
-        {tabs.map(tab => (
+      <div className="flex justify-between space-x-4 mb-4">
+        <div className="flex space-x-4">
+          {tabs.slice(0, -1).map(tab => ( // 最後のタブ以外を表示
+            <button
+              key={tab}
+              onClick={() => {
+                setActiveTab(tab);
+                setCurrentPage(1); // タブを切り替えたら1ページ目にリセット
+              }}
+              className={`px-4 py-2 text-3xl font-semibold rounded-md transition-colors duration-300 ${activeTab === tab ? getTabButtonClass(tab) : 'bg-gray-200 text-black'}`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        {/* 'My idea' タブボタンを右側に配置 */}
+        {tabs.slice(-1).map(tab => (
           <button
             key={tab}
             onClick={() => {
@@ -82,7 +85,7 @@ export const StageSelectPage = () => {
           </button>
         ))}
       </div>
-      
+
       {/* タブコンテンツ */}
       <div className="grid grid-cols-2 gap-4">
         {currentItems.map((stage) => (
