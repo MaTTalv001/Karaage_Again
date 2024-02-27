@@ -46,7 +46,7 @@ jobs:
             } 
             if (context.eventName === 'deployment') {
               title = payload.pull_request.title
-              message = `**がマージされ、正常にデプロイされました。`;
+              message = `**[${title}]がマージされ、正常にデプロイされました。`;
             } 
             if (payload.action === 'created'){
              username = payload.comment.user.login;
