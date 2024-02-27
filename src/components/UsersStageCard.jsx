@@ -18,7 +18,7 @@ export const UsersStageCard = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   // 現在のページに表示するアイテム(ステージ)を計算
-  const currentItems = (() => {
+  const currentStages = (() => {
     const startIndex = (currentPage - 1) * STAGE_PER_PAGE;
     const endIndex = startIndex + STAGE_PER_PAGE;
     return stages.slice(startIndex, endIndex);
@@ -30,7 +30,7 @@ export const UsersStageCard = () => {
     <div>
       {/* 1つのステージを表示する要素 */}
       <div className="grid grid-cols-2 gap-4">
-        {currentItems.map(({ stageNumber, imageUrl }) => (
+        {currentStages.map(({ stageNumber, imageUrl }) => (
           <div key={stageNumber} className="relative m-2 p-6 border border-gray-300 shadow-lg rounded-md bg-white">
             <div className="flex">
               {/* ↓　【fix】このタグ調査、修正する。 */}
