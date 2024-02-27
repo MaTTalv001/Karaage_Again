@@ -19,7 +19,7 @@ jobs:
           script: |
             const mattermostWebhookUrl = process.env.MATTERMOST_WEBHOOK_URL;
             const payload = context.payload;
-            let username, title, url, message;
+            let username, title, url, message, ref;
             // PRがアサインされた場合
             if (payload.action === 'assigned') {
                 title = payload.pull_request.title;
@@ -29,7 +29,7 @@ jobs:
                 title = payload.pull_request.title;
                 message = `\nプルリクエスト[${title}]がマージされました。`;
               }  
-            if (payload.action === 'opened') {
+            if (payload.action === 'opened' && payload.comment.user && payload.comment.user.login) {
               username = payload.pull_request.user.login;
               title = payload.pull_request.title;
               url = payload.pull_request.html_url;
@@ -48,7 +48,7 @@ jobs:
               const ref = payload.deployment.ref;
               message = `**ブランチ[${ref}]がマージされ、正常にデプロイされました。`;
             } 
-            if (payload.action === 'created'){
+            if (payload.action === 'created' && payload.comment.user && payload.comment.user.login){
              username = payload.comment.user.login;
               title = payload.pull_request.title;
               url = payload.comment.html_url;
