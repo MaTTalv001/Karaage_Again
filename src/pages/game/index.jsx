@@ -5,15 +5,17 @@ import { MyIdeaStageCard } from "components/MyIdeaStageCard";
 
 const tabs = ['Default', 'User\'s', 'My idea'];
 
+const tabButtonClasses = {
+  'Default': "bg-teal-100",
+  'User\'s': "bg-yellow-300",
+  'My idea': "bg-red-500"
+};
+
 export const StageSelectPage = () => {
   const [activeTab, setActiveTab] = useState(tabs[0]);
 
   // タブに応じて背景色を設定
-  const getTabButtonClass = (tabName) => ({
-    'Default': "bg-teal-100",
-    'User\'s': "bg-yellow-300",
-    'My idea': "bg-red-500"
-  }[tabName] || "bg-gray-200");
+  const getTabButtonClass = (tabName) => tabButtonClasses[tabName] || "bg-gray-200";
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -32,7 +34,6 @@ export const StageSelectPage = () => {
   };
 
   return (
-    <>
       <div className={`${getTabButtonClass(activeTab)} p-4 h-[720px] w-[1280px] m-auto mt-36`}>
         <div className="flex justify-between mb-4">
           <div className="flex space-x-4">
@@ -61,7 +62,6 @@ export const StageSelectPage = () => {
           {renderStageCards()}
         </div>
       </div>
-    </>
   );
 };
 
