@@ -33,6 +33,12 @@ export const StageSelectPage = () => {
     }
   };
 
+  function handleTabClickEvent(tab) {
+    return function() {
+      handleTabClick(tab);
+    };
+  }
+
   return (
       <div className={`${getTabButtonClass(activeTab)} p-4 h-[720px] w-[1280px] m-auto mt-36`}>
         <div className="flex justify-between mb-4">
@@ -41,7 +47,7 @@ export const StageSelectPage = () => {
             {tabs.slice(0, -1).map(tab => (
               <button
                 key={tab}
-                onClick={() => handleTabClick(tab)}
+                onClick={handleTabClickEvent(tab)}
                 className={`px-4 py-2 text-3xl font-semibold rounded-md transition-colors duration-300 ${activeTab === tab ? getTabButtonClass(tab) : 'bg-gray-200 text-black'}`}
               >
                 {tab}
@@ -51,7 +57,7 @@ export const StageSelectPage = () => {
 
           {/* My ideaボタン */}
           <button
-            onClick={() => handleTabClick('My idea')}
+            onClick={handleTabClickEvent('My idea')}
             className={`px-4 py-2 text-3xl font-semibold rounded-md transition-colors duration-300 ${activeTab === 'My idea' ? getTabButtonClass('My idea') : 'bg-gray-200 text-black'}`}
           >
             My idea
@@ -64,5 +70,3 @@ export const StageSelectPage = () => {
       </div>
   );
 };
-
-export default StageSelectPage;
