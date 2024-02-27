@@ -6,7 +6,6 @@ on:
     types: [created]
   pull_request_review_comment:
     types: [created]
-
 jobs:
   notify:
     runs-on: ubuntu-latest
@@ -19,7 +18,7 @@ jobs:
           script: |
             const mattermostWebhookUrl = process.env.MATTERMOST_WEBHOOK_URL;
             const payload = context.payload;
-            let username, title, url, message;
+            let username, title, url, message, ref;
             // PRがアサインされた場合
             if (payload.action === 'assigned') {
                 title = payload.pull_request.title;
@@ -44,7 +43,7 @@ jobs:
               const comment = payload.comment.body;
               message = `**${username}**さんが[${title}](${url})にコメントしました。\n${comment}`;
             } 
-            if (payload.action === 'created'){
+            if (payload.action === 'created' && payload.comment.user && payload.comment.user.login){
              username = payload.comment.user.login;
               title = payload.pull_request.title;
               url = payload.comment.html_url;
