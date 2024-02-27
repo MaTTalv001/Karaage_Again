@@ -24,12 +24,12 @@ export const StageSelectPage = () => {
   // それぞれのタブのコンポーネントをレンダリングする
   const renderStageCards = () => {
     switch (activeTab) {
+      default:
+        return <DefaultStageCard />;
       case 'User\'s':
         return <UsersStageCard />;
       case 'My idea':
         return <MyIdeaStageCard />;
-      default:
-        return <DefaultStageCard />;
     }
   };
 
