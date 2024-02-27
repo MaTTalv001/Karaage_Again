@@ -45,7 +45,7 @@ jobs:
               message = `**${username}**さんが[${title}](${url})にコメントしました。\n${comment}`;
             } 
             if (context.eventName === 'deployment') {
-              ref = payload.deployment.ref
+              const ref = payload.deployment.ref;
               message = `**ブランチ[${ref}]がマージされ、正常にデプロイされました。`;
             } 
             if (payload.action === 'created'){
