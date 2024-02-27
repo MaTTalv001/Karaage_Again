@@ -6,7 +6,6 @@ on:
     types: [created]
   pull_request_review_comment:
     types: [created]
-  deployment:
 jobs:
   notify:
     runs-on: ubuntu-latest
@@ -29,7 +28,7 @@ jobs:
                 title = payload.pull_request.title;
                 message = `\nプルリクエスト[${title}]がマージされました。`;
               }  
-            if (payload.action === 'opened' && payload.comment.user && payload.comment.user.login) {
+            if (payload.action === 'opened') {
               username = payload.pull_request.user.login;
               title = payload.pull_request.title;
               url = payload.pull_request.html_url;
@@ -37,16 +36,12 @@ jobs:
               const headBranch = payload.pull_request.head.ref;
               message = `**${username}**さんがプルリクエストを送りました。\n[${title}](${url})\n${baseBranch} ⇦ ${headBranch}`;
             } 
-            if (context.eventName === 'issue_comment' && payload.comment.user && payload.comment.user.login) {
+            if (context.eventName === 'issue_comment') {
               username = payload.comment.user.login;
               title = payload.issue.title;
               url = payload.issue.html_url;
               const comment = payload.comment.body;
               message = `**${username}**さんが[${title}](${url})にコメントしました。\n${comment}`;
-            } 
-            if (context.eventName === 'deployment') {
-              const ref = payload.deployment.ref;
-              message = `**ブランチ[${ref}]がマージされ、正常にデプロイされました。`;
             } 
             if (payload.action === 'created' && payload.comment.user && payload.comment.user.login){
              username = payload.comment.user.login;
