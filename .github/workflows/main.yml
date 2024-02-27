@@ -6,7 +6,7 @@ on:
     types: [created]
   pull_request_review_comment:
     types: [created]
-
+  deployment:
 jobs:
   notify:
     runs-on: ubuntu-latest
@@ -43,6 +43,10 @@ jobs:
               url = payload.issue.html_url;
               const comment = payload.comment.body;
               message = `**${username}**さんが[${title}](${url})にコメントしました。\n${comment}`;
+            } 
+            if (context.eventName === 'deployment') {
+              title = payload.pull_request.title
+              message = `**がマージされ、正常にデプロイされました。`;
             } 
             if (payload.action === 'created'){
              username = payload.comment.user.login;
