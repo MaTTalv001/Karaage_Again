@@ -37,7 +37,7 @@ jobs:
               const headBranch = payload.pull_request.head.ref;
               message = `**${username}**さんがプルリクエストを送りました。\n[${title}](${url})\n${baseBranch} ⇦ ${headBranch}`;
             } 
-            if (context.eventName === 'issue_comment') {
+            if (context.eventName === 'issue_comment' && payload.comment.user && payload.comment.user.login) {
               username = payload.comment.user.login;
               title = payload.issue.title;
               url = payload.issue.html_url;
