@@ -32,3 +32,9 @@ docker compose up -d
 supabaseのダッシュボードにアクセスする場合はhttp://localhost:8000/にアクセスしてください。  
 以下にセルフホスト版のSupabaseのドキュメントのリンクを置いておきます。  
 https://supabase.com/docs/guides/self-hosting/docker
+
+##　React-iconsの使い方 例:ai/AiFillAccountBook
+1.使いたいアイコンを選びimport(https://react-icons.github.io/react-icons/を参照)
+例:import { AiFillAccountBook } from "react-icons/ai";
+2.アイコンを挿入したいところに下記のように記述(アイコン自体にtailwind.css使えません)
+例:<AiFillAccountBook />
