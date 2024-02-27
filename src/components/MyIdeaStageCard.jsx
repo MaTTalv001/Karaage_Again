@@ -30,6 +30,7 @@ export const MyIdeaStageCard = () => {
         {currentItems.map(({ stageNumber, imageUrl }) => (
           <div key={stageNumber} className="relative m-2 p-6 border border-gray-300 shadow-lg rounded-md bg-white">
             <div className="flex">
+              {/* ↓　【fix】このタグ調査、修正する。 */}
               <div className="flex-grow"></div>
             <img src={imageUrl} alt={`Stage ${stageNumber}`} />
             </div>
