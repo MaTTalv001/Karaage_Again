@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { STAGE_PER_PAGE } from "utils/Paginate";
 
 // ここにステージのデータを追加していく
   // 画像データは320x242（適当）
@@ -13,15 +14,13 @@ import React, { useState } from "react";
     { stageNumber: 8, imageUrl: '/image4.png' }
   ];
 
-  const itemsPerPage = 4;
-
 export const UsersStageCard = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   // 現在のページに表示するアイテム(ステージ)を計算
   const currentItems = (() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
+    const startIndex = (currentPage - 1) * STAGE_PER_PAGE;
+    const endIndex = startIndex + STAGE_PER_PAGE;
     return stages.slice(startIndex, endIndex);
   })();
 
@@ -50,7 +49,7 @@ export const UsersStageCard = () => {
       <div className="flex justify-center mt-8">
         <button onClick={() => paginate(Math.max(1, currentPage - 1))} disabled={currentPage === 1}
         className="bg-gray-300 text-black px-4 py-2 rounded-l hover:bg-gray-400 disabled:opacity-50">前のページへ</button>
-        <button onClick={() => paginate(currentPage + 1)} disabled={currentPage >= Math.ceil(stages.length / itemsPerPage)}
+        <button onClick={() => paginate(currentPage + 1)} disabled={currentPage >= Math.ceil(stages.length / STAGE_PER_PAGE)}
         className="bg-gray-300 text-black px-4 py-2 rounded-r hover:bg-gray-400 disabled:opacity-50">次のページへ</button>
       </div>
     </div>
