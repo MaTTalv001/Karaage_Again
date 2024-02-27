@@ -1,20 +1,21 @@
 import { RoutePath } from "utils/RouteSetting";
 import { Link } from 'react-router-dom';
-import { FiEdit2 } from "react-icons/fi";
-import { FiTrash2 } from "react-icons/fi";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import { HiMiniPlay } from "react-icons/hi2";
 
 
-const ListItem = ({ title, subTitle, imageSrc }) => {
+const UserStageList = ({ title, openStatus, imageSrc }) => {
   return (
     <li className="flex my-7 items-center justify-center">
       <div className="bg-gray-300 flex">
-      <div className="flex-col">
-        <h1 className="font-bold text-2xl py-4 px-8">
+      <div>
+        <h1 className="font-bold text-2xl py-4 px-8 w-[200px] truncate">
           {title}
         </h1>
         <h1 className="font-bold text-2xl py-4 px-8">
-          <span className="bg-blue-500 text-yellow-200 flex rounded-lg justify-center">{subTitle}</span>  {/*TODO:冗談のTitleと幅が同じになってしまう事象は改善したほうが良いか?*/}
+          <span className="bg-blue-500 text-yellow-200 flex rounded-lg justify-center">
+            {openStatus}
+          </span> 
         </h1>
       </div>
         <div className="flex-col">
@@ -42,28 +43,27 @@ const ListItem = ({ title, subTitle, imageSrc }) => {
   );
 }
 
-const List = ({ items }) => {
-  return (
-    <ul className="flex-col">
-      {items.map((item, index) => (
-        <ListItem
-          key={index}
-          title={item.title}
-          subTitle={item.subTitle}
-          imageSrc={item.imageSrc}
-        />
-      ))}
-    </ul>
-  )
-}
-
 export const GameProduction = () => {
+  const UserStageItems = ({ items }) => {
+    return (
+      <ul className="flex-col">
+        {items.map((item, index) => (
+          <UserStageList
+            key={index}
+            title={item.title}
+            openStatus={item.openStatus}
+            imageSrc={item.imageSrc}
+          />
+        ))}
+      </ul>
+    )
+  }
   const items = [
-    { title: "Title: aaaaaあああああああああああああああああっ！", subTitle: "Open Now", imageSrc: "/NotSet.png" },  /* TODO:DBが使用できる状態になり次第、DBから引用されるように変更予定 */
-    { title: "Title: 冬は乾燥の季節", subTitle: "To Open", imageSrc: "/NotSet.png" },
-    { title: "Title: 春は出会い", subTitle: "To Open", imageSrc: "/NotSet.png" }
-    // 他のアイテムも追加できます
-  ];
+    { title: "aaaaaあああああああああああああああああっ！", openStatus: "Open Now", imageSrc: "/NotSet.png" },  /* TODO:DBが使用できる状態になり次第、DBから引用されるように変更予定 */
+    { title: "冬は乾燥の季節", openStatus: "To Open", imageSrc: "/NotSet.png" },
+    { title: "春は出会い", openStatus: "To Open", imageSrc: "/NotSet.png" }
+  ]
+
     return (
       <div className="w-full relative font-[DotGothic16] mt-14">
         <Link to={RoutePath.gameMake.path}>
@@ -73,7 +73,7 @@ export const GameProduction = () => {
           <h1 className="font-bold text-4xl items-center justify-center flex">
             Edit
           </h1>
-          <List items={items} />;
+          <UserStageItems items={items} />
         </div>
       </div>
   )
