@@ -15,11 +15,11 @@ export const MyIdeaStageCard = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   // 現在のページに表示するアイテム(ステージ)を計算
-  const currentItems = useMemo(() => {
+  const currentItems = (() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     return stages.slice(startIndex, endIndex);
-  }, [currentPage, itemsPerPage, stages]);
+  })();
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 

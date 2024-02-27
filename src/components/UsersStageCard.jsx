@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 
 // ここにステージのデータを追加していく
   // 画像データは320x242（適当）
@@ -19,11 +19,11 @@ export const UsersStageCard = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   // 現在のページに表示するアイテム(ステージ)を計算
-  const currentItems = useMemo(() => {
+  const currentItems = (() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     return stages.slice(startIndex, endIndex);
-  }, [currentPage, itemsPerPage, stages]);
+  })();
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
