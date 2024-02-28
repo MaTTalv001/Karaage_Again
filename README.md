@@ -33,7 +33,7 @@ supabaseのダッシュボードにアクセスする場合はhttp://localhost:8
 以下にセルフホスト版のSupabaseのドキュメントのリンクを置いておきます。  
 https://supabase.com/docs/guides/self-hosting/docker
 
-##　React-iconsの使い方 例:ai/AiFillAccountBook
+## React-iconsの使い方 例:ai/AiFillAccountBook
 
 1.使いたいアイコンを選びimport(https://react-icons.github.io/react-icons/を参照)
 例:import { AiFillAccountBook } from "react-icons/ai";
