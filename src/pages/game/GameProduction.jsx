@@ -3,28 +3,31 @@ import { Link } from 'react-router-dom';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { HiMiniPlay } from 'react-icons/hi2';
 import React, { useState } from 'react';
-
+import { State } from "utils/GameSetting";
 
   const UserStageList = () => {
     const [stages, setStages] = useState([
-      { id: 1, title: 'Stage 1', isOpen: false, imageSrc: "/NotSet.png" },
-      { id: 2, title: 'Stage 2', isOpen: false, imageSrc: "/NotSet.png" },
-      { id: 3, title: 'Stage 3', isOpen: false, imageSrc: "/NotSet.png" }
+      { id: 1, title: 'Stage 1', State: State.private, imageSrc: "/NotSet.png" },
+      { id: 2, title: 'Stage 2', State: State.private, imageSrc: "/NotSet.png" },
+      { id: 3, title: 'Stage 3', State: State.private, imageSrc: "/NotSet.png" }
     ]);
     const handleToggleStage = (index) => {
-      const updatedStages = [...stages];
-      updatedStages[index].isOpen = !updatedStages[index].isOpen;
-  
-      if (updatedStages[index].isOpen) {
-        // 制限を設ける
-        updatedStages.forEach((stage, i) => {
-          if (i !== index && stage.isOpen) {
-            stage.isOpen = false;
-          }
-        });
-      }
-      setStages(updatedStages);
-    };
+      const updatedStages =  [...stages]
+      updatedStages[index].State = updatedStages[index].State === State.release ? State.private : State.release;
+      
+      const updatedStagesMapped = updatedStages.map((stage, i) => {
+        if (i !== index ) {
+          return {
+          ...stage,
+          State: stage.State === State.release?  State.private : stage.State
+        };
+        }
+        return stage;
+      });
+      setStages(updatedStagesMapped);  //TODO stage更新中には操作できないようにする仕組みが必要
+      };
+    
+
     return (
       <ul>
       {stages.map((stage, index) => (
@@ -38,7 +41,7 @@ import React, { useState } from 'react';
               <h1 className="font-bold text-2xl py-4 px-8">
                 <span className="bg-blue-500 text-yellow-200 flex rounded-lg justify-center">
                 <button onClick={() => handleToggleStage(index)}>
-                  {stage.isOpen ? "Open Now" : "To Open"}
+                  {stage.State === State.release ? "Open Now" : "To Open"}
                 </button>
                 </span>
               </h1>
@@ -68,8 +71,8 @@ import React, { useState } from 'react';
       </li>
       ))}
       </ul>
-  );}
-
+    );
+  };
 export const GameProduction = () => {
   
     return (
