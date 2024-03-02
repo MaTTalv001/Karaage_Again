@@ -110,10 +110,16 @@ export class MatterObject {
    * @description オプションに色設定を追加して返却
    */
   getOptionAddColor(option) {
-    let isStatic = option && option.isStatic !== undefined;
-    if (option) {
-      return { ...option, render: this.getColor(isStatic) };
+    // レンダーオプションがあればそのまま返却
+    if (option?.render) {
+      return { option };
     }
+    // レンダーオプションがなければ色設定を追加して返却
+    if (option) {
+      return { ...option, render: this.getColor(option.isStatic) };
+    }
+    let isStatic = option && option.isStatic !== undefined;
+    // オプションがなければ色設定のみ返却
     return { render: this.getColor(isStatic) };
   }
 

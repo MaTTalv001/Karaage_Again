@@ -7,13 +7,19 @@ import { getStageById } from 'services/supabaseStages';
 export const GamePlay = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
-  const [gameClear, setGameClear] = useState(false);
+  const [isGameCompleted, setIsGameCompleted] = useState(false);
   const onClickPlay = useRef();
   const onClickBallReset = useRef();
   const onClickPlacementReset = useRef();
   const [gameData, setGameData] = useState(null);
+  const [countTime, setCountTime] = useState(0);
+  const [countIntervalId, setCountIntervalId] = useState(null);
+  // ゲームスタート演出の遅延時間
   const GAME_START_DELAY = 300;
+  // ミリ秒から秒に変換
+  const SECONDS_TO_MILLISECONDS = 1000;
 
+  // useEffectを先に書くと、useCallbackの関数が使えないので、useCallbackを先に書く
   const fetchData = useCallback(async () => {
     try {
       let { result, data } = await getStageById(id);
@@ -36,6 +42,8 @@ export const GamePlay = () => {
     };
   }, [id]);
 
+  // ページ読み込み時にデータを取得
+  // 取得したデータの変更があるたびに走るが、fetchDataはuseCallBackで囲っているので変更がなければ再生成されない
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -59,27 +67,52 @@ export const GamePlay = () => {
     }
   }, [loading]);
 
+  const transformTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    // ミリ秒までやると再レンダリングの負荷がかかりそうなので、秒までにしています
+    return `${twoDigits(minutes)}:${twoDigits(seconds)}`;
+  }
+
+  // ゲームクリア時の処理
+  // 先に宣言しないとuseEffect内で使えない
+  const gameCompleted = useCallback(() => {
+    clearInterval(countIntervalId);
+    alert(`ゲームクリア！\nクリアタイム ${transformTime(countTime)}`);
+  }, [countIntervalId, countTime, transformTime]);
+
+  // gameCompletedはuseCallbackで囲っているので、変更がなければ再生成されない
   useEffect(() => {
-    if (gameClear) {
-      // TODO : ゲームクリア処理や演出
-      alert("ゲームクリア");
-      // TODO : クリア後の演出が終わったらステージ選択画面に遷移
+    if (isGameCompleted) {
+      gameCompleted();
     }
-  }, [gameClear]);
+  }, [isGameCompleted, gameCompleted]);
+
+  // 2桁表示
+  const twoDigits = (num) => {
+    return ("00" + num).slice(-2);
+  }
 
   const gameStart = () => {
     // TODO : ゲームスタート演出
     alert("ゲームスタート");
+    const intervalId = setInterval(() => {
+      setCountTime((prev) => prev + 1);
+    }, SECONDS_TO_MILLISECONDS);
+    setCountIntervalId(intervalId);
   };
 
+  // リセットボタンの処理
   const handlePlacementReset = useCallback(() => {
     onClickPlacementReset.current();
   }, [onClickPlacementReset]);
 
+  // ボールリセットボタンの処理
   const handleBallReset = useCallback(() => {
     onClickBallReset.current();
   }, [onClickBallReset]);
 
+  // 再生ボタンの処理
   const handleClickPlay = useCallback(() => {
     onClickPlay.current();
   }, [onClickPlay]);
@@ -98,6 +131,7 @@ export const GamePlay = () => {
                 <div className='flex justify-between items-center mx-5'>
                   <button className='hover:bg-blue-200 bg-blue-400 hover:text-slate-500 text-slate-950 transition-all py-2 px-4 my-2' onClick={handleBallReset} aria-label="ボールの位置をリセット">BallReset</button>
                   <h3 className='text-2xl'>{gameData.title}</h3>
+                  <p>{transformTime(countTime)}</p>
                   <button className='hover:text-slate-500 text-slate-950 hover:bg-red-200 bg-red-400 transition-all py-2 px-4 my-2' onClick={handleClickPlay} aria-label="再生">▶</button>
                 </div>
               </div>
@@ -107,7 +141,7 @@ export const GamePlay = () => {
               setOnClickPlay={onClickPlay}
               setOnClickPlacementReset={onClickPlacementReset}
               setOnClickBallReset={onClickBallReset}
-              setGameClear={setGameClear} />
+              setIsGameCompleted={setIsGameCompleted} />
           </div>
         </div>
       }

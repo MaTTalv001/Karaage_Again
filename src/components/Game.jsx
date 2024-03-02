@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect, memo } from "react";
+import { useState, useRef, useEffect, memo, useCallback } from "react";
 import { CollisionEvents } from 'utils/matterjs/CollisionEvents';
 import { MatterEngine } from 'utils/matterjs/MatterEngine';
 import { MouseEvents } from 'utils/matterjs/MouseEvents';
 import { createObject, createObjects } from 'utils/matterjs/objects/CreateObjects';
 import { ObjectType, UserPlacementBox, WallX } from 'utils/GameSetting';
 
-export const Game = memo(({ stageData, setOnClickPlay, setOnClickPlacementReset, setOnClickBallReset, setGameClear }) => {
+export const Game = memo(({ stageData, setOnClickPlay, setOnClickPlacementReset, setOnClickBallReset, setIsGameCompleted }) => {
   const [isMousePosXLeft, setIsMousePosXLeft] = useState(true);
   const gameDataRef = useRef();
   const matterEngineRef = useRef();
@@ -23,6 +23,15 @@ export const Game = memo(({ stageData, setOnClickPlay, setOnClickPlacementReset,
   const PUSH_SWITCH_MOVEMENT = 15;
   const SELECT_OBJECT_OUTLINE_WIDTH = 5;
 
+  const fetchData = useCallback(async () => {
+    try {
+      await matterInitialize();
+    } catch (error) {
+      // TODO : エラー処理
+      console.error(error);
+    }
+  }, []);
+
   useEffect(() => {
     try {
       fetchData();
@@ -36,7 +45,7 @@ export const Game = memo(({ stageData, setOnClickPlay, setOnClickPlacementReset,
       mouseEventsRef.current && mouseEventsRef.current.clear();
       matterEngineRef.current && matterEngineRef.current.clear();
     };
-  }, []);
+  }, [fetchData]);
 
   useEffect(() => {
     if (selectObjectRef.current === null || isDragObjectRef.current === false) return;
@@ -49,15 +58,6 @@ export const Game = memo(({ stageData, setOnClickPlay, setOnClickPlacementReset,
     // 初期配置はすべて半分のサイズなのでピタゴラスペースへ移動させるときはサイズを戻す
     parent.multiplyScale(MULTIPLY_SCALE);
   }, [isMousePosXLeft]);
-
-  const fetchData = async () => {
-    try {
-      await matterInitialize();
-    } catch (error) {
-      // TODO : エラー処理
-      console.error(error);
-    }
-  };
 
   const matterInitialize = async () => {
     matterEngineRef.current = new MatterEngine();
@@ -116,7 +116,7 @@ export const Game = memo(({ stageData, setOnClickPlay, setOnClickPlacementReset,
     const intervalId = setInterval(() => {
       const pos = switchObj.getPosition();
       const results = switchObj.setPositionAnimate(pos.x, startPos_y + PUSH_SWITCH_MOVEMENT);
-      setGameClear(results);
+      setIsGameCompleted(results);
       if (results) {
         clearInterval(intervalId);
       }
