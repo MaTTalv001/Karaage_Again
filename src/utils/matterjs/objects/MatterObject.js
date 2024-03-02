@@ -112,7 +112,7 @@ export class MatterObject {
   getOptionAddColor(option) {
     // レンダーオプションがあればそのまま返却
     if (option?.render) {
-      return { ...option };
+      return { option };
     }
     // レンダーオプションがなければ色設定を追加して返却
     if (option) {
