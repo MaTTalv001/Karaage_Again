@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { STAGE_PER_PAGE } from "utils/Paginate";
+import React, { useState } from 'react';
+import { STAGE_PER_PAGE } from 'utils/Paginate';
+import { useNavigate } from 'react-router-dom';
 
   // ここにステージのデータを追加していく
   // 画像データは320x242（適当）
@@ -25,6 +26,12 @@ import { STAGE_PER_PAGE } from "utils/Paginate";
 export const DefaultStageCard = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
+  const navigate = useNavigate();
+
+  const onClickPlay = (stageNumber) => {
+    navigate(`/game/${stageNumber}`);
+  };
+
   // 現在のページに表示するアイテム(ステージ)を計算
   const currentStages = (() => {
     const startIndex = (currentPage - 1) * STAGE_PER_PAGE;
@@ -46,7 +53,7 @@ export const DefaultStageCard = () => {
                 <img src={imageUrl} alt={`Stage ${stageNumber}`} />
             </div>
             <p className="absolute top-16 left-4 text-6xl font-bold">Stage{stageNumber}</p>
-            <button className="absolute bottom-14 left-16 bg-red-500 text-yellow-300 px-4 py-2 rounded shadow hover:bg-red-600 focus:outline-none focus:ring text-4xl">
+            <button onClick={() => onClickPlay(stageNumber)} className="absolute bottom-14 left-16 bg-red-500 text-yellow-300 px-4 py-2 rounded shadow hover:bg-red-600 focus:outline-none focus:ring text-4xl">
               ▶ Play
             </button>
           </div>
