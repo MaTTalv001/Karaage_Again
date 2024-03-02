@@ -112,7 +112,7 @@ export class MatterObject {
   getOptionAddColor(option) {
     // レンダーオプションがあればそのまま返却
     if (option?.render) {
-      return { ...option, render: { texture: "favicon.png" } };
+      return { ...option, render: { sprite: { texture: "/favicon.png" } } };
     }
     // レンダーオプションがなければ色設定を追加して返却
     if (option) {
