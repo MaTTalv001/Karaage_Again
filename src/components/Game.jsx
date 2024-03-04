@@ -45,7 +45,7 @@ export const Game = memo(
     }, []);
 
     // CSSクラス名にstageIdを含める
-    const className = `game-stage-${stageId}`;
+    const stageNum = `game-stage-${stageId}`;
 
     useEffect(() => {
       try {
@@ -246,7 +246,7 @@ export const Game = memo(
     return (
       <div
         id="Game"
-        className={`w-[1200px] m-auto bg-white overflow-hidden ${className}`}
+        className={`w-[1200px] m-auto bg-white overflow-hidden ${stageNum}`}
       ></div>
     );
   }
