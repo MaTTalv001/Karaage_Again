@@ -20,11 +20,17 @@ class Rectangle extends MatterObject {
     type = "default",
     width = this.DefaultWidth,
     height = this.DefaultHeight,
-    option = {},
+    option = {}
   ) {
     super(x, y, type);
 
-    this.object = Bodies.rectangle(x, y, width, height, this.getOptionAddColor(option, type));
+    this.object = Bodies.rectangle(
+      x,
+      y,
+      width,
+      height,
+      this.getOptionAddColor(option, type)
+    );
     this.object.getParent = () => this;
     this.initialScale = { x: width, y: height };
   }

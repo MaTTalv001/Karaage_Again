@@ -38,7 +38,10 @@ export class MatterObject {
   }
 
   getScale() {
-    return { x: this.object.render.sprite.xScale, y: this.object.render.sprite.yScale };
+    return {
+      x: this.object.render.sprite.xScale,
+      y: this.object.render.sprite.yScale,
+    };
   }
 
   /**
@@ -70,7 +73,10 @@ export class MatterObject {
     const speedX = distanceX * easing;
     const speedY = distanceY * easing;
     // 目標座標を計算
-    const targetPosition = { x: currentPosition.x + speedX, y: currentPosition.y + speedY };
+    const targetPosition = {
+      x: currentPosition.x + speedX,
+      y: currentPosition.y + speedY,
+    };
 
     /*
       NOTE: 距離が一定以下なら終了とみなす処理
@@ -112,7 +118,7 @@ export class MatterObject {
   getOptionAddColor(option) {
     // レンダーオプションがあればそのまま返却
     if (option?.render) {
-      return { option };
+      return option;
     }
     // レンダーオプションがなければ色設定を追加して返却
     if (option) {
@@ -151,7 +157,5 @@ export class MatterObject {
     }
 
     return colorSet;
-  }
+  };
 }
-
-
