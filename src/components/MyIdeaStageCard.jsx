@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { STAGE_PER_PAGE } from "utils/Paginate";
+import { Link } from 'react-router-dom';
+import { RoutePath } from 'utils/RouteSetting';
 
   // ここにステージのデータを追加していく
   // 画像データは320x242（適当に選択）
   const stages = [
-    { stageNumber: 1, imageUrl: '/image1.png' },
-    { stageNumber: 2, imageUrl: '/image2.png' },
-    { stageNumber: 3, imageUrl: '/image3.png' },
-    { stageNumber: 4, imageUrl: '/image4.png' }
+    { id: 1, stageNumber: 1, imageUrl: '/image1.png' },
+    { id: 2, stageNumber: 2, imageUrl: '/image2.png' },
+    { id: 3, stageNumber: 3, imageUrl: '/image3.png' },
+    { id: 4, stageNumber: 4, imageUrl: '/image4.png' }
   ];
 
 export const MyIdeaStageCard = () => {
@@ -26,17 +28,19 @@ export const MyIdeaStageCard = () => {
     <div>
       {/* 1つのステージを表示する要素 */}
       <div className="grid grid-cols-2 gap-4">
-        {currentStages.map(({ stageNumber, imageUrl }) => (
-          <div key={stageNumber} className="relative m-2 p-6 border border-gray-300 shadow-lg rounded-md bg-white">
+        {currentStages.map(({ id, stageNumber, imageUrl }) => (
+          <div key={id} className="relative m-2 p-6 border border-gray-300 shadow-lg rounded-md bg-white">
             <div className="flex">
               {/* ↓　【fix】このタグ調査、修正する。 */}
               <div className="flex-grow"></div>
             <img src={imageUrl} alt={`Stage ${stageNumber}`} />
             </div>
             <p className="absolute top-16 left-4 text-6xl font-bold">Stage{stageNumber}</p>
-            <button className="absolute bottom-14 left-16 bg-red-500 text-yellow-300 px-4 py-2 rounded shadow hover:bg-red-600 focus:outline-none focus:ring text-4xl">
+            <Link
+              to={RoutePath.gamePlay.path(id)} className="absolute bottom-14 left-16 bg-red-500 text-yellow-300 px-4 py-2 rounded shadow hover:bg-red-600 focus:outline-none focus:ring text-4xl"
+              >
               ▶ Play
-            </button>
+            </Link>
           </div>
         ))}
       </div>
