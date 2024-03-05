@@ -26,7 +26,7 @@ class Circle extends MatterObject {
 
     // フォルダ内のpng画像をWebpackerで抽出（この時点では全ステージの画像を取得）
     const images = require.context(
-      "/app/src/assets/imgs/circle",
+      "../../../assets/imgs/circle",
       true,
       /\.png$/
     );
