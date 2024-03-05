@@ -1,7 +1,7 @@
 import { RoutePath } from "utils/RouteSetting";
 import { Link } from 'react-router-dom';
-import { FiEdit2, FiTrash2 } from 'react-icons/fi';
-import { HiMiniPlay } from 'react-icons/hi2';
+// import { FiEdit2, FiTrash2 } from 'react-icons/fi';　アイコンが表示されないため一旦コメントアウト中
+// import { HiMiniPlay } from 'react-icons/hi2';　アイコンが表示されないため一旦コメントアウト中
 import React, { useState } from 'react';
 import { State } from "utils/GameSetting";
 
@@ -49,16 +49,16 @@ import { State } from "utils/GameSetting";
         </div>
           <div className="flex-col">
             <div className="pt-4 px-8">
-              <FiEdit2 size={40}/>
+              {/* <FiEdit2 size={40}/> アイコンが表示されないため一旦コメントアウト中 */}
             </div>
             <div className="pt-4 px-8">
-              <FiTrash2 size={40}/>
+              {/* <FiTrash2 size={40}/> アイコンが表示されないため一旦コメントアウト中 */}
             </div>
           </div>
           <div >
             <h1 className="font-bold text-2xl py-12 px-8 text-yellow-200">
               <div className="bg-red-500 flex rounded-lg px-4 py-2">
-                <HiMiniPlay />Test
+                {/* <HiMiniPlay />Test アイコンが表示されないため一旦コメントアウト中 */}
               </div>
             </h1>
           </div>
