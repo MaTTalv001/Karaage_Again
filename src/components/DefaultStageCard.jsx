@@ -1,25 +1,28 @@
-import React, { useState } from "react";
-import { STAGE_PER_PAGE } from "utils/Paginate";
+import React, { useState } from 'react';
+import { STAGE_PER_PAGE } from 'utils/Paginate';
+import { Link } from 'react-router-dom';
+import { RoutePath } from 'utils/RouteSetting';
 
   // ここにステージのデータを追加していく
   // 画像データは320x242（適当）
+
   const stages = [
-    { stageNumber: 1, imageUrl: '/image1.png' },
-    { stageNumber: 2, imageUrl: '/image2.png' },
-    { stageNumber: 3, imageUrl: '/image3.png' },
-    { stageNumber: 4, imageUrl: '/image4.png' },
-    { stageNumber: 5, imageUrl: '/image1.png' },
-    { stageNumber: 6, imageUrl: '/image2.png' },
-    { stageNumber: 7, imageUrl: '/image3.png' },
-    { stageNumber: 8, imageUrl: '/image4.png' },
-    { stageNumber: 9, imageUrl: '/image1.png' },
-    { stageNumber: 10, imageUrl: '/image2.png' },
-    { stageNumber: 11, imageUrl: '/image3.png' },
-    { stageNumber: 12, imageUrl: '/image4.png' },
-    { stageNumber: 13, imageUrl: '/image1.png' },
-    { stageNumber: 14, imageUrl: '/image2.png' },
-    { stageNumber: 15, imageUrl: '/image3.png' },
-    { stageNumber: 16, imageUrl: '/image4.png' },
+    { id: 1, stageNumber: 1, imageUrl: '/image1.png' },
+    { id: 2, stageNumber: 2, imageUrl: '/image2.png' },
+    { id: 3, stageNumber: 3, imageUrl: '/image3.png' },
+    { id: 4, stageNumber: 4, imageUrl: '/image4.png' },
+    { id: 5, stageNumber: 5, imageUrl: '/image1.png' },
+    { id: 6, stageNumber: 6, imageUrl: '/image2.png' },
+    { id: 7, stageNumber: 7, imageUrl: '/image3.png' },
+    { id: 8, stageNumber: 8, imageUrl: '/image4.png' },
+    { id: 9, stageNumber: 9, imageUrl: '/image1.png' },
+    { id: 10, stageNumber: 10, imageUrl: '/image2.png' },
+    { id: 11, stageNumber: 11, imageUrl: '/image3.png' },
+    { id: 12, stageNumber: 12, imageUrl: '/image4.png' },
+    { id: 13, stageNumber: 13, imageUrl: '/image1.png' },
+    { id: 14, stageNumber: 14, imageUrl: '/image2.png' },
+    { id: 15, stageNumber: 15, imageUrl: '/image3.png' },
+    { id: 16, stageNumber: 16, imageUrl: '/image4.png' },
   ];
 
 export const DefaultStageCard = () => {
@@ -38,17 +41,20 @@ export const DefaultStageCard = () => {
     <div>
       {/* 1つのステージを表示する要素 */}
       <div className="grid grid-cols-2 gap-4">
-        {currentStages.map(({ stageNumber, imageUrl }) => (
-          <div key={stageNumber} className="relative m-2 p-6 border border-gray-300 shadow-lg rounded-md bg-white">
+        {currentStages.map(({ id, stageNumber, imageUrl }) => (
+          <div key={id} className="relative m-2 p-6 border border-gray-300 shadow-lg rounded-md bg-white">
             <div className="flex">
               {/* ↓　【fix】このタグ調査、修正する。 */}
               <div className="flex-grow"></div>
                 <img src={imageUrl} alt={`Stage ${stageNumber}`} />
             </div>
             <p className="absolute top-16 left-4 text-6xl font-bold">Stage{stageNumber}</p>
-            <button className="absolute bottom-14 left-16 bg-red-500 text-yellow-300 px-4 py-2 rounded shadow hover:bg-red-600 focus:outline-none focus:ring text-4xl">
-              ▶ Play
-            </button>
+            <Link
+              to={RoutePath.gamePlay.path(id)}
+              className="absolute bottom-14 left-16 bg-red-500 text-yellow-300 px-4 py-2 rounded shadow hover:bg-red-600 focus:outline-none focus:ring text-4xl"
+              >
+                ▶ Play
+            </Link>
           </div>
         ))}
       </div>
