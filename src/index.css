@@ -16,7 +16,7 @@
 .game-stage-1 {
   width: 1200px;
   margin: auto;
-  background-image: url("credo.png");
+  background-image: url("/src/assets/imgs/bg/credo.png");
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;

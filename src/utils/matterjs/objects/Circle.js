@@ -21,16 +21,25 @@ class Circle extends MatterObject {
 
   // このメソッド内でoptionの"texture"をランダムに選んだ値で更新
   getOptionAddColor(option) {
-    //ステージ番号
-    const stageNumber = this.theme;
-    //10までの連番画像パスを生成
-    const textures = Array.from(
-      { length: 10 },
-      (v, i) => `/assets/imgs/objects/circle/${stageNumber}/${i + 1}.png`
+    // ステージ番号(stage+番号)
+    const stageNumber = `stage${this.theme}`;
+
+    // フォルダ内のpng画像をWebpackerで抽出（この時点では全ステージの画像を取得）
+    const images = require.context(
+      "/app/src/assets/imgs/circle",
+      true,
+      /\.png$/
     );
 
+    // ステージに応じた画像ファイルのパスを配列として取得
+    const stageTextures = images
+      .keys()
+      .filter((path) => path.includes(stageNumber)) //stage番号を含む画像のみ抽出
+      .map(images);
+
     // テクスチャのパスをランダムに選択
-    const randomTexture = textures[Math.floor(Math.random() * textures.length)];
+    const randomTexture =
+      stageTextures[Math.floor(Math.random() * stageTextures.length)];
 
     // optionがnullまたはundefinedでないことを確認し、"render"と"sprite"オブジェクトが存在するかをチェック
     if (!option.render) option.render = {};
