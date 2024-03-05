@@ -50,8 +50,7 @@ export const DefaultStageCard = () => {
             </div>
             <p className="absolute top-16 left-4 text-6xl font-bold">Stage{stageNumber}</p>
             <Link
-            // (id)を入れるとエラーが出てしまうため、一旦保留
-              to={RoutePath.gamePlay.path}
+              to={RoutePath.gamePlay.path(id)}
               className="absolute bottom-14 left-16 bg-red-500 text-yellow-300 px-4 py-2 rounded shadow hover:bg-red-600 focus:outline-none focus:ring text-4xl"
               >
                 ▶ Play
