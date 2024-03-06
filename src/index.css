@@ -9,9 +9,32 @@
 }
 
 .text-black-outline {
-  text-shadow:
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
     1px 1px 0 #000;
+}
+
+.game-stage-1 {
+  width: 1200px;
+  margin: auto;
+  background-image: url("/src/assets/imgs/bg/credo.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-stage-1::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.5); /* 白色の半透明オーバーレイ */
+  z-index: 1;
+}
+
+.game-stage-1 > * {
+  position: relative;
+  z-index: 2;
 }

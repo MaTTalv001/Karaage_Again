@@ -7,19 +7,48 @@ import { ObjectType } from "utils/GameSetting";
 // 引数作成のマッパー
 const mapper = {
   Rectangle: (object, type, size) => {
-    return [object.x, object.y, type, object.width * size, object.height * size, object.option];
+    return [
+      object.x,
+      object.y,
+      type,
+      object.width * size,
+      object.height * size,
+      object.option,
+    ];
   },
 
   Circle: (object, type, size) => {
-    return [object.x, object.y, type, object.radius * size, object.option];
+    return [
+      object.theme,
+      object.x,
+      object.y,
+      type,
+      object.radius * size,
+      object.option,
+    ];
   },
 
   Triangle: (object, type, size) => {
-    return [object.x, object.y, type, object.height * size, object.option];
+    return [
+      object.theme,
+      object.x,
+      object.y,
+      type,
+      object.height * size,
+      object.option,
+    ];
   },
 
   Polygon: (object, type, size) => {
-    return [object.x, object.y, type, object.sides, object.radius * size, object.option];
+    return [
+      object.theme,
+      object.x,
+      object.y,
+      type,
+      object.sides,
+      object.radius * size,
+      object.option,
+    ];
   },
 };
 
@@ -49,6 +78,6 @@ const createObject = (data, type = ObjectType.Stage) => {
   const size = type === "User" ? 0.5 : 1;
   const args = mapper[data.bodiesType](data, type, size);
   return new Class(...args);
-}
+};
 
 export { createObjects, createObject };
