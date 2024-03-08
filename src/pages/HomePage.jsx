@@ -33,7 +33,8 @@ const HomePage = () => {
 
     const RENDER = { fillStyle: "transparent" }
     // 床部分。透過して見えなくしている。
-    const ground = Bodies.rectangle(2000 / 2, SCREEN_HEIGHT - 30, 2000, 30, { isStatic: true, render: RENDER });
+    const GROUND_HEIGHT = 30;
+    const ground = Bodies.rectangle(SCREEN_HEIGHT / 2, SCREEN_HEIGHT - GROUND_HEIGHT, SCREEN_HEIGHT, GROUND_HEIGHT, { isStatic: true, render: RENDER });
     // タイトル部分の物理判定。透過して見えなくしている。
     // TODO : スクリーンサイズから計算してタイトル部分の物理オブジェクトの配置を割り出しているが、これで本当に行けるかちょっと不安
     const POSITION_Y_ADJUST = 55;
