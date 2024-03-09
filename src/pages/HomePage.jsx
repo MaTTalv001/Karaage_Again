@@ -1,6 +1,6 @@
 import "./HomePage.css"
 import { Link } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "contexts/AuthContext";
 import { RoutePath } from "utils/RouteSetting";
 import { Bodies, Composite, Engine, Render, Runner } from "matter-js";
@@ -9,6 +9,8 @@ const HomePage = () => {
   const { user } = useAuth();
   const [SCREEN_WIDTH, setScreenWidth] = useState(0);
   const [SCREEN_HEIGHT, setScreenHeight] = useState(0);
+  const [engine, setEngine] = useState(null);
+  const [render, setRender] = useState(null);
 
   useEffect(() => {
     setScreenWidth(document.body.clientWidth);
@@ -21,8 +23,8 @@ const HomePage = () => {
 
     return () => {
       // Matter.jsのエンジンを停止
-      Render.stop();
-      Runner.stop();
+      if (render) Render.stop(render);
+      if (engine) Runner.stop(engine);
     };
   }, [SCREEN_WIDTH, SCREEN_HEIGHT]);
 
@@ -30,10 +32,10 @@ const HomePage = () => {
   const matterInitialize = () => {
     // 画面の描画域サイズを取得
     const parent = document.getElementById("Back-Object");
-    const engine = Engine.create();
-    const render = Render.create({
+    const mEngine = Engine.create();
+    const mRender = Render.create({
       element: parent,
-      engine: engine,
+      engine: mEngine,
       options: {
         width: SCREEN_WIDTH,
         height: SCREEN_HEIGHT,
@@ -41,10 +43,12 @@ const HomePage = () => {
         background: "transparent",
       },
     });
-    Render.run(render);
+    setEngine(mEngine);
+    setRender(mRender);
+    Render.run(mRender);
 
-    Composite.add(engine.world, [createGround(), createTitleBox(), spawnObjects()]);
-    Runner.run(Runner.create(), engine);
+    Composite.add(mEngine.world, [createGround(), createTitleBox(), spawnObjects()]);
+    Runner.run(Runner.create(), mEngine);
   };
 
   const createGround = () => {
