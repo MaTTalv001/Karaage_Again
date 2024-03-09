@@ -3,6 +3,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { State } from "utils/GameSetting";
 import { getStageById } from "services/supabaseStages";
+import ConfettiComponent from "components/Confetti";
 
 export const GamePlay = () => {
   const { id } = useParams();
@@ -78,7 +79,7 @@ export const GamePlay = () => {
   // 先に宣言しないとuseEffect内で使えない
   const gameCompleted = useCallback(() => {
     clearInterval(countIntervalId);
-    alert(`ゲームクリア！\nクリアタイム ${transformTime(countTime)}`);
+    // alert(`ゲームクリア！\nクリアタイム ${transformTime(countTime)}`);
   }, [countIntervalId, countTime, transformTime]);
 
   // gameCompletedはuseCallbackで囲っているので、変更がなければ再生成されない
@@ -163,7 +164,9 @@ export const GamePlay = () => {
               setOnClickBallReset={onClickBallReset}
               setIsGameCompleted={setIsGameCompleted}
               stageId={id}
-            />
+              />
+              {/* ゲームクリア時にConfettiコンポーネントを表示 */}
+          {isGameCompleted && <ConfettiComponent clearTime={transformTime(countTime)}/>}
           </div>
         </div>
       )}
