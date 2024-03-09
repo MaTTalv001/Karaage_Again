@@ -1,22 +1,34 @@
 import "./HomePage.css"
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "contexts/AuthContext";
 import { RoutePath } from "utils/RouteSetting";
 import { Bodies, Composite, Engine, Render, Runner } from "matter-js";
 
 const HomePage = () => {
   const { user } = useAuth();
+  const [SCREEN_WIDTH, setScreenWidth] = useState(0);
+  const [SCREEN_HEIGHT, setScreenHeight] = useState(0);
 
   useEffect(() => {
-    matterInitialize();
+    setScreenWidth(document.body.clientWidth);
+    setScreenHeight(document.body.clientHeight);
   }, []);
+
+  useEffect(() => {
+    if (SCREEN_WIDTH === 0 || SCREEN_HEIGHT === 0) return;
+    matterInitialize();
+
+    return () => {
+      // Matter.jsのエンジンを停止
+      Render.stop();
+      Runner.stop();
+    };
+  }, [SCREEN_WIDTH, SCREEN_HEIGHT]);
 
   // MatterEngineがゲーム専用に作ってしまっておりこちらへの実用が難しかったため、matter.jsでやっています。
   const matterInitialize = () => {
     // 画面の描画域サイズを取得
-    const SCREEN_WIDTH = document.body.clientWidth;
-    const SCREEN_HEIGHT = document.body.clientHeight;
     const parent = document.getElementById("Back-Object");
     const engine = Engine.create();
     const render = Render.create({
@@ -31,17 +43,29 @@ const HomePage = () => {
     });
     Render.run(render);
 
-    const RENDER = { fillStyle: "transparent" }
+    Composite.add(engine.world, [createGround(), createTitleBox(), spawnObjects()]);
+    Runner.run(Runner.create(), engine);
+  };
+
+  const createGround = () => {
     // 床部分。透過して見えなくしている。
     const GROUND_HEIGHT = 30;
-    const ground = Bodies.rectangle(SCREEN_HEIGHT / 2, SCREEN_HEIGHT - GROUND_HEIGHT, SCREEN_HEIGHT, GROUND_HEIGHT, { isStatic: true, render: RENDER });
+    const ground = Bodies.rectangle(SCREEN_WIDTH / 2, SCREEN_HEIGHT - GROUND_HEIGHT, SCREEN_WIDTH, GROUND_HEIGHT, { isStatic: true, render: { fillStyle: "transparent" } });
+    return ground
+  }
+
+  const createTitleBox = () => {
     // タイトル部分の物理判定。透過して見えなくしている。
     // TODO : スクリーンサイズから計算してタイトル部分の物理オブジェクトの配置を割り出しているが、これで本当に行けるかちょっと不安
     const POSITION_Y_ADJUST = 55;
     const CENTER_POSITION = { x: SCREEN_WIDTH / 2, y: SCREEN_HEIGHT / 2 - POSITION_Y_ADJUST }
     const TITLE_BOX_SIZE = { width: 520, height: 265 }
-    const box = Bodies.rectangle(CENTER_POSITION.x, CENTER_POSITION.y, TITLE_BOX_SIZE.width, TITLE_BOX_SIZE.height, { isStatic: true, render: RENDER });
-    const composite = Composite.create();
+    const titleBox = Bodies.rectangle(CENTER_POSITION.x, CENTER_POSITION.y, TITLE_BOX_SIZE.width, TITLE_BOX_SIZE.height, { isStatic: true, render: { fillStyle: "transparent" } });
+    return titleBox;
+  }
+
+  const spawnObjects = () => {
+    const spawnComposite = Composite.create();
     // ランダムで物理オブジェクトを生成
     const SPAWN_HEIGHT = 500;
     const SPAWN_HEIGHT_RANGE = 20;
@@ -54,25 +78,22 @@ const HomePage = () => {
       const posX = Math.random() * SCREEN_WIDTH;
       const posY = Math.random() * (SPAWN_HEIGHT + SPAWN_HEIGHT_RANGE) - SPAWN_HEIGHT;
       const rotate = Math.random() * SPAWN_ANGLE;
-      let createObject;
+      let spawnObject;
       switch (objectType) {
         case 1: // 三角形
-          createObject = Bodies.polygon(posX, posY, 3, SPAWN_SIZE, { rotate });
+          spawnObject = Bodies.polygon(posX, posY, 3, SPAWN_SIZE, { rotate });
           break
         case 2: // 方形
-          createObject = Bodies.rectangle(posX, posY, SPAWN_SIZE, SPAWN_SIZE, { rotate });
+          spawnObject = Bodies.rectangle(posX, posY, SPAWN_SIZE, SPAWN_SIZE, { rotate });
           break;
         default: // 円
           // 大きくなりすぎてバランス悪くなるので他のサイズから半分にしています
-          createObject = Bodies.circle(posX, posY, SPAWN_SIZE / 2, { rotate });
+          spawnObject = Bodies.circle(posX, posY, SPAWN_SIZE / 2, { rotate });
           break;
       }
-      Composite.add(composite, createObject);
+      Composite.add(spawnComposite, spawnObject);
     }
-
-    Composite.add(engine.world, [ground, box, composite]);
-    Runner.run(Runner.create(), engine);
-
+    return spawnComposite;
   }
 
   return (
