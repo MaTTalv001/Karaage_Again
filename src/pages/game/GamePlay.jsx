@@ -16,8 +16,11 @@ export const GamePlay = () => {
   const [countTime, setCountTime] = useState(0);
   const [countIntervalId, setCountIntervalId] = useState(null);
   const [isGameStarted, setIsGameStarted] = useState(false);
+  const [showStartMessage, setShowStartMessage] = useState(true);
+
+  
   // ゲームスタート演出の遅延時間
-  const GAME_START_DELAY = 300;
+  const GAME_START_DELAY = 1000;
   // ミリ秒から秒に変換
   const SECONDS_TO_MILLISECONDS = 1000;
 
@@ -96,7 +99,7 @@ export const GamePlay = () => {
   };
 
   const gameStart = () => {
-  alert("ゲームスタート");
+  //alert("ゲームスタート");
   setIsGameStarted(true); // ゲームが開始されたことを示す
   const intervalId = setInterval(() => {
     setCountTime((prev) => prev + 1);
@@ -118,6 +121,15 @@ export const GamePlay = () => {
   const handleClickPlay = useCallback(() => {
     onClickPlay.current();
   }, [onClickPlay]);
+
+  useEffect(() => {
+    // 1秒後にメッセージを非表示にする
+    const timer = setTimeout(() => {
+      setShowStartMessage(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
@@ -166,6 +178,11 @@ export const GamePlay = () => {
               setIsGameCompleted={setIsGameCompleted}
               stageId={id}
               />
+              {showStartMessage && (
+        <div className="fixed text-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl text-black text-shadow-md z-50">
+        <h2 className="text-5xl text-black  font-bold">ゲームスタート！</h2>    
+          </div>
+      )}
               {/* ゲームクリア時にConfettiコンポーネントを表示 */}
           {isGameCompleted && <ConfettiComponent clearTime={transformTime(countTime)}/>}
           </div>
