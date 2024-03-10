@@ -15,6 +15,7 @@ export const GamePlay = () => {
   const [gameData, setGameData] = useState(null);
   const [countTime, setCountTime] = useState(0);
   const [countIntervalId, setCountIntervalId] = useState(null);
+  const [isGameStarted, setIsGameStarted] = useState(false);
   // ゲームスタート演出の遅延時間
   const GAME_START_DELAY = 300;
   // ミリ秒から秒に変換
@@ -95,13 +96,13 @@ export const GamePlay = () => {
   };
 
   const gameStart = () => {
-    // TODO : ゲームスタート演出
-    alert("ゲームスタート");
-    const intervalId = setInterval(() => {
-      setCountTime((prev) => prev + 1);
-    }, SECONDS_TO_MILLISECONDS);
-    setCountIntervalId(intervalId);
-  };
+  alert("ゲームスタート");
+  setIsGameStarted(true); // ゲームが開始されたことを示す
+  const intervalId = setInterval(() => {
+    setCountTime((prev) => prev + 1);
+  }, SECONDS_TO_MILLISECONDS);
+  setCountIntervalId(intervalId);
+};
 
   // リセットボタンの処理
   const handlePlacementReset = useCallback(() => {
