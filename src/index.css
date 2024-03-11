@@ -61,7 +61,7 @@
   z-index: 1;
 }
 
-.game-stage-2>* {
+.game-stage-2 > * {
   position: relative;
   z-index: 2;
 }
@@ -88,7 +88,7 @@
   z-index: 1;
 }
 
-.game-stage-3>* {
+.game-stage-3 > * {
   position: relative;
   z-index: 2;
 }
@@ -96,7 +96,7 @@
 .game-stage-4 {
   width: 1200px;
   margin: auto;
-  background-image: url("/src/assets/imgs/bg/sweetsland.png");
+  background-image: url("/src/assets/imgs/bg/sweetsland_low.png");
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
@@ -115,7 +115,7 @@
   z-index: 1;
 }
 
-.game-stage-4>* {
+.game-stage-4 > * {
   position: relative;
   z-index: 2;
 }
@@ -142,7 +142,88 @@
   z-index: 1;
 }
 
-.game-stage-5>* {
+.game-stage-5 > * {
+  position: relative;
+  z-index: 2;
+}
+
+.game-stage-6 {
+  width: 1200px;
+  margin: auto;
+  background-image: url("/src/assets/imgs/bg/dragon_low.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-stage-6::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.5);
+  /* 白色の半透明オーバーレイ */
+  z-index: 1;
+}
+
+.game-stage-6 > * {
+  position: relative;
+  z-index: 2;
+}
+
+.game-stage-7 {
+  width: 1200px;
+  margin: auto;
+  background-image: url("/src/assets/imgs/bg/osaka_low.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-stage-7::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.5);
+  /* 白色の半透明オーバーレイ */
+  z-index: 1;
+}
+
+.game-stage-7 > * {
+  position: relative;
+  z-index: 2;
+}
+
+.game-stage-8 {
+  width: 1200px;
+  margin: auto;
+  background-image: url("/src/assets/imgs/bg/cyberpunk_low.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-stage-8::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.5);
+  /* 白色の半透明オーバーレイ */
+  z-index: 1;
+}
+
+.game-stage-8 > * {
   position: relative;
   z-index: 2;
 }
