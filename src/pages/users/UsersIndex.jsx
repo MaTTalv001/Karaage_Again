@@ -1,4 +1,3 @@
-// TODO : ローディング確認用。今後の実装で変更あり
 import React, { useEffect, useState } from "react";
 import supabase from "services/supabaseClient";
 import { useAuth } from "contexts/AuthContext";
@@ -9,15 +8,9 @@ const UsersIndex = () => {
   const { user } = useAuth();
   const { profile } = useProfile();
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // プロファイルのroleが管理者でなければデータ取得をスキップ
-    if (profile?.role !== "管理者") {
-      setLoading(false);
-      return;
-    }
-
     const fetchUsers = async () => {
       try {
         setLoading(true);
@@ -36,20 +29,6 @@ const UsersIndex = () => {
 
     fetchUsers();
   }, [profile]);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  // プロファイルのroleが管理者でない場合の処理
-  if (profile?.role !== "管理者") {
-    return (
-      <p className="text-center mt-14">
-        権限がありません
-        <Loading />
-      </p>
-    );
-  }
 
   // ユーザーデータが見つからない場合の処理
   if (!users.length) {
@@ -91,7 +70,6 @@ const UsersIndex = () => {
           ))}
         </tbody>
       </table>
-      <Loading />
     </div>
   );
 };

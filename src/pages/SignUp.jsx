@@ -42,13 +42,13 @@ const SignUpPage = () => {
         const userId = data.user.id;
         const { error: profileError } = await supabase
           .from("profiles")
-          .insert([{ user_id: userId, name: name, role: "一般" }]);
+          .insert([{ user_id: userId, name: name, role: "general" }]);
         if (profileError) {
           throw profileError;
         }
         alert("ユーザー登録とプロファイル設定が完了しました。");
         setUser(data); // ユーザー情報を設定
-        navigate(RoutePath.stageSelect.path);
+        navigate(RoutePath.users.path);
       }
     } catch (error) {
       alert("エラーが発生しました: " + error.message);
@@ -57,11 +57,10 @@ const SignUpPage = () => {
 
   return (
     <>
-      <div className="w-full h-full relative font-[DotGothic16]">
-        <Header />
+      <div className="w-full h-full relative ">
         <div className="flex flex-col items-center justify-center h-[calc(100%-40px)]">
           <div className="p-10 rounded-3xl text-center max-w-screen-lg mx-auto">
-            <h1 className="text-4xl  mb-6">　新規ユーザー登録画面　</h1>
+            <h1 className="text-4xl  mb-6">ジューシー登録</h1>
             <form
               className="flex flex-col items-center gap-4 w-full px-1"
               onSubmit={signUpSubmit}
@@ -114,12 +113,12 @@ const SignUpPage = () => {
                 />
               </div>
 
-              <div className="mt-4 bg-yellow-200 hover:bg-yellow-400 rounded-full">
+              <div className="mt-4 bg-white hover:bg-gray-200 rounded-lg">
                 <button
                   type="submit"
                   className=" text-black font-bold py-2 px-4"
                 >
-                  Let's Sign Up!
+                  viva カラーゲ!!
                 </button>
               </div>
             </form>

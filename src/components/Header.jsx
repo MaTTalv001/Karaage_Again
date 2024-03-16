@@ -25,43 +25,31 @@ const Header = () => {
   };
 
   return (
-    <div className="font-bold bg-gray-200 text-black p-2.5 flex justify-between">
+    <div className="font-bold bg-gray-200 text-black p-5 flex justify-between">
       <div className="mx-5 flex items-center">
         <Link
           to={RoutePath.home.path}
-          className="text-xl mr-5 text-yellow-300 text-black-outline font-[DotGothic16]"
+          className="text-xl mr-5 text-white text-black-outline"
         >
           {RoutePath.home.name}
         </Link>
-        {profile?.role === "管理者" && (
+        {profile?.role === "admin" && (
           <span className="bg-green-300  px-2 mr-5 font-bold rounded-md">
             Admin
           </span>
         )}
       </div>
       <div className="mx-5">
-        <Link to="#" className="text-black mr-2 font-[DotGothic16]">
-          About Us...
-        </Link>
         {user ? (
-          <button
-            onClick={logout}
-            className="text-black font-[DotGothic16] mx-2"
-          >
+          <button onClick={logout} className="text-black mx-2">
             Logout
           </button>
         ) : (
           <>
-            <Link
-              to={RoutePath.login.path}
-              className="text-black font-[DotGothic16] mx-2"
-            >
+            <Link to={RoutePath.login.path} className="text-black mx-2">
               {RoutePath.login.name}
             </Link>
-            <Link
-              to={RoutePath.signup.path}
-              className="text-black mx-2 font-[DotGothic16]"
-            >
+            <Link to={RoutePath.signup.path} className="text-black mx-2 ">
               {RoutePath.signup.name}
             </Link>
           </>
