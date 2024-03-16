@@ -1,13 +1,13 @@
-version: '3'
+version: "3"
 services:
   app:
     build: .
-    image: pythagora_maker
+    image: karaage_again
     ports:
-      - '3000:3000'
+      - "3666:3000"
     volumes:
-      - '.:/app'
-      - '/app/node_modules'
+      - ".:/app"
+      - "/app/node_modules"
     environment:
       - NODE_ENV=development
     networks:

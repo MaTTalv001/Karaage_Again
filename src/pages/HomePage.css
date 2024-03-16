@@ -11,13 +11,6 @@
   background-repeat: no-repeat;
   background-position: 100% 0;
   background-size: 200% auto;
-  background-image: linear-gradient(
-    to right,
-    #ffffff 0%,
-    #ffffff 50%,
-    #eaf373 50%,
-    #eaf373 100%
-  );
   transition: background-position 0.8s cubic-bezier(0.19, 1, 0.22, 1);
   -webkit-transition: background-position 0.8s cubic-bezier(0.19, 1, 0.22, 1);
   margin: 50px auto;

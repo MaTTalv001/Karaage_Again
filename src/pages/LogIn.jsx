@@ -30,16 +30,15 @@ const LogInPage = () => {
       console.log("success!!");
       alert("ログインしました");
       setUser(data.user);
-      navigate(RoutePath.stageSelect.path);
+      navigate(RoutePath.mainpage.path);
     }
   };
   return (
     <>
-      <div className="w-full h-full relative font-[DotGothic16]">
-        <Header />
+      <div className="w-full h-full relative">
         <div className="flex flex-col items-center justify-center h-[calc(100%-40px)]">
           <div className="p-10 rounded-3xl text-center max-w-screen-lg mx-auto">
-            <h1 className="text-4xl  mb-6"> 　　　ログイン画面　　　 </h1>
+            <h1 className="text-4xl  mb-6">からあげログイン</h1>
             <form
               className="flex flex-col items-center gap-4 w-full px-1"
               onSubmit={handleLogin}
@@ -63,12 +62,13 @@ const LogInPage = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <div className="mt-4 bg-yellow-200 hover:bg-yellow-400 rounded-full">
+
+              <div className="mt-4 bg-white hover:bg-gray-200 rounded-lg">
                 <button
                   className=" text-black font-bold py-2 px-4"
                   onClick={handleLogin}
                 >
-                  Let's Login!
+                  viva カラーゲ!!
                 </button>
               </div>
             </form>
