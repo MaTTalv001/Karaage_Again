@@ -142,6 +142,9 @@ const KaraageShow = () => {
             <div className="py-2">
               <dt className="font-medium text-gray-900 mb-4">その他詳細記録</dt>
               <div className="text-sm text-gray-500">
+                投稿日 : {new Date(recipe.created_at).toLocaleDateString()}
+              </div>
+              <div className="text-sm text-gray-500">
                 国産/外国産 : {recipe.meat_origin}
               </div>
               <div className="text-sm text-gray-500">

@@ -165,7 +165,7 @@ const MakeKaraage = () => {
           <div className="relative">
             <input
               type="text"
-              className="peer py-3 pe-0 ps-8 block w-full bg-transparent border-t-transparent border-b-2 border-x-transparent border-b-gray-400 text-sm focus:border-t-transparent focus:border-x-transparent focus:border-b-blue-500 focus:ring-0 disabled:opacity-50 disabled:pointer-events-none dark:border-b-gray-400 dark:text-gray-400 dark:focus:ring-gray-600 dark:focus:border-b-gray-600"
+              className="peer py-3 pe-0 ps-8 block w-full bg-transparent border-t-transparent border-b-2 border-x-transparent border-b-gray-400 text-sm focus:border-t-transparent focus:border-x-transparent focus:border-b-blue-500 focus:ring-0 disabled:opacity-50 disabled:pointer-events-none dark:border-b-gray-400 dark:text-gray-800 dark:focus:ring-gray-600 dark:focus:border-b-gray-600"
               placeholder="タイトル"
               name="title"
               value={formData.title}
