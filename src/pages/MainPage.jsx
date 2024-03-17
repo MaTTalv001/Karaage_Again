@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"; // React Routerを使用している前
 // カード用のデータを定義する
 const menuItems = [
   {
-    path: "/view-karaage",
+    path: "/karaageindex",
     title: "からあげを観察する",
     description: "みんなのからあげを見て回ろう",
     imageUrl: "/assets/imgs/chikencard1.png",

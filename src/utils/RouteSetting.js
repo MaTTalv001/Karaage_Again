@@ -5,6 +5,8 @@ import UsersIndex from "pages/users/UsersIndex";
 import { UserProfile } from "pages/users/UserProfile";
 import MainPage from "pages/MainPage";
 import MakeKaraage from "pages/MakeKaraage";
+import KaraageIndex from "pages/KaraageIndex";
+import KaraageShow from "pages/recipes/KaraageShow";
 
 const Path = {
   home: "/",
@@ -14,6 +16,8 @@ const Path = {
   usersProfile: (id = ":id") => `/users/${id}`,
   mainpage: "/mainpage",
   makekaraage: "/makekaraage",
+  karaageindex: "/karaageindex",
+  karaageshow: "/karaages/:recipe_id",
 };
 
 export const RouteSetting = [
@@ -43,7 +47,15 @@ export const RouteSetting = [
   },
   {
     path: Path.makekaraage,
-    component: <MakeKaraage />
+    component: <MakeKaraage />,
+  },
+  {
+    path: Path.karaageindex,
+    component: <KaraageIndex />,
+  },
+  {
+    path: Path.karaageshow,
+    component: <KaraageShow />,
   },
 ];
 
@@ -75,5 +87,13 @@ export const RoutePath = {
   makekaraage: {
     path: Path.makekaraage,
     name: "からあげ登録",
+  },
+  karaageindex: {
+    path: Path.karaageindex,
+    name: "からあげ一覧",
+  },
+  karaageshow: {
+    path: (id) => Path.karaageshow(id),
+    name: "からあげ詳細",
   },
 };
