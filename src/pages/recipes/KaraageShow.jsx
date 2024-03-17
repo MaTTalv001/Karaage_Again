@@ -54,7 +54,7 @@ const KaraageShow = () => {
         <svg
           key={i}
           className={`h-6 w-6 ${
-            i <= rating ? "text-yellow-400" : "text-gray-300"
+            i <= rating ? "text-red-400" : "text-gray-300"
           }`}
           fill="currentColor"
           viewBox="0 0 20 20"
@@ -68,7 +68,7 @@ const KaraageShow = () => {
   };
 
   return (
-    <div className="bg-white">
+    <div className="">
       <div className="mx-auto max-w-7xl grid grid-cols-1 gap-x-8 gap-y-16 px-4 py-24 sm:px-6 sm:py-32 lg:grid-cols-2 lg:px-8">
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">

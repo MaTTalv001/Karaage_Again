@@ -7,11 +7,8 @@ export const AuthProvider = ({ children }) => {
   // ユーザーの情報
   const [user, setUser] = useState(null);
 
-  /*
-		セッションの読み込みは非同期で行われるため、
-		ログイン判定時にユーザーが読み込めていないケースが発生します。
-		それを回避するための読み込み中か否かを判定するのが以下のステートです。
-	*/
+  //読み込み中か否かを判定するのが以下のステートです。
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

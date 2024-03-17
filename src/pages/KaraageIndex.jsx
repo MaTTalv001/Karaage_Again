@@ -39,7 +39,7 @@ const RecipesList = () => {
       <div className="pt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {recipes.map((recipe) => (
           <div
-            key={recipe.id}
+            key={recipe.recipe_id}
             className="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]"
           >
             <Link to={`/karaages/${recipe.recipe_id}`}>

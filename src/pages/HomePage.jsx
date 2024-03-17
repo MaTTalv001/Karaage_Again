@@ -1,4 +1,3 @@
-import "./HomePage.css";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "contexts/AuthContext";
@@ -19,7 +18,7 @@ const HomePage = () => {
         <h1 className="text-black text-xl font-bold py-2 px-4">
           からあげアゲイン
         </h1>
-        <Link to={user ? RoutePath.mainpage.path : RoutePath.login.path}>
+        <Link to={RoutePath.mainpage.path}>
           <div className="pt-1 pb-1 pl-15 pr-15 rounded-3xl  text-center text-shadow-black">
             <img
               src="/assets/imgs/karaage_image.png"
