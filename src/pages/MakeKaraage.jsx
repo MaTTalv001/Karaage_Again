@@ -7,6 +7,7 @@ const sliderClass =
   "w-full bg-transparent cursor-pointer appearance-none disabled:opacity-50 disabled:pointer-events-none focus:outline-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:-mt-0.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-[0_0_0_4px_rgba(37,99,235,1)] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:duration-150 [&::-webkit-slider-thumb]:ease-in-out [&::-webkit-slider-thumb]:dark:bg-slate-700 [&::-moz-range-thumb]:w-2.5 [&::-moz-range-thumb]:h-2.5 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-4 [&::-moz-range-thumb]:border-blue-600 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:transition-all [&::-moz-range-thumb]:duration-150 [&::-moz-range-thumb]:ease-in-out [&::-webkit-slider-runnable-track]:w-full [&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:bg-gray-100 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:dark:bg-gray-700 [&::-moz-range-track]:w-full [&::-moz-range-track]:h-2 [&::-moz-range-track]:bg-gray-100 [&::-moz-range-track]:rounded-full";
 
 const MakeKaraage = () => {
+  const [ingredientsFormData, setIngredientsFormData] = useState([]);
   const [physicalCondition, setPhysicalCondition] = useState(0);
   const [selfRating, setSelfRating] = useState(0);
   const [mentalCondition, setMentalCondition] = useState(0);
@@ -60,13 +61,42 @@ const MakeKaraage = () => {
       self_rating: selfRating,
       mental_condition: mentalCondition,
     };
-    const { error } = await supabase.from("recipes").insert([updatedFormData]);
-    if (error) {
-      alert("Error: " + error.message);
-    } else {
-      alert("からあげのレシピを登録しました！");
-      navigate("/mainpage");
+
+    // recipes テーブルにレシピの基本情報を登録
+    const { data: recipeData, error: recipeError } = await supabase
+      .from("recipes")
+      .insert([updatedFormData])
+      .select();
+    console.log(recipeData); // デバッグ情報の出力
+
+    if (recipeError) {
+      alert("Error: " + recipeError.message);
+      return;
     }
+
+    // 登録したレシピのIDを取得
+    const recipeId = recipeData[0].recipe_id;
+    console.log(RecipeForm.ingredients);
+
+    // 材料情報を recipe_ingredients テーブルに登録
+    const ingredientsData = ingredientsFormData.map((ingredient) => ({
+      recipe_id: recipeId,
+      ingredient_id: ingredient.ingredientId,
+      quantity: ingredient.quantity,
+      brand: ingredient.brand,
+    }));
+
+    const { error: ingredientsError } = await supabase
+      .from("recipe_ingredients")
+      .insert(ingredientsData);
+
+    if (ingredientsError) {
+      alert("Error: " + ingredientsError.message);
+      return;
+    }
+
+    alert("からあげのレシピを登録しました！");
+    navigate("/mainpage");
   };
   const renderRating = (name, rating) => (
     <div className="flex items-center">
@@ -115,7 +145,7 @@ const MakeKaraage = () => {
             <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none ps-2 peer-disabled:opacity-50 peer-disabled:pointer-events-none"></div>
           </div>
           <div>
-            <RecipeForm />
+            <RecipeForm onIngredientsChange={setIngredientsFormData} />
           </div>
           <div className="relative">
             <textarea
@@ -365,6 +395,9 @@ const MakeKaraage = () => {
             登録
           </button>
         </form>
+      </div>
+      <div className="p-5 text-right text-sm text-gray-800">
+        からあげに関係ない場合、チキン南BANすることがあります
       </div>
     </div>
   );

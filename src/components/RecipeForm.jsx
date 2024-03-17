@@ -1,22 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import supabase from "services/supabaseClient";
 
-const initialIngredients = [
-  { id: 1, name: "鶏もも肉" },
-  { id: 2, name: "鶏むね肉" },
-  { id: 3, name: "鶏かた肉" },
-  { id: 4, name: "手羽先" },
-  { id: 5, name: "手羽元" },
-  { id: 6, name: "醤油" },
-  { id: 7, name: "酒" },
-  { id: 8, name: "みりん" },
-  { id: 9, name: "塩" },
-  { id: 10, name: "砂糖" },
-];
+const RecipeForm = ({ onIngredientsChange }) => {
+  // 材料データを格納するステート
+  const [ingredients, setIngredients] = useState([]);
 
-const RecipeForm = () => {
+  // 材料のフォームデータを管理するステート
   const [ingredientsForm, setIngredientsForm] = useState([
-    { id: Math.random(), ingredientId: "", quantity: "", brand: "" },
+    { id: 1, ingredientId: "", quantity: "", brand: "" },
   ]);
+  useEffect(() => {
+    // 材料データが変更されたときに、親コンポーネントに通知
+    onIngredientsChange(ingredientsForm);
+  }, [ingredientsForm, onIngredientsChange]);
+
+  // Supabaseから材料データを取得
+  useEffect(() => {
+    const fetchIngredients = async () => {
+      const { data, error } = await supabase
+        .from("ingredients")
+        .select("*")
+        .order("name", { ascending: true });
+
+      if (error) {
+        console.error("Error fetching ingredients:", error);
+      } else {
+        setIngredients(data);
+      }
+    };
+
+    fetchIngredients();
+  }, []);
 
   const handleAddIngredient = () => {
     setIngredientsForm([
@@ -38,7 +52,7 @@ const RecipeForm = () => {
 
   return (
     <div>
-      <div className="flex flex-col gap-3  overflow-auto  py-2 ">
+      <div className="flex flex-col gap-3 overflow-auto py-2">
         {ingredientsForm.map((form, index) => (
           <div key={form.id} className="flex gap-1">
             <select
@@ -49,7 +63,7 @@ const RecipeForm = () => {
               className="py-0.5 px-2 h-8 text-sm border-gray-200 rounded-lg"
             >
               <option value="">材料を選択</option>
-              {initialIngredients.map((ingredient) => (
+              {ingredients.map((ingredient) => (
                 <option key={ingredient.id} value={ingredient.id}>
                   {ingredient.name}
                 </option>
