@@ -108,7 +108,7 @@ const EatKaraage = () => {
   return (
     <div className="flex flex-col justify-start min-h-screen">
       <div className="max-w-xl w-full p-10 mx-auto">
-        <h1 className="text-xl font-bold mt-24 mb-6">からあげ食レポ投稿</h1>
+        <h1 className="text-xl font-bold mt-10 mb-6">からあげ食レポ投稿</h1>
         {/* フォームのレイアウトと入力フィールド */}
         <form onSubmit={handleSubmit}>
           <div className="relative py-5">

@@ -8,6 +8,7 @@ import MakeKaraage from "pages/MakeKaraage";
 import KaraageIndex from "pages/KaraageIndex";
 import KaraageShow from "pages/recipes/KaraageShow";
 import EatKaraage from "pages/EatKaraage";
+import PostKaraage from "pages/PostKaraage";
 
 const Path = {
   home: "/",
@@ -20,6 +21,7 @@ const Path = {
   karaageindex: "/karaageindex",
   karaageshow: "/karaages/:recipe_id",
   eatkaraage: "/eatkaraage",
+  postkaraage: "/postkaraage",
 };
 
 export const RouteSetting = [
@@ -63,6 +65,10 @@ export const RouteSetting = [
     path: Path.eatkaraage,
     component: <EatKaraage />,
   },
+  {
+    path: Path.postkaraage,
+    component: <PostKaraage />,
+  },
 ];
 
 export const RoutePath = {
@@ -105,5 +111,9 @@ export const RoutePath = {
   eatkaraage: {
     path: Path.eatkaraage,
     name: "からあげ食レポ",
+  },
+  postkaraage: {
+    path: Path.postkaraage,
+    name: "からあげ投稿",
   },
 };
