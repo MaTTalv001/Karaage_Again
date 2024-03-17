@@ -8,6 +8,7 @@ const sliderClass =
 
 const MakeKaraage = () => {
   const [ingredientsFormData, setIngredientsFormData] = useState([]);
+  const [image, setImage] = useState(null);
   const [physicalCondition, setPhysicalCondition] = useState(0);
   const [selfRating, setSelfRating] = useState(0);
   const [mentalCondition, setMentalCondition] = useState(0);
@@ -24,12 +25,15 @@ const MakeKaraage = () => {
     marination_temp: 0,
     oil_temp: 0,
     frying_time: 0,
-    photo_id: null,
+    photo_URL: "",
     self_rating: 0,
     physical_condition: 0,
     mental_condition: 0,
     insight: "",
   });
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
 
   const handleRatingChange = (name, value) => {
     if (name === "physicalCondition") {
@@ -55,19 +59,47 @@ const MakeKaraage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let publicURL = "";
+    // 画像をストレージにアップロード
+    if (image) {
+      const fileExt = image.name.split(".").pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage
+        .from("karaage-recipe")
+        .upload(`${fileName}`, image);
+
+      if (uploadError) {
+        console.error("画像のアップロードに失敗しました", uploadError);
+        return;
+      }
+
+      // 画像URLの取得
+      const urlData = await supabase.storage
+        .from("karaage-recipe")
+        .getPublicUrl(`${fileName}`);
+
+      if (urlData.error) {
+        console.error("画像URLの取得に失敗しました", urlData.error);
+        return;
+      } else {
+        publicURL = urlData.data.publicUrl;
+      }
+    }
+
     const updatedFormData = {
       ...formData,
       physical_condition: physicalCondition,
       self_rating: selfRating,
       mental_condition: mentalCondition,
+      photo_URL: publicURL,
     };
+    console.log(updatedFormData);
 
     // recipes テーブルにレシピの基本情報を登録
     const { data: recipeData, error: recipeError } = await supabase
       .from("recipes")
       .insert([updatedFormData])
       .select();
-    console.log(recipeData); // デバッグ情報の出力
 
     if (recipeError) {
       alert("Error: " + recipeError.message);
@@ -76,7 +108,6 @@ const MakeKaraage = () => {
 
     // 登録したレシピのIDを取得
     const recipeId = recipeData[0].recipe_id;
-    console.log(RecipeForm.ingredients);
 
     // 材料情報を recipe_ingredients テーブルに登録
     const ingredientsData = ingredientsFormData.map((ingredient) => ({
@@ -158,6 +189,10 @@ const MakeKaraage = () => {
               required
             ></textarea>
           </div>
+
+          <input type="file" accept="image/*" onChange={handleImageChange} />
+          <button type="submit">レシピを登録</button>
+
           <button
             type="button"
             className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium  text-gray-800 "
@@ -402,5 +437,4 @@ const MakeKaraage = () => {
     </div>
   );
 };
-
 export default MakeKaraage;
