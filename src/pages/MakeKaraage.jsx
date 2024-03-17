@@ -159,7 +159,7 @@ const MakeKaraage = () => {
 
   return (
     <div className="flex flex-col justify-start min-h-screen">
-      <div className="max-w-xl w-full p-10 mx-auto">
+      <div className="max-w-xl w-full p-3 mx-auto">
         <h1 className="text-xl font-bold mt-10 mb-6">からあげレシピ登録</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">

@@ -10,8 +10,8 @@ const menuItems = [
     imageUrl: "/assets/imgs/chikencard1.png",
   },
   {
-    path: "/makekaraage",
-    title: "からあげを登録する",
+    path: "/postkaraage",
+    title: "からあげを投稿する",
     description:
       "からあげレシピを作成したり、店で食べたからあげをレビューしよう",
     imageUrl: "/assets/imgs/chikencard2.png",
