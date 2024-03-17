@@ -81,7 +81,7 @@ const RecipeForm = ({ onIngredientsChange }) => {
             <input
               type="text"
               name="brand"
-              placeholder="ブランド名（任意）"
+              placeholder="商品名・ブランド名・産地など（任意）"
               value={form.brand}
               onChange={(e) => handleChange(e, index)}
               className="py-0.5 px-2 h-8 w-60 text-sm border-gray-200 rounded-lg"

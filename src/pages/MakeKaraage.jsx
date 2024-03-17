@@ -93,7 +93,6 @@ const MakeKaraage = () => {
       mental_condition: mentalCondition,
       photo_URL: publicURL,
     };
-    console.log(updatedFormData);
 
     // recipes テーブルにレシピの基本情報を登録
     const { data: recipeData, error: recipeError } = await supabase
@@ -397,7 +396,7 @@ const MakeKaraage = () => {
                 </h2>
                 {renderRating("physicalCondition", physicalCondition)}
                 <h2 className="pt-1 text-md font-bold mb-2 dark:text-gray-200">
-                  食べた時の対象（メンタル）
+                  食べた時の体調（メンタル）
                 </h2>
                 {renderRating("mentalCondition", mentalCondition)}
               </div>
