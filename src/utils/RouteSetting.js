@@ -11,6 +11,7 @@ import EatKaraage from "pages/EatKaraage";
 import PostKaraage from "pages/PostKaraage";
 import ReviewIndex from "pages/reviews/ReviewIndex";
 import ViewKaraage from "pages/ViewKaraage";
+import MyPage from "pages/users/MyPage";
 
 const Path = {
   home: "/",
@@ -26,6 +27,7 @@ const Path = {
   postkaraage: "/postkaraage",
   viewkaraage: "/viewkaraage",
   reviewindex: "/reviewindex",
+  mypage: "/mypage",
 };
 
 export const RouteSetting = [
@@ -81,6 +83,10 @@ export const RouteSetting = [
     path: Path.reviewindex,
     component: <ReviewIndex />,
   },
+  {
+    path: Path.mypage,
+    component: <MyPage />,
+  },
 ];
 
 export const RoutePath = {
@@ -135,5 +141,9 @@ export const RoutePath = {
   viewkaraage: {
     path: Path.reviewindex,
     name: "からあげレビュー",
+  },
+  mypage: {
+    path: Path.mypage,
+    name: "からあげマイページ",
   },
 };

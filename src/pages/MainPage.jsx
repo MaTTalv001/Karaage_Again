@@ -18,7 +18,7 @@ const menuItems = [
     requiresProfile: true, // このリンクはプロファイルが必要
   },
   {
-    path: "/my-page",
+    path: "/mypage",
     title: "マイページ（登録ユーザー限定）",
     description: "あなたのからあげを管理しよう",
     imageUrl: "/assets/imgs/chikencard3.png",
