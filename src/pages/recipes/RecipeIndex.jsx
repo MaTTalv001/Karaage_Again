@@ -35,8 +35,8 @@ const RecipesList = () => {
 
   return (
     <div className="flex flex-col justify-start min-h-screen m-24 ">
-      <h1 className="text-xl font-bold ">からあげインデックス</h1>
-      <div className="pt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <h1 className="text-xl font-bold ">からあげレシピ</h1>
+      <div className="pt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {recipes.map((recipe) => (
           <div
             key={recipe.recipe_id}

@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import supabase from "services/supabaseClient";
 import { useNavigate } from "react-router-dom";
+import { useProfile } from "contexts/ProfileContext";
 
 const EatKaraage = () => {
+  const { profile } = useProfile();
   const [image, setImage] = useState(null);
   const [rating, setRating] = useState(0);
   const navigate = useNavigate();
   const [reportData, setReportData] = useState({
-    profile_id: 1, // ひとまず固定
+    profile_id: profile.id, // ひとまず固定
     title: "",
     place: "",
     review: "",
@@ -135,7 +137,6 @@ const EatKaraage = () => {
             />
             <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none ps-2 peer-disabled:opacity-50 peer-disabled:pointer-events-none"></div>
           </div>
-          {/* タイトル、場所、レビュー、星評価の入力フィールド */}
           <h2 className="text-xl font-bold mb-4">評価</h2>
           {renderRating("評価", rating)}
           <div className="py-5">
@@ -172,7 +173,6 @@ const EatKaraage = () => {
       file:py-3 file:px-4
       dark:file:bg-gray-700 dark:file:text-gray-400"
           />
-          {/* 他の入力フィールドも同様に追加 */}
           <div className="pt-5">
             <button
               type="submit"

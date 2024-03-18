@@ -5,10 +5,12 @@ import UsersIndex from "pages/users/UsersIndex";
 import { UserProfile } from "pages/users/UserProfile";
 import MainPage from "pages/MainPage";
 import MakeKaraage from "pages/MakeKaraage";
-import KaraageIndex from "pages/KaraageIndex";
-import KaraageShow from "pages/recipes/KaraageShow";
+import RecipeIndex from "pages/recipes/RecipeIndex";
+import RecipeShow from "pages/recipes/RecipeShow";
 import EatKaraage from "pages/EatKaraage";
 import PostKaraage from "pages/PostKaraage";
+import ReviewIndex from "pages/reviews/ReviewIndex";
+import ViewKaraage from "pages/ViewKaraage";
 
 const Path = {
   home: "/",
@@ -18,10 +20,12 @@ const Path = {
   usersProfile: (id = ":id") => `/users/${id}`,
   mainpage: "/mainpage",
   makekaraage: "/makekaraage",
-  karaageindex: "/karaageindex",
-  karaageshow: "/karaages/:recipe_id",
+  recipeindex: "/recipeindex",
+  recipeshow: "/karaages/:recipe_id",
   eatkaraage: "/eatkaraage",
   postkaraage: "/postkaraage",
+  viewkaraage: "/viewkaraage",
+  reviewindex: "/reviewindex",
 };
 
 export const RouteSetting = [
@@ -54,12 +58,12 @@ export const RouteSetting = [
     component: <MakeKaraage />,
   },
   {
-    path: Path.karaageindex,
-    component: <KaraageIndex />,
+    path: Path.recipeindex,
+    component: <RecipeIndex />,
   },
   {
-    path: Path.karaageshow,
-    component: <KaraageShow />,
+    path: Path.recipeshow,
+    component: <RecipeShow />,
   },
   {
     path: Path.eatkaraage,
@@ -68,6 +72,14 @@ export const RouteSetting = [
   {
     path: Path.postkaraage,
     component: <PostKaraage />,
+  },
+  {
+    path: Path.viewkaraage,
+    component: <ViewKaraage />,
+  },
+  {
+    path: Path.reviewindex,
+    component: <ReviewIndex />,
   },
 ];
 
@@ -100,12 +112,12 @@ export const RoutePath = {
     path: Path.makekaraage,
     name: "からあげ登録",
   },
-  karaageindex: {
-    path: Path.karaageindex,
+  recipeindex: {
+    path: Path.recipeindex,
     name: "からあげ一覧",
   },
   karaageshow: {
-    path: (id) => Path.karaageshow(id),
+    path: (id) => Path.recipeshow(id),
     name: "からあげ詳細",
   },
   eatkaraage: {
@@ -115,5 +127,13 @@ export const RoutePath = {
   postkaraage: {
     path: Path.postkaraage,
     name: "からあげ投稿",
+  },
+  viewkaraage: {
+    path: Path.viewkaraage,
+    name: "からあげ閲覧",
+  },
+  viewkaraage: {
+    path: Path.reviewindex,
+    name: "からあげレビュー",
   },
 };

@@ -22,7 +22,6 @@ const LogInPage = () => {
       email,
       password,
     });
-    console.log(data.user);
     if (error) {
       alert("Error: " + error.message);
     } else {

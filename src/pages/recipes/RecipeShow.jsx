@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import supabase from "services/supabaseClient";
 
-const KaraageShow = () => {
+const RecipeShow = () => {
   const { recipe_id } = useParams();
   const [recipe, setRecipe] = useState(null);
 
@@ -26,7 +26,6 @@ const KaraageShow = () => {
 
         if (recipeError) throw recipeError;
 
-        console.log(recipeData);
         setRecipe({
           ...recipeData,
           ingredients: recipeData.recipe_ingredients.map(
@@ -36,7 +35,6 @@ const KaraageShow = () => {
             })
           ),
         });
-        console.log(recipeData);
       } catch (error) {
         console.error("Error fetching recipe details:", error);
       }
@@ -190,4 +188,4 @@ const KaraageShow = () => {
   );
 };
 
-export default KaraageShow;
+export default RecipeShow;
