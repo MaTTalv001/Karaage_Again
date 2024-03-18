@@ -12,6 +12,7 @@ import PostKaraage from "pages/PostKaraage";
 import ReviewIndex from "pages/reviews/ReviewIndex";
 import ViewKaraage from "pages/ViewKaraage";
 import MyPage from "pages/users/MyPage";
+import KaraaGame from "pages/KaraaGame";
 
 const Path = {
   home: "/",
@@ -28,6 +29,7 @@ const Path = {
   viewkaraage: "/viewkaraage",
   reviewindex: "/reviewindex",
   mypage: "/mypage",
+  karaagame: "/karaagame",
 };
 
 export const RouteSetting = [
@@ -87,6 +89,10 @@ export const RouteSetting = [
     path: Path.mypage,
     component: <MyPage />,
   },
+  {
+    path: Path.karaagame,
+    component: <KaraaGame />,
+  },
 ];
 
 export const RoutePath = {
@@ -145,5 +151,9 @@ export const RoutePath = {
   mypage: {
     path: Path.mypage,
     name: "からあげマイページ",
+  },
+  mypage: {
+    path: Path.karaagame,
+    name: "からあゲーム",
   },
 };

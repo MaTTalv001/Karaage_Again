@@ -25,7 +25,7 @@ const menuItems = [
     requiresProfile: true,
   },
   {
-    path: "/eat-karaage",
+    path: "/karaagame",
     title: "カラアゲーム",
     description: "からあげで遊ぼう",
     imageUrl: "/assets/imgs/chikencard4.png",
