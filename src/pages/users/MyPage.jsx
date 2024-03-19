@@ -2,11 +2,19 @@ import React, { useState, useEffect } from "react";
 import supabase from "services/supabaseClient";
 import { Link } from "react-router-dom";
 import { useProfile } from "contexts/ProfileContext";
+import TextField from "@mui/material/TextField";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import Button from "@mui/material/Button";
+import { formatISO } from "date-fns";
 
 const MyPage = () => {
   const [reviews, setReviews] = useState([]);
   const [recipes, setRecipes] = useState([]);
+  const [totalEaten, setTotalEaten] = useState(0);
   const { profile } = useProfile();
+  const [eatAt, setEatAt] = useState(null);
+  const [amount, setAmount] = useState("");
+  const [eatTimes, setEatTimes] = useState(0);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -30,6 +38,31 @@ const MyPage = () => {
     };
 
     fetchReviews();
+  }, [profile]);
+
+  useEffect(() => {
+    const fetchEatLogs = async () => {
+      if (!profile) {
+        console.log("Profile is not loaded yet.");
+        return;
+      }
+      const { data, error } = await supabase
+        .from("eatlogs")
+        .select("amount")
+        .eq("profile_id", profile.id);
+
+      if (error) {
+        console.error("Error fetching eat logs:", error);
+      } else {
+        // 個数
+        const eatenSum = data.reduce((sum, log) => sum + log.amount, 0);
+        setTotalEaten(eatenSum);
+        // 食べた回数
+        setEatTimes(data.length);
+      }
+    };
+
+    fetchEatLogs();
   }, [profile]);
 
   useEffect(() => {
@@ -66,10 +99,82 @@ const MyPage = () => {
     });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!profile) {
+      alert("プロフィールがロードされていません。");
+      return;
+    }
+
+    const eatAtUTC = eatAt
+      ? formatISO(eatAt, { representation: "complete" })
+      : null;
+
+    const { error } = await supabase.from("eatlogs").insert([
+      {
+        profile_id: profile.id,
+        eat_at: eatAtUTC,
+        amount: parseInt(amount, 10) || 0,
+      },
+    ]);
+
+    if (error) {
+      alert(`エラーが発生しました: ${error.message}`);
+    } else {
+      alert("唐揚げの食事ログを記録しました！");
+      setEatAt(null);
+      setAmount("");
+    }
+  };
+
   return (
     <div className="flex flex-col justify-start min-h-screen m-24">
-      <h1 className="text-xl font-bold ">からあげマイレシピ</h1>
-      <div className="pt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <h1 className="text-xl font-bold pt-5">からあげマイページ</h1>
+      <div className="flex flex-col items-stretch sm:flex-row justify-center items-start gap-4 mb-4 p-5">
+        <div
+          className="bg-white shadow-sm rounded-lg p-5 flex-none"
+          style={{ flex: 3 }}
+        >
+          <p className="text-lg font-bold">からあげ実食数: {totalEaten}個</p>
+          <p className="text-lg  pt-5">トータル回数: {eatTimes}回</p>
+          <p className="text-lg  pt-5">
+            トータル重量: {(totalEaten * 30) / 1000}kg
+          </p>
+          <p className="text-lg  pt-5">
+            トータル距離: {(totalEaten * 5) / 100}m
+          </p>
+        </div>
+
+        <div className="bg-white shadow-sm rounded-lg p-5 flex-grow">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-4"
+            style={{ flex: 1 }}
+          >
+            <DatePicker
+              label="Karaage Date"
+              value={eatAt}
+              onChange={(newValue) => {
+                setEatAt(newValue);
+              }}
+              slotProps={{ textField: { variant: "outlined" } }}
+            />
+
+            <TextField
+              label="食べた量（個）"
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
+            <Button variant="contained" type="submit">
+              記録する
+            </Button>
+          </form>
+        </div>
+      </div>
+      <h1 className="text-xl font-bold pt-5">からあげマイレシピ</h1>
+      <div className="py-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {recipes.map((recipe) => (
           <div
             key={recipe.recipe_id}

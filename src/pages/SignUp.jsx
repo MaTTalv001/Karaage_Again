@@ -48,7 +48,7 @@ const SignUpPage = () => {
         }
         alert("ユーザー登録とプロファイル設定が完了しました。");
         setUser(data); // ユーザー情報を設定
-        navigate(RoutePath.users.path);
+        navigate(RoutePath.mainpage.path);
       }
     } catch (error) {
       alert("エラーが発生しました: " + error.message);

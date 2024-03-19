@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import supabase from "services/supabaseClient";
 import TextField from "@mui/material/TextField";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker"; // AdapterDateFnsのインポートは不要になります
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useProfile } from "contexts/ProfileContext";
 import Button from "@mui/material/Button";
 import { formatISO } from "date-fns";
@@ -42,29 +42,15 @@ function KaraageGame() {
 
   return (
     <div className="pt-20">
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-      >
-        <DatePicker
-          label="Karaage Date"
-          value={eatAt}
-          onChange={(newValue) => {
-            setEatAt(newValue);
-          }}
-          renderInput={(params) => <TextField {...params} />}
-        />
-
-        <TextField
-          label="食べた量（個）"
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-        />
-        <Button variant="contained" type="submit">
-          記録する
-        </Button>
-      </form>
+      <div className="flex flex-col sm:flex-row justify-center items-start gap-4 mb-4 p-5">
+        <div
+          className="bg-white shadow-sm rounded-lg p-4 flex-none"
+          style={{ width: "500px" }}
+        >
+          <p>Karaage Soon...</p>
+          <p>Don't miss it!</p>
+        </div>
+      </div>
     </div>
   );
 }
