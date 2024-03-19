@@ -61,8 +61,8 @@ const MainMenu = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center pt-20 px-4 md:px-20">
-        <h3 className="text-lg font-bold text-gray-800">
+      <div className="flex flex-col items-center justify-center pt-20 pb-5 px-4 md:px-20">
+        <h3 className="text-lg font-bold text-gray-800 pt-5">
           今日のからあげメッセージ
         </h3>
 
@@ -84,8 +84,8 @@ const MainMenu = () => {
             </svg>
           </button>
         </p>
+        <p className="text-center pt-2">{statement.statement_ja}</p>
       </div>
-      <p className="text-center pt-2">{statement.statement_ja}</p>
 
       <div className="flex items-center justify-center ">
         <div className="grid grid-cols-2 gap-4 p-4">
