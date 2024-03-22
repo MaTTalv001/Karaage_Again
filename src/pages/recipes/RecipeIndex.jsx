@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import supabase from "services/supabaseClient";
 import { Link } from "react-router-dom";
+import { useProfile } from "contexts/ProfileContext";
 
 const RecipesList = () => {
   const [recipes, setRecipes] = useState([]);
+  const { profile } = useProfile();
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -21,6 +23,23 @@ const RecipesList = () => {
 
     fetchRecipes();
   }, []);
+
+  const handleDelete = async (recipeId) => {
+    const isConfirmed = window.confirm("本当にからあげを消しますか");
+
+    if (isConfirmed) {
+      const { error } = await supabase
+        .from("recipes")
+        .delete()
+        .match({ recipe_id: recipeId });
+
+      if (error) {
+        console.error("Error deleting recipe:", error);
+      } else {
+        setRecipes(recipes.filter((recipe) => recipe.recipe_id !== recipeId));
+      }
+    }
+  };
 
   const renderRating = (rating) => {
     return [...Array(5)].map((star, index) => {
@@ -56,6 +75,14 @@ const RecipesList = () => {
               <p className="mt-2 text-gray-500 dark:text-gray-400">
                 自己評価: {renderRating(recipe.self_rating)}
               </p>
+              {profile && profile.id === recipe.profile_id && (
+                <button
+                  className="mt-4 py-2 px-4 bg-red-500 hover:bg-red-700 text-white font-bold rounded"
+                  onClick={() => handleDelete(recipe.recipe_id)}
+                >
+                  Delete
+                </button>
+              )}
               <p className="mt-5 text-xs text-gray-500 dark:text-gray-500">
                 Posted {new Date(recipe.created_at).toLocaleDateString()}
               </p>

@@ -471,8 +471,8 @@ const MakeKaraage = () => {
           </button>
         </form>
       </div>
-      <div className="p-5 text-right text-sm text-gray-800">
-        からあげに関係ない場合、チキン南BANすることがあります
+      <div className="p-10 text-right text-sm text-gray-800">
+        からあげに関係なさすぎる場合、チキン南BANすることがあります
       </div>
     </div>
   );

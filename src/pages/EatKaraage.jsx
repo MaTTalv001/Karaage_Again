@@ -183,6 +183,9 @@ const EatKaraage = () => {
           </div>
         </form>
       </div>
+      <div className="p-10 text-right text-sm text-gray-800">
+        からあげに関係なさすぎる投稿はチキンシ（禁止）です
+      </div>
     </div>
   );
 };

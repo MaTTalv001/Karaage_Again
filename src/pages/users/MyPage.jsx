@@ -216,13 +216,11 @@ const MyPage = () => {
             key={review.id}
             className="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]"
           >
-            <Link to={`/karaages/${review.id}`}>
-              <img
-                className="w-full h-48 object-cover rounded-t-xl"
-                src={review.photo_URL}
-                alt="Recipe"
-              />
-            </Link>
+            <img
+              className="w-full h-48 object-cover rounded-t-xl"
+              src={review.photo_URL}
+              alt="Recipe"
+            />
             <div className="p-4 md:p-5">
               <h3 className="text-lg font-bold text-gray-800 dark:text-white">
                 {review.title}

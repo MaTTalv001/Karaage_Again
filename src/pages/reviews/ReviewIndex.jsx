@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import supabase from "services/supabaseClient";
 import { Link } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext";
+import { useProfile } from "contexts/ProfileContext";
 
 const ReviewIndex = () => {
   const [reviews, setReviews] = useState([]);
   const { user } = useAuth();
+  const { profile } = useProfile();
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -24,6 +26,22 @@ const ReviewIndex = () => {
 
     fetchReviews();
   }, []);
+
+  const handleDelete = async (reviewId) => {
+    const isConfirmed = window.confirm("本当にからあげを消しますか");
+    if (isConfirmed) {
+      const { error } = await supabase
+        .from("reports")
+        .delete()
+        .match({ id: reviewId });
+
+      if (error) {
+        console.error("Error deleting recipe:", error);
+      } else {
+        setReviews(reviews.filter((review) => review.id !== reviewId));
+      }
+    }
+  };
 
   const renderRating = (rating) => {
     return [...Array(5)].map((star, index) => {
@@ -45,13 +63,11 @@ const ReviewIndex = () => {
             key={review.id}
             className="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]"
           >
-            <Link to={`/karaages/${review.id}`}>
-              <img
-                className="w-full h-48 object-cover rounded-t-xl"
-                src={review.photo_URL}
-                alt="Recipe"
-              />
-            </Link>
+            <img
+              className="w-full h-48 object-cover rounded-t-xl"
+              src={review.photo_URL}
+              alt="Recipe"
+            />
             <div className="p-4 md:p-5">
               <h3 className="text-lg font-bold text-gray-800 dark:text-white">
                 {review.title}
@@ -68,6 +84,14 @@ const ReviewIndex = () => {
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                 {review.review}
               </p>
+              {profile && profile.id === review.profile_id && (
+                <button
+                  className="mt-4 py-2 px-4 bg-red-500 hover:bg-red-700 text-white font-bold rounded"
+                  onClick={() => handleDelete(review.id)}
+                >
+                  Delete
+                </button>
+              )}
               <p className="mt-5 text-xs text-gray-500 dark:text-gray-500">
                 Posted {new Date(review.created_at).toLocaleDateString()}
               </p>
