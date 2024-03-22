@@ -1,77 +1,71 @@
 import React, { useState, useEffect } from "react";
 import supabase from "services/supabaseClient";
 
-const RecipeForm = ({ onIngredientsChange }) => {
+const MeatForm = ({ onMeatsChange }) => {
   // 材料データを格納するステート
-  const [ingredients, setIngredients] = useState([]);
+  const [meats, setMeats] = useState([]);
 
   // 材料のフォームデータを管理するステート
-  const [ingredientsForm, setIngredientsForm] = useState([
-    { id: 1, ingredientId: "", quantity: null, brand: "", unit: "" },
+  const [meatsForm, setMeatsForm] = useState([
+    { id: 1, meatId: "", quantity: null, brand: "" },
   ]);
   useEffect(() => {
     // 材料データが変更されたときに、親コンポーネントに通知
-    onIngredientsChange(ingredientsForm);
-  }, [ingredientsForm, onIngredientsChange]);
+    onMeatsChange(meatsForm);
+  }, [meatsForm, onMeatsChange]);
 
   // Supabaseから材料データを取得
   useEffect(() => {
-    const fetchIngredients = async () => {
+    const fetchMeats = async () => {
       const { data, error } = await supabase
-        .from("ingredients")
+        .from("meats")
         .select("*")
-        .order("name", { ascending: true });
+        .order("sort_id", { ascending: true });
 
       if (error) {
-        console.error("Error fetching ingredients:", error);
+        console.error("Error fetching meats:", error);
       } else {
-        setIngredients(data);
+        setMeats(data);
       }
     };
 
-    fetchIngredients();
+    fetchMeats();
   }, []);
 
-  const handleAddIngredient = () => {
-    setIngredientsForm([
-      ...ingredientsForm,
-      {
-        id: Math.random(),
-        ingredientId: "",
-        quantity: null,
-        brand: "",
-        unit: "",
-      },
+  const handleAddMeat = () => {
+    setMeatsForm([
+      ...meatsForm,
+      { id: Math.random(), meatId: "", quantity: null, brand: "" },
     ]);
   };
 
-  const handleRemoveIngredient = (id) => {
-    setIngredientsForm(ingredientsForm.filter((form) => form.id !== id));
+  const handleRemoveMeat = (id) => {
+    setMeatsForm(meatsForm.filter((form) => form.id !== id));
   };
 
   const handleChange = (e, index) => {
     const { name, value } = e.target;
-    const updatedForm = [...ingredientsForm];
+    const updatedForm = [...meatsForm];
     updatedForm[index][name] = value;
-    setIngredientsForm(updatedForm);
+    setMeatsForm(updatedForm);
   };
 
   return (
     <div>
       <div className="flex flex-col gap-3 overflow-auto py-2">
-        {ingredientsForm.map((form, index) => (
+        {meatsForm.map((form, index) => (
           <div key={form.id} className="flex gap-1">
             <select
-              name="ingredientId"
+              name="meatId"
               required
-              value={form.ingredientId}
+              value={form.meatId}
               onChange={(e) => handleChange(e, index)}
               className="py-0.5 px-2 h-8 text-sm border-gray-200 rounded-lg"
             >
-              <option value="">材料を選択</option>
-              {ingredients.map((ingredient) => (
-                <option key={ingredient.id} value={ingredient.id}>
-                  {ingredient.name}
+              <option value=""> お肉を選択</option>
+              {meats.map((meat) => (
+                <option key={meat.id} value={meat.id}>
+                  {meat.name}
                 </option>
               ))}
             </select>
@@ -79,30 +73,13 @@ const RecipeForm = ({ onIngredientsChange }) => {
               type="number"
               name="quantity"
               required
-              placeholder="量"
+              placeholder="量(グラム)"
               value={form.quantity || ""}
               onChange={(e) => handleChange(e, index)}
-              className="py-0.5 px-2 h-8 w-20 text-sm border-gray-200 rounded-lg"
+              className="py-0.5 px-2 h-8 w-28 text-sm border-gray-200 rounded-lg"
               min="0"
-              step="1"
+              step="10"
             />
-            <select
-              name="unit"
-              value={form.unit}
-              onChange={(e) => handleChange(e, index)}
-              className="py-0.5 px-2 h-8 w-30 text-sm border-gray-200 rounded-lg"
-            >
-              <option value="">単位</option>
-              <option value="g">g</option>
-              <option value="ml">ml</option>
-              <option value="少々">少々</option>
-              <option value="大さじ">大さじ</option>
-              <option value="小さじ">小さじ</option>
-              <option value="個">個</option>
-              <option value="振り">振り</option>
-              <option value="枚">枚</option>
-              <option value="滴">滴</option>
-            </select>
             <input
               type="text"
               name="brand"
@@ -111,10 +88,10 @@ const RecipeForm = ({ onIngredientsChange }) => {
               onChange={(e) => handleChange(e, index)}
               className="py-0.5 px-2 h-8 w-60 text-sm border-gray-200 rounded-lg"
             />
-            {ingredientsForm.length > 1 && (
+            {meatsForm.length > 1 && (
               <button
                 type="button"
-                onClick={() => handleRemoveIngredient(form.id)}
+                onClick={() => handleRemoveMeat(form.id)}
                 className="p-2 rounded-lg focus:outline-none"
               >
                 <svg
@@ -136,11 +113,8 @@ const RecipeForm = ({ onIngredientsChange }) => {
           </div>
         ))}
       </div>
-      <button onClick={handleAddIngredient} className="mt-3">
-        +
-      </button>
     </div>
   );
 };
 
-export default RecipeForm;
+export default MeatForm;

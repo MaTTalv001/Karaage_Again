@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import supabase from "services/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import RecipeForm from "components/RecipeForm";
+import MeatForm from "components/MeatForm";
 import { useProfile } from "contexts/ProfileContext";
 
 const sliderClass =
@@ -9,6 +10,7 @@ const sliderClass =
 
 const MakeKaraage = () => {
   const [ingredientsFormData, setIngredientsFormData] = useState([]);
+  const [meatsFormData, setMeatsFormData] = useState([]);
   const { profile } = useProfile();
   const [image, setImage] = useState(null);
   const [physicalCondition, setPhysicalCondition] = useState(0);
@@ -21,16 +23,16 @@ const MakeKaraage = () => {
     title: "",
     process: "",
     meat_origin: "",
-    expiration_remain: 0,
-    block_size: 0,
-    marination_time: 0,
-    marination_temp: 0,
-    oil_temp: 0,
-    frying_time: 0,
+    expiration_remain: null,
+    block_size: null,
+    marination_time: null,
+    marination_temp: null,
+    oil_temp: null,
+    frying_time: null,
     photo_URL: "",
-    self_rating: 0,
-    physical_condition: 0,
-    mental_condition: 0,
+    self_rating: null,
+    physical_condition: null,
+    mental_condition: null,
     insight: "",
   });
   const handleImageChange = (e) => {
@@ -110,12 +112,30 @@ const MakeKaraage = () => {
     // 登録したレシピのIDを取得
     const recipeId = recipeData[0].recipe_id;
 
+    // 肉情報をrecipe_meats テーブルに登録
+    const meatsData = meatsFormData.map((meat) => ({
+      recipe_id: recipeId,
+      meat_id: meat.meatId,
+      quantity: meat.quantity,
+      brand: meat.brand,
+    }));
+
+    const { error: meatsError } = await supabase
+      .from("recipes_meats")
+      .insert(meatsData);
+
+    if (meatsError) {
+      alert("Error: " + meatsError.message);
+      return;
+    }
+
     // 材料情報を recipe_ingredients テーブルに登録
     const ingredientsData = ingredientsFormData.map((ingredient) => ({
       recipe_id: recipeId,
       ingredient_id: ingredient.ingredientId,
       quantity: ingredient.quantity,
       brand: ingredient.brand,
+      unit: ingredient.unit,
     }));
 
     const { error: ingredientsError } = await supabase
@@ -177,6 +197,11 @@ const MakeKaraage = () => {
             <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none ps-2 peer-disabled:opacity-50 peer-disabled:pointer-events-none"></div>
           </div>
           <div>
+            <p className="text-md text-gray-800 ">お肉</p>
+            <MeatForm onMeatsChange={setMeatsFormData} />
+          </div>
+          <div>
+            <p className="text-md text-gray-800 ">調味料</p>
             <RecipeForm onIngredientsChange={setIngredientsFormData} />
           </div>
           <div className="relative">

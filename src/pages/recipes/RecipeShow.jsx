@@ -13,13 +13,19 @@ const RecipeShow = () => {
           .from("recipes")
           .select(
             `
-          *,
-          recipe_ingredients(
-            quantity,
-            brand,
-            ingredient:ingredients(name)
-          )
-        `
+    *,
+    recipe_ingredients(
+      quantity,
+      brand,
+      unit,
+      ingredient:ingredients(name)
+    ),
+    recipes_meats(
+      quantity,
+      brand,
+      meat:meats(name)
+    )
+  `
           )
           .eq("recipe_id", recipe_id)
           .single();
@@ -34,6 +40,10 @@ const RecipeShow = () => {
               ...rest,
             })
           ),
+          meats: recipeData.recipes_meats.map(({ meat, ...rest }) => ({
+            name: meat.name,
+            ...rest,
+          })),
         });
       } catch (error) {
         console.error("Error fetching recipe details:", error);
@@ -72,6 +82,7 @@ const RecipeShow = () => {
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             {recipe.title}
           </h2>
+          {recipe.meats.map((meat, index) => meat.name)}
           <div className="mt-4 flex">{renderStars(recipe.self_rating)}</div>
           <p className="mt-4 text-gray-500">{recipe.insight}</p>
           <div className="border-t border-gray-200 mt-10"></div>
@@ -85,29 +96,53 @@ const RecipeShow = () => {
                   <div className="-m-1.5 overflow-x-auto">
                     <div className="p-1.5 min-w-full inline-block align-middle">
                       <div className="overflow-hidden">
-                        <table className="min-w-full divide-y divide-gray-200 ">
+                        <table className="min-w-full divide-y divide-gray-200">
                           <thead className="bg-gray-50">
                             <tr>
                               <th
                                 scope="col"
                                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                               >
-                                Ingredient
+                                材料
                               </th>
                               <th
                                 scope="col"
                                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                               >
-                                Quantity
+                                量
                               </th>
                               <th
                                 scope="col"
                                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                               >
-                                Brand
+                                単位
+                              </th>
+                              <th
+                                scope="col"
+                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                              >
+                                製品名・産地など
                               </th>
                             </tr>
                           </thead>
+                          <tbody className="bg-white divide-y divide-gray-200 ">
+                            {recipe.meats.map((meat, index) => (
+                              <tr key={index}>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
+                                  {meat.name}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                  {meat.quantity}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                  g
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                  {meat.brand || "N/A"}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
                           <tbody className="bg-white divide-y divide-gray-200 ">
                             {recipe.ingredients.map((ingredient, index) => (
                               <tr key={index}>
@@ -116,6 +151,9 @@ const RecipeShow = () => {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                   {ingredient.quantity}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                  {ingredient.unit}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                   {ingredient.brand || "N/A"}
