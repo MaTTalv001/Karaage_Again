@@ -20,7 +20,7 @@ const RecipeForm = ({ onIngredientsChange }) => {
       const { data, error } = await supabase
         .from("ingredients")
         .select("*")
-        .order("name", { ascending: true });
+        .order("sort_id", { ascending: true });
 
       if (error) {
         console.error("Error fetching ingredients:", error);

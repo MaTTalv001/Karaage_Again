@@ -107,6 +107,12 @@ const MyPage = () => {
       return;
     }
 
+    const amountNumber = parseInt(amount, 10);
+    if (isNaN(amountNumber) || amountNumber < 0) {
+      alert("からあげは常にプラス");
+      return;
+    }
+
     const eatAtUTC = eatAt
       ? formatISO(eatAt, { representation: "complete" })
       : null;
@@ -166,6 +172,8 @@ const MyPage = () => {
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
+              min="0"
+              step="1"
             />
             <Button variant="contained" type="submit">
               記録する
