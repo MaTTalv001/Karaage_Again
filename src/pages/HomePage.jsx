@@ -22,13 +22,14 @@ const HomePage = () => {
           <div className="pt-1 pb-1 pl-15 pr-15 rounded-3xl  text-center text-shadow-black">
             <img
               src="/assets/imgs/karaage_image.png"
-              alt="Pythagora maker"
+              alt="からあげアゲイン"
               className="mx-auto"
               style={{ maxWidth: "50%", height: "auto" }}
             />
           </div>
         </Link>
       </div>
+      
     </div>
   );
 };
