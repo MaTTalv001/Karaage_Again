@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useProfile } from "contexts/ProfileContext";
 import supabase from "services/supabaseClient";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { useDrag } from "react-dnd";
+import { useDrop } from "react-dnd";
 
 const ingredients = [
   "むね肉",
@@ -183,6 +185,72 @@ function KaraageGame() {
   const [time, setTime] = useState(0);
   const [key, setKey] = useState(Math.random());
 
+  // ドラッグアンドドロップ
+  function DroppableArea() {
+    const [{ canDrop, isOver }, drop] = useDrop(() => ({
+      accept: "ingredient",
+      drop: (item, monitor) => {
+        // handle drop event
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      }),
+    }));
+    // ドロップエリアのスタイル。ドラッグ中やドロップ可能な状態に応じて変化します。
+    const style = {
+      height: "200px",
+      width: "100%",
+      border: "2px dashed gray",
+      backgroundColor: isOver && canDrop ? "lightgreen" : "white",
+      color: "black",
+      padding: "10px",
+      textAlign: "center",
+      lineHeight: "180px", // 中央揃えのための設定
+    };
+
+    return (
+      <div ref={drop} style={style}>
+        {isOver && canDrop ? "ここに材料をドロップ" : "材料をここにドラッグ"}
+      </div>
+    );
+  }
+
+  function DraggableIngredient({ ingredient }) {
+    const [{ isDragging }, drag] = useDrag(() => ({
+      type: "ingredient",
+      item: { ingredient },
+      collect: (monitor) => ({
+        isDragging: !!monitor.isDragging(),
+      }),
+    }));
+    return (
+      <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
+        {/* 材料の表示 */}
+        <button
+          key={ingredient}
+          className=" p-2 relative text-gray−800 font-bold flex flex-col items-center"
+          onClick={() => selectIngredient(ingredient)}
+          style={{ height: "100px" }}
+        >
+          <img
+            src={ingredientImages[ingredient]}
+            alt={ingredient}
+            className="h-full w-auto"
+          />
+          <span className="z-10 relative">{ingredient}</span>
+          <div className="absolute inset-0 "></div>
+        </button>
+      </div>
+    );
+  }
+  const handleDrop = (ingredient) => {
+    setSelectedIngredients((prevIngredients) => [
+      ...prevIngredients,
+      ingredient,
+    ]);
+  };
+
   // タイマーを開始する関数
   useEffect(() => {
     const timer = setInterval(() => {
@@ -351,6 +419,7 @@ function KaraageGame() {
                         レシピを変更
                       </button>
                     </div>
+                    <DroppableArea onDrop={handleDrop} />
                   </div>
                 </div>
               </div>
@@ -362,20 +431,7 @@ function KaraageGame() {
             <h2 className="text-lg font-bold mb-2">材料を選ぶ</h2>
             <div className="grid grid-cols-3 gap-4">
               {ingredients.map((ingredient) => (
-                <button
-                  key={ingredient}
-                  className=" p-2 relative text-gray−800 font-bold flex flex-col items-center"
-                  onClick={() => selectIngredient(ingredient)}
-                  style={{ height: "100px" }}
-                >
-                  <img
-                    src={ingredientImages[ingredient]}
-                    alt={ingredient}
-                    className="h-full w-auto"
-                  />
-                  <span className="z-10 relative">{ingredient}</span>
-                  <div className="absolute inset-0 "></div>
-                </button>
+                <DraggableIngredient key={ingredient} ingredient={ingredient} />
               ))}
             </div>
           </div>
