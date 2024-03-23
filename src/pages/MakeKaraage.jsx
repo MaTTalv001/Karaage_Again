@@ -19,7 +19,7 @@ const MakeKaraage = () => {
   const navigate = useNavigate();
   const [isOffCanvasOpen, setIsOffCanvasOpen] = useState(false);
   const [formData, setFormData] = useState({
-    profile_id: profile.id,
+    profile_id: profile ? profile.id : 5,
     title: "",
     process: "",
     meat_origin: "",
@@ -80,7 +80,12 @@ const MakeKaraage = () => {
       // 画像URLの取得
       const urlData = await supabase.storage
         .from("karaage-recipe")
-        .getPublicUrl(`${fileName}`);
+        .getPublicUrl(`${fileName}`, {
+          transform: {
+            width: 600,
+            height: 400,
+          },
+        });
 
       if (urlData.error) {
         console.error("画像URLの取得に失敗しました", urlData.error);

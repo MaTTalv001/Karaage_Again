@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import ResipeIndex from "pages/recipes/RecipeIndex";
 import ReviewIndex from "pages/reviews/ReviewIndex";
+import { Link } from "react-router-dom";
+import { RoutePath } from "utils/RouteSetting";
 
 const ViewPage = () => {
   const [selection, setSelection] = useState("none");
@@ -22,6 +24,9 @@ const ViewPage = () => {
         >
           食レポ閲覧
         </button>
+        <Link to={RoutePath.mainpage.path} className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 rounded-md dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800">
+          メインページへ
+        </Link>
       </div>
       <div>
         {selection === "make" && <ResipeIndex />}

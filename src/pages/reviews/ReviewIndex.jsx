@@ -3,6 +3,7 @@ import supabase from "services/supabaseClient";
 import { Link } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext";
 import { useProfile } from "contexts/ProfileContext";
+import  HandleDeleteReview  from "components/DeleteReview";
 
 const ReviewIndex = () => {
   const [reviews, setReviews] = useState([]);
@@ -27,22 +28,6 @@ const ReviewIndex = () => {
     fetchReviews();
   }, []);
 
-  const handleDelete = async (reviewId) => {
-    const isConfirmed = window.confirm("本当にからあげを消しますか");
-    if (isConfirmed) {
-      const { error } = await supabase
-        .from("reports")
-        .delete()
-        .match({ id: reviewId });
-
-      if (error) {
-        console.error("Error deleting recipe:", error);
-      } else {
-        setReviews(reviews.filter((review) => review.id !== reviewId));
-      }
-    }
-  };
-
   const renderRating = (rating) => {
     return [...Array(5)].map((star, index) => {
       index += 1;
@@ -65,7 +50,7 @@ const ReviewIndex = () => {
           >
             <img
               className="w-full h-48 object-cover rounded-t-xl"
-              src={review.photo_URL}
+              src={review.photo_URL || "/assets/imgs/no_photo.png"}
               alt="Recipe"
             />
             <div className="p-4 md:p-5">
@@ -84,13 +69,11 @@ const ReviewIndex = () => {
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                 {review.review}
               </p>
+              
               {profile && profile.id === review.profile_id && (
-                <button
-                  className="mt-4 py-2 px-4 bg-red-500 hover:bg-red-700 text-white font-bold rounded"
-                  onClick={() => handleDelete(review.id)}
-                >
-                  Delete
-                </button>
+                <>
+                  <HandleDeleteReview reviewId={review.id} reviews={reviews} setReviews={setReviews} />
+                </>
               )}
               <p className="mt-5 text-xs text-gray-500 dark:text-gray-500">
                 Posted {new Date(review.created_at).toLocaleDateString()}

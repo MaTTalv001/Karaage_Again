@@ -6,6 +6,8 @@ import TextField from "@mui/material/TextField";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Button from "@mui/material/Button";
 import { formatISO } from "date-fns";
+import HandleDelete from "components/DeleteRecipe";
+import  HandleDeleteReview  from "components/DeleteReview";
 
 const MyPage = () => {
   const [reviews, setReviews] = useState([]);
@@ -205,6 +207,11 @@ const MyPage = () => {
               <p className="mt-5 text-xs text-gray-500 dark:text-gray-500">
                 Posted {new Date(recipe.created_at).toLocaleDateString()}
               </p>
+              {profile && profile.id === recipe.profile_id && (
+                <>
+                  <HandleDelete recipeId={recipe.recipe_id} recipes={recipes} setRecipes={setRecipes} />
+                </>
+              )}
             </div>
           </div>
         ))}
@@ -218,7 +225,7 @@ const MyPage = () => {
           >
             <img
               className="w-full h-48 object-cover rounded-t-xl"
-              src={review.photo_URL}
+              src={review.photo_URL || "/assets/imgs/no_photo.png"}
               alt="Recipe"
             />
             <div className="p-4 md:p-5">
@@ -237,6 +244,11 @@ const MyPage = () => {
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                 {review.review}
               </p>
+              {profile && profile.id === review.profile_id && (
+                <>
+                  <HandleDeleteReview reviewId={review.id} reviews={reviews} setReviews={setReviews} />
+                </>
+              )}
               <p className="mt-5 text-xs text-gray-500 dark:text-gray-500">
                 Posted {new Date(review.created_at).toLocaleDateString()}
               </p>

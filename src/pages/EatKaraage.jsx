@@ -9,7 +9,7 @@ const EatKaraage = () => {
   const [rating, setRating] = useState(0);
   const navigate = useNavigate();
   const [reportData, setReportData] = useState({
-    profile_id: profile.id, // ひとまず固定
+    profile_id: profile ? profile.id : 5,
     title: "",
     place: "",
     review: "",
@@ -50,7 +50,12 @@ const EatKaraage = () => {
       // 画像URLの取得
       const urlData = await supabase.storage
         .from("karaage-recipe")
-        .getPublicUrl(`${fileName}`);
+        .getPublicUrl(`${fileName}`, {
+          transform: {
+            width: 600,
+            height: 400,
+          },
+        });
 
       if (urlData.error) {
         console.error("画像URLの取得に失敗しました", urlData.error);

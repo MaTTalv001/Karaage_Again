@@ -12,16 +12,15 @@ const menuItems = [
   },
   {
     path: "/postkaraage",
-    title: "からあげを投稿する（登録ユーザー限定）",
+    title: "からあげを投稿する",
     description:
       "からあげレシピを作成したり、店で食べたからあげをレビューしよう",
     imageUrl: "/assets/imgs/chikencard2.png",
-    requiresProfile: true, // このリンクはプロファイルが必要
   },
   {
     path: "/mypage",
     title: "マイページ（登録ユーザー限定）",
-    description: "あなたのからあげを管理しよう",
+    description: "あなたのからあげ生活を管理しよう",
     imageUrl: "/assets/imgs/chikencard3.png",
     requiresProfile: true,
   },
@@ -91,7 +90,7 @@ const MainMenu = () => {
         <div className="grid grid-cols-2 gap-4 p-4">
           {menuItems.map((item) => {
             const isDisabled = item.requiresProfile && !profile;
-            const Component = isDisabled ? "div" : "a"; // リンクが無効な場合はdiv、有効な場合はaを使用
+            const Component = isDisabled ? "div" : "a"; 
             return (
               <Component
                 key={item.title}
@@ -101,7 +100,7 @@ const MainMenu = () => {
                 }`}
                 onClick={(e) => {
                   if (isDisabled) {
-                    e.preventDefault(); // リンクが無効な場合はクリックイベントを無効にする
+                    e.preventDefault(); 
                   }
                 }}
               >
