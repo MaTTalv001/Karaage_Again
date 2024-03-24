@@ -181,6 +181,15 @@ function KaraageGame() {
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [karaages, setKaraages] = useState([]);
+  const [isGameCleared, setIsGameCleared] = useState(false);
+
+  // ゲームクリアフラグの制御
+  useEffect(() => {
+    if (successCount >= 5) {
+      setIsGameCleared(true); // ゲームクリア状態をtrueに設定
+      setIsGameStarted(false); // ゲーム開始フラグをfalseにして計測を停止
+    }
+  }, [successCount]); // 成功回数が変化するたびにチェック
 
   // かああげが飛ぶ演出
   useEffect(() => {
@@ -342,6 +351,7 @@ function KaraageGame() {
   }
 
   // フライヤーのボタンが押された時の判定
+  // 材料の配列もシャッフルする
   function operateFryer() {
     if (compareRecipes(currentRecipe, userSelection)) {
       setSuccessCount((prevCount) => prevCount + 1);
@@ -351,15 +361,33 @@ function KaraageGame() {
     }
     // 次のレシピを生成
     setCurrentRecipe(generateRecipe());
-    // ユーザーの選択をリセット
     setUserSelection({});
-    // キーを更新
     setKey(Math.random());
+    shuffleIngredientsAndSet();
   }
+
+  // ingredients配列をランダムに並び替えて設定する
+  const shuffleIngredientsAndSet = () => {
+    const shuffledIngredients = ingredients.sort(() => 0.5 - Math.random());
+    setRandomIngredients(shuffledIngredients);
+  };
 
   return (
     <>
       {karaages}
+      {isGameCleared && (
+        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-opacity-75 bg-gray-700 z-50">
+          <div className="text-center">
+            <p className="text-4xl text-white mb-8">ゲームクリア！</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              リトライ
+            </button>
+          </div>
+        </div>
+      )}
       <div className="flex flex-col items-center justify-center p-20">
         <h1 className="text-2xl font-semibold text-gray-800 pb-2">
           からあげしかないレストラン
