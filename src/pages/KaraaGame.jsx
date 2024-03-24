@@ -179,6 +179,7 @@ function KaraageGame() {
   const [time, setTime] = useState(0);
   const [key, setKey] = useState(Math.random());
   const [randomIngredients, setRandomIngredients] = useState([]);
+  const [selectedIngredients, setSelectedIngredients] = useState([]);
 
   // ドラッグアンドドロップ
   function DroppableArea() {
