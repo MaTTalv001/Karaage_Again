@@ -65,3 +65,18 @@
   transform: scale(0.9);
   transition: opacity 500ms, transform 500ms;
 }
+
+.flyingKaraage {
+  animation: fly 2s linear infinite;
+}
+
+@keyframes fly {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100px) rotate(360deg);
+    opacity: 0;
+  }
+}

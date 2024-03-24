@@ -4,6 +4,7 @@ import supabase from "services/supabaseClient";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { useDrag } from "react-dnd";
 import { useDrop } from "react-dnd";
+import FlyingKaraage from "components/FlyingKaraage";
 
 const ingredients = [
   "むね肉",
@@ -63,7 +64,7 @@ const recipes = [
     片栗粉: 1,
   },
   {
-    手羽元: 3,
+    手羽元: 2,
     醤油: 1,
     中華スープの素: 1,
     カレー粉: 1,
@@ -72,7 +73,7 @@ const recipes = [
   {
     もも肉: 1,
     酒: 2,
-    生姜: 2,
+    生姜: 1,
     塩: 1,
     片栗粉: 1,
   },
@@ -84,11 +85,11 @@ const recipes = [
     小麦粉: 2,
   },
   {
-    手羽先: 3,
-    ニンニク: 3,
+    手羽先: 1,
+    ニンニク: 1,
     塩: 2,
     酒: 1,
-    片栗粉: 2,
+    片栗粉: 1,
   },
   {
     手羽元: 1,
@@ -100,43 +101,41 @@ const recipes = [
   {
     もも肉: 2,
     ニンニク: 2,
-    カレー粉: 2,
+    カレー粉: 1,
   },
   {
-    むね肉: 4,
+    むね肉: 2,
     醤油: 2,
     生姜: 1,
-    小麦粉: 5,
+    小麦粉: 2,
   },
   {
-    手羽先: 2,
+    手羽先: 1,
     胡椒: 2,
     塩: 1,
     酒: 1,
-    片栗粉: 2,
+    片栗粉: 1,
   },
   {
-    手羽元: 3,
+    手羽元: 2,
     ニンニク: 1,
-    醤油: 2,
-    中華スープの素: 2,
+    醤油: 1,
+    中華スープの素: 1,
     小麦粉: 1,
   },
   {
-    もも肉: 2,
+    もも肉: 1,
     胡椒: 1,
     醤油: 2,
     片栗粉: 1,
   },
   {
-    むね肉: 4,
-    ニンニク: 1,
-    生姜: 1,
-    小麦粉: 1,
+    むね肉: 5,
+    ニンニク: 3,
   },
   {
     手羽先: 3,
-    中華スープの素: 3,
+    中華スープの素: 1,
     酒: 1,
     片栗粉: 1,
   },
@@ -181,6 +180,26 @@ function KaraageGame() {
   const [randomIngredients, setRandomIngredients] = useState([]);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [isGameStarted, setIsGameStarted] = useState(false);
+  const [karaages, setKaraages] = useState([]);
+
+  // かああげが飛ぶ演出
+  useEffect(() => {
+    if (isGameStarted) {
+      const interval = setInterval(() => {
+        setKaraages((prevKaraages) => {
+          // 唐揚げの数が50個未満の場合のみ新しい唐揚げを追加
+          if (prevKaraages.length < 50) {
+            return [...prevKaraages, <FlyingKaraage key={Date.now()} />];
+          } else {
+            // 既に50個ある場合は何も追加しない
+            return prevKaraages;
+          }
+        });
+      }, 1000); // 1秒ごとに唐揚げを追加する試みを行う
+
+      return () => clearInterval(interval);
+    }
+  }, [isGameStarted]);
 
   // ドラッグアンドドロップ
   function DroppableArea() {
@@ -340,7 +359,11 @@ function KaraageGame() {
 
   return (
     <>
+      {karaages}
       <div className="flex flex-col items-center justify-center p-20">
+        <h1 className="text-2xl font-semibold text-gray-800 pb-2">
+          からあげしかないレストラン
+        </h1>
         <div className="w-full max-w-4xl mb-4">
           <div className="max-w-[85rem] px-2 py-1 sm:px-4 lg:px-6 md:py-1 lg:py-1 mx-auto bg-white border border-gray-200 rounded-lg shadow-sm">
             <div className="flex justify-between items-center">
@@ -404,6 +427,15 @@ function KaraageGame() {
             </div>
           </div>
         </div>
+        {!isGameStarted && (
+          <div className="flex justify-center items-center w-full max-w-4xl mx-auto">
+            <img
+              src="/assets/imgs/game/recipe/introduction.jpg"
+              alt="イントロダクション"
+              className="max-w-full h-auto"
+            />
+          </div>
+        )}
 
         {/*ゲーム開始するまで非表示*/}
         {isGameStarted && (
