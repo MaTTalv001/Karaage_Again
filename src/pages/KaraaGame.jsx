@@ -42,16 +42,16 @@ const ingredientImages = {
 };
 const recipes = [
   {
-    もも肉: 3,
-    醤油: 4,
+    もも肉: 1,
+    醤油: 2,
     生姜: 1,
-    ニンニク: 3,
-    片栗粉: 2,
+    ニンニク: 1,
+    片栗粉: 1,
   },
   {
-    むね肉: 2,
-    酒: 3,
-    塩: 4,
+    むね肉: 1,
+    酒: 2,
+    塩: 1,
     胡椒: 1,
     小麦粉: 2,
   },
@@ -64,92 +64,86 @@ const recipes = [
   },
   {
     手羽元: 3,
-    醤油: 2,
+    醤油: 1,
     中華スープの素: 1,
-    カレー粉: 5,
-    小麦粉: 3,
+    カレー粉: 1,
+    小麦粉: 1,
   },
   {
-    もも肉: 2,
-    酒: 3,
+    もも肉: 1,
+    酒: 2,
     生姜: 2,
-    塩: 5,
-    片栗粉: 3,
+    塩: 1,
+    片栗粉: 1,
   },
   {
-    むね肉: 2,
-    醤油: 2,
-    胡椒: 4,
-    砂糖: 1,
-    小麦粉: 3,
+    むね肉: 1,
+    醤油: 1,
+    胡椒: 1,
+    砂糖: 2,
+    小麦粉: 2,
   },
   {
     手羽先: 3,
     ニンニク: 3,
-    塩: 4,
-    酒: 2,
+    塩: 2,
+    酒: 1,
     片栗粉: 2,
   },
   {
-    手羽元: 2,
-    胡椒: 2,
+    手羽元: 1,
+    胡椒: 1,
     醤油: 2,
     生姜: 2,
     小麦粉: 1,
   },
   {
     もも肉: 2,
-    ニンニク: 6,
-    酒: 5,
-    カレー粉: 5,
-    片栗粉: 2,
+    ニンニク: 2,
+    カレー粉: 2,
   },
   {
     むね肉: 4,
-    醤油: 1,
+    醤油: 2,
     生姜: 1,
-    砂糖: 4,
     小麦粉: 5,
   },
   {
     手羽先: 2,
-    胡椒: 5,
-    塩: 2,
+    胡椒: 2,
+    塩: 1,
     酒: 1,
-    片栗粉: 3,
+    片栗粉: 2,
   },
   {
     手羽元: 3,
-    ニンニク: 3,
+    ニンニク: 1,
     醤油: 2,
-    中華スープの素: 6,
-    小麦粉: 3,
+    中華スープの素: 2,
+    小麦粉: 1,
   },
   {
-    もも肉: 4,
-    胡椒: 3,
-    塩: 1,
+    もも肉: 2,
+    胡椒: 1,
     醤油: 2,
-    片栗粉: 4,
+    片栗粉: 1,
   },
   {
-    むね肉: 6,
-    ニンニク: 3,
-    酒: 4,
-    生姜: 4,
-    小麦粉: 5,
+    むね肉: 4,
+    ニンニク: 1,
+    生姜: 1,
+    小麦粉: 1,
   },
   {
     手羽先: 3,
     中華スープの素: 3,
-    カレー粉: 5,
-    酒: 2,
+    酒: 1,
     片栗粉: 1,
   },
   {
     手羽元: 2,
-    醤油: 3,
-    生姜: 4,
+    醤油: 1,
+    生姜: 2,
     砂糖: 1,
     小麦粉: 1,
   },
@@ -184,35 +178,57 @@ function KaraageGame() {
   const [successCount, setSuccessCount] = useState(0);
   const [time, setTime] = useState(0);
   const [key, setKey] = useState(Math.random());
+  const [randomIngredients, setRandomIngredients] = useState([]);
 
   // ドラッグアンドドロップ
   function DroppableArea() {
     const [{ canDrop, isOver }, drop] = useDrop(() => ({
       accept: "ingredient",
       drop: (item, monitor) => {
-        // handle drop event
+        // selectIngredient関数を呼び出して、ドラッグ＆ドロップされた材料のカウントを増やす
+        selectIngredient(item.ingredient);
       },
       collect: (monitor) => ({
         isOver: monitor.isOver(),
         canDrop: monitor.canDrop(),
       }),
     }));
-    // ドロップエリアのスタイル。ドラッグ中やドロップ可能な状態に応じて変化します。
+    // ドロップエリアのスタイル
     const style = {
-      height: "200px",
+      height: "100px",
       width: "100%",
       border: "2px dashed gray",
       backgroundColor: isOver && canDrop ? "lightgreen" : "white",
       color: "black",
       padding: "10px",
       textAlign: "center",
-      lineHeight: "180px", // 中央揃えのための設定
+      lineHeight: "80px", // 中央揃えのための設定
     };
 
     return (
-      <div ref={drop} style={style}>
-        {isOver && canDrop ? "ここに材料をドロップ" : "材料をここにドラッグ"}
-      </div>
+      <>
+        <h2 className="pt-2 text-left text-xl font-semibold text-gray-800 ">
+          まな板
+        </h2>
+        <div ref={drop} style={style}>
+          {isOver && canDrop ? "ここに材料をドロップ" : "材料をここにドラッグ"}
+        </div>
+        <div className="mt-2">
+          {Object.entries(userSelection).length > 0 ? (
+            <ul className="list-disc pl-5">
+              {Object.entries(userSelection).map(
+                ([ingredient, count], index) => (
+                  <li key={index} className="text-gray-800">
+                    {ingredient} x {count}
+                  </li>
+                )
+              )}
+            </ul>
+          ) : (
+            <p className="text-gray-800">まだ材料が追加されていません。</p>
+          )}
+        </div>
+      </>
     );
   }
 
@@ -262,11 +278,33 @@ function KaraageGame() {
 
   // ユーザーが材料を選んだ時の処理
   function selectIngredient(ingredient) {
-    setUserSelection((prevSelection) => ({
-      ...prevSelection,
-      [ingredient]: (prevSelection[ingredient] || 0) + 1,
-    }));
+    setUserSelection((prevSelection) => {
+      // 新しい選択を計算
+      const newSelection = {
+        ...prevSelection,
+        [ingredient]: (prevSelection[ingredient] || 0) + 1,
+      };
+      // コンソールに出力
+      console.log(newSelection);
+      // 新しい状態を返す
+      return newSelection;
+    });
   }
+
+  // 具材の並び方をランダムにするFisher-Yatesアルゴリズム
+  useEffect(() => {
+    // ingredients配列をランダムに並び替える関数
+    const shuffleIngredients = (ingredients) => {
+      const array = [...ingredients];
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    };
+
+    setRandomIngredients(shuffleIngredients(ingredients));
+  }, [ingredients]); // 依存配列にingredientsを設定
 
   // タイムのフォーマットを修正する関数
   function formatTime(time) {
@@ -296,15 +334,15 @@ function KaraageGame() {
   return (
     <>
       <div className="flex flex-col items-center justify-center p-20">
-        <div className="w-full max-w-6xl mb-4">
-          <div className="max-w-[85rem] px-4 py-1 sm:px-6 lg:px-8 md:py-2 lg:py-2 mx-auto  bg-white border border-gray-200 rounded-xl shadow-sm">
+        <div className="w-full max-w-4xl mb-4">
+          <div className="max-w-[85rem] px-2 py-1 sm:px-4 lg:px-6 md:py-1 lg:py-1 mx-auto bg-white border border-gray-200 rounded-lg shadow-sm">
             <div className="grid sm:grid-cols-2">
               {/* 成功回数とタイマーのカード */}
-              <div className="p-1 md:p-1">
+              <div className="p-0.5 md:p-0.5">
                 <div>
                   {/* 成功回数を示すアイコン */}
                   <svg
-                    className="flex-shrink-0 size-10 text-gray-500"
+                    className="flex-shrink-0 h-6 w-6 text-gray-500" // アイコンサイズを調整
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="none"
@@ -315,24 +353,37 @@ function KaraageGame() {
                   >
                     <path d="M12 2l2 7h7l-6 4.28L21 20l-7-5-7 5 2.9-6.72L5 9h7z"></path>
                   </svg>
-                  <div className="mt-3">
-                    <p className="text-2xl uppercase tracking-wide text-gray-500">
+                  <div className="mt-2">
+                    <p className="text-xl uppercase tracking-wide text-gray-500">
                       成功回数
                     </p>
                     <div className="mt-1 lg:flex lg:justify-between lg:items-center">
-                      <h3 className="text-4xl sm:text-2xl font-semibold text-gray-800 ">
+                      <h3 className="text-3xl sm:text-xl font-semibold text-gray-800">
                         {successCount}回
                       </h3>
+                      {/* 成功回数に応じた画像を表示 */}
+                      <div style={{ display: "flex", flexDirection: "row" }}>
+                        {Array.from({ length: successCount }, (_, i) => i).map(
+                          (_, index) => (
+                            <img
+                              key={index}
+                              src="/favicon.png"
+                              alt="からあげ"
+                              style={{ width: "30px", height: "30px" }}
+                            />
+                          )
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
               {/* タイマーのカード */}
-              <div className="p-1 md:p-1">
+              <div className="p-0.5 md:p-0.5">
                 <div>
                   {/* タイマーを示すアイコン */}
                   <svg
-                    className="flex-shrink-0 size-10 text-gray-500"
+                    className="flex-shrink-0 h-6 w-6 text-gray-500" // アイコンサイズを調整
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="none"
@@ -344,12 +395,12 @@ function KaraageGame() {
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12 6 12 12 16 14"></polyline>
                   </svg>
-                  <div className="mt-3">
-                    <p className="text-2xl uppercase tracking-wide text-gray-500">
+                  <div className="mt-2">
+                    <p className="text-xl uppercase tracking-wide text-gray-500">
                       タイマー
                     </p>
                     <div className="mt-1 lg:flex lg:justify-between lg:items-center">
-                      <h3 className="text-4xl sm:text-2xl font-semibold text-gray-800 ">
+                      <h3 className="text-3xl sm:text-xl font-semibold text-gray-800">
                         {formatTime(time)}
                       </h3>
                     </div>
@@ -359,16 +410,17 @@ function KaraageGame() {
             </div>
           </div>
         </div>
-        <div className="flex justify-between w-full max-w-6xl mt-4">
+
+        <div className="flex justify-between w-full max-w-4xl">
           {/* レシピのセクション */}
           <div className="flex-1">
-            <div className="max-w-[85rem] px-1 py-10 sm:px-6 lg:px-3 lg:py-14 mx-auto">
+            <div className="max-w-[85rem] px-1 py-1 sm:px-2 lg:px-1 lg:py-2 mx-auto">
               <div className="flex flex-col">
                 <div className="-m-1.5 overflow-x-auto">
                   <div className="p-1.5 min-w-full inline-block align-middle">
-                    <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden ">
-                      <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-b border-gray-200 ">
-                        <h2 className="text-xl font-semibold text-gray-800 ">
+                    <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                      <div className="px-4 py-2 grid gap-2 md:flex md:justify-between md:items-center border-b border-gray-200">
+                        <h2 className="text-lg font-semibold text-gray-800">
                           現在のオーダー
                         </h2>
                       </div>
@@ -378,31 +430,31 @@ function KaraageGame() {
                           timeout={500}
                           classNames="fade"
                         >
-                          <table className="min-w-full divide-y divide-gray-200 ">
-                            <thead className="bg-gray-50 ">
+                          <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
                               <tr>
                                 <th
                                   scope="col"
-                                  className="px-6 py-3 text-left text-xl font-semibold uppercase tracking-wider text-gray-800 "
+                                  className="px-4 py-2 text-left text-lg font-semibold uppercase tracking-wider text-gray-800"
                                 >
                                   材料
                                 </th>
                                 <th
                                   scope="col"
-                                  className="px-6 py-3 text-left text-xl font-semibold uppercase tracking-wider text-gray-800 "
+                                  className="px-4 py-2 text-left text-lg font-semibold uppercase tracking-wider text-gray-800"
                                 >
                                   量
                                 </th>
                               </tr>
                             </thead>
-                            <tbody className="bg-white divide-y divide-gray-200 ">
+                            <tbody className="bg-white divide-y divide-gray-200">
                               {Object.entries(currentRecipe).map(
                                 ([ingredient, quantity]) => (
                                   <tr key={ingredient}>
-                                    <td className="px-6 py-4 whitespace-nowrap text-xl font-medium text-gray-800 ">
+                                    <td className="px-4 py-2 whitespace-nowrap text-lg font-medium text-gray-800">
                                       {ingredient}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-xl text-gray-800 ">
+                                    <td className="px-4 py-2 whitespace-nowrap text-lg text-gray-800">
                                       {quantity}
                                     </td>
                                   </tr>
@@ -412,14 +464,14 @@ function KaraageGame() {
                           </table>
                         </CSSTransition>
                       </TransitionGroup>
-                      <button
-                        onClick={operateFryer}
-                        className="mt-4 p-2 bg-blue-500 text-white rounded"
-                      >
-                        レシピを変更
-                      </button>
                     </div>
-                    <DroppableArea onDrop={handleDrop} />
+                    <DroppableArea />
+                    <button
+                      onClick={operateFryer}
+                      className="w-full mt-4 py-2 bg-red-500 hover:bg-red-600 text-white font-bold rounded shadow-lg hover:shadow-xl transition duration-150 ease-in-out"
+                    >
+                      揚げる！！
+                    </button>
                   </div>
                 </div>
               </div>
@@ -429,8 +481,8 @@ function KaraageGame() {
           {/* 材料選択セクション */}
           <div className="flex-1 p-4  bg-white border border-gray-200 rounded-xl shadow-sm ml-4">
             <h2 className="text-lg font-bold mb-2">材料を選ぶ</h2>
-            <div className="grid grid-cols-3 gap-4">
-              {ingredients.map((ingredient) => (
+            <div className="grid grid-cols-4 gap-4">
+              {randomIngredients.map((ingredient) => (
                 <DraggableIngredient key={ingredient} ingredient={ingredient} />
               ))}
             </div>
