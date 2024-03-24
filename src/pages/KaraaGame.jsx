@@ -180,6 +180,7 @@ function KaraageGame() {
   const [key, setKey] = useState(Math.random());
   const [randomIngredients, setRandomIngredients] = useState([]);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
+  const [isGameStarted, setIsGameStarted] = useState(false);
 
   // ドラッグアンドドロップ
   function DroppableArea() {
@@ -268,14 +269,19 @@ function KaraageGame() {
     ]);
   };
 
-  // タイマーを開始する関数
+  // ゲームの状態と時間計測を監視
   useEffect(() => {
+    if (!isGameStarted) {
+      // ゲームが開始していない場合は何もしない
+      return;
+    }
+    // ゲームが開始された場合のみ、タイマーを開始する
     const timer = setInterval(() => {
       setTime((prevTime) => prevTime + 1);
     }, 1000);
-    // コンポーネントがアンマウントされるときにタイマーをクリアする
+    // コンポーネントのクリーンアップ時にタイマーをクリア
     return () => clearInterval(timer);
-  }, []);
+  }, [isGameStarted]); // 依存配列にisGameStartedを追加
 
   // ユーザーが材料を選んだ時の処理
   function selectIngredient(ingredient) {
@@ -337,158 +343,151 @@ function KaraageGame() {
       <div className="flex flex-col items-center justify-center p-20">
         <div className="w-full max-w-4xl mb-4">
           <div className="max-w-[85rem] px-2 py-1 sm:px-4 lg:px-6 md:py-1 lg:py-1 mx-auto bg-white border border-gray-200 rounded-lg shadow-sm">
-            <div className="grid sm:grid-cols-2">
-              {/* 成功回数とタイマーのカード */}
-              <div className="p-0.5 md:p-0.5">
-                <div>
-                  {/* 成功回数を示すアイコン */}
-                  <svg
-                    className="flex-shrink-0 h-6 w-6 text-gray-500" // アイコンサイズを調整
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 2l2 7h7l-6 4.28L21 20l-7-5-7 5 2.9-6.72L5 9h7z"></path>
-                  </svg>
-                  <div className="mt-2">
-                    <p className="text-xl uppercase tracking-wide text-gray-500">
-                      成功回数
-                    </p>
-                    <div className="mt-1 lg:flex lg:justify-between lg:items-center">
-                      <h3 className="text-3xl sm:text-xl font-semibold text-gray-800">
-                        {successCount}回
-                      </h3>
-                      {/* 成功回数に応じた画像を表示 */}
-                      <div style={{ display: "flex", flexDirection: "row" }}>
-                        {Array.from({ length: successCount }, (_, i) => i).map(
-                          (_, index) => (
-                            <img
-                              key={index}
-                              src="/favicon.png"
-                              alt="からあげ"
-                              style={{ width: "30px", height: "30px" }}
-                            />
-                          )
-                        )}
-                      </div>
-                    </div>
-                  </div>
+            <div className="flex justify-between items-center">
+              {/* 成功回数 */}
+              <div className="flex items-center space-x-2">
+                <h3 className="text-2xl font-semibold text-gray-800">
+                  Goodアゲ: {successCount}回
+                </h3>
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  {Array.from({ length: successCount }, (_, i) => i).map(
+                    (_, index) => (
+                      <img
+                        key={index}
+                        src="/favicon.png"
+                        alt="からあげ"
+                        style={{ width: "30px", height: "30px" }}
+                      />
+                    )
+                  )}
                 </div>
               </div>
-              {/* タイマーのカード */}
-              <div className="p-0.5 md:p-0.5">
-                <div>
-                  {/* タイマーを示すアイコン */}
-                  <svg
-                    className="flex-shrink-0 h-6 w-6 text-gray-500" // アイコンサイズを調整
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+
+              {/* タイマー */}
+              <div className="flex items-center space-x-2">
+                <svg
+                  className="flex-shrink-0 h-6 w-6 text-gray-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <h3 className="text-2xl font-semibold text-gray-800">
+                  {formatTime(time)}
+                </h3>
+              </div>
+
+              {/* スタート/リセットボタン */}
+              <div>
+                {!isGameStarted ? (
+                  <button
+                    onClick={() => setIsGameStarted(true)}
+                    className="py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded shadow"
                   >
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                  <div className="mt-2">
-                    <p className="text-xl uppercase tracking-wide text-gray-500">
-                      タイマー
-                    </p>
-                    <div className="mt-1 lg:flex lg:justify-between lg:items-center">
-                      <h3 className="text-3xl sm:text-xl font-semibold text-gray-800">
-                        {formatTime(time)}
-                      </h3>
-                    </div>
-                  </div>
-                </div>
+                    スタート
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="py-2 px-4 bg-red-500 hover:bg-red-700 text-white font-bold rounded shadow"
+                  >
+                    リセット
+                  </button>
+                )}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex justify-between w-full max-w-4xl">
-          {/* レシピのセクション */}
-          <div className="flex-1">
-            <div className="max-w-[85rem] px-1 py-1 sm:px-2 lg:px-1 lg:py-2 mx-auto">
-              <div className="flex flex-col">
-                <div className="-m-1.5 overflow-x-auto">
-                  <div className="p-1.5 min-w-full inline-block align-middle">
-                    <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-                      <div className="px-4 py-2 grid gap-2 md:flex md:justify-between md:items-center border-b border-gray-200">
-                        <h2 className="text-lg font-semibold text-gray-800">
-                          現在のオーダー
-                        </h2>
+        {/*ゲーム開始するまで非表示*/}
+        {isGameStarted && (
+          <div className="flex justify-between w-full max-w-4xl">
+            {/* レシピのセクション */}
+            <div className="flex-1">
+              <div className="max-w-[85rem] px-1 py-1 sm:px-2 lg:px-1 lg:py-2 mx-auto">
+                <div className="flex flex-col">
+                  <div className="-m-1.5 overflow-x-auto">
+                    <div className="p-1.5 min-w-full inline-block align-middle">
+                      <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                        <div className="px-4 py-2 grid gap-2 md:flex md:justify-between md:items-center border-b border-gray-200">
+                          <h2 className="text-lg font-semibold text-gray-800">
+                            現在のオーダー
+                          </h2>
+                        </div>
+                        <TransitionGroup>
+                          <CSSTransition
+                            key={key}
+                            timeout={500}
+                            classNames="fade"
+                          >
+                            <table className="min-w-full divide-y divide-gray-200">
+                              <thead className="bg-gray-50">
+                                <tr>
+                                  <th
+                                    scope="col"
+                                    className="px-4 py-2 text-left text-lg font-semibold uppercase tracking-wider text-gray-800"
+                                  >
+                                    材料
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    className="px-4 py-2 text-left text-lg font-semibold uppercase tracking-wider text-gray-800"
+                                  >
+                                    量
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody className="bg-white divide-y divide-gray-200">
+                                {Object.entries(currentRecipe).map(
+                                  ([ingredient, quantity]) => (
+                                    <tr key={ingredient}>
+                                      <td className="px-4 py-2 whitespace-nowrap text-lg font-medium text-gray-800">
+                                        {ingredient}
+                                      </td>
+                                      <td className="px-4 py-2 whitespace-nowrap text-lg text-gray-800">
+                                        {quantity}
+                                      </td>
+                                    </tr>
+                                  )
+                                )}
+                              </tbody>
+                            </table>
+                          </CSSTransition>
+                        </TransitionGroup>
                       </div>
-                      <TransitionGroup>
-                        <CSSTransition
-                          key={key}
-                          timeout={500}
-                          classNames="fade"
-                        >
-                          <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
-                              <tr>
-                                <th
-                                  scope="col"
-                                  className="px-4 py-2 text-left text-lg font-semibold uppercase tracking-wider text-gray-800"
-                                >
-                                  材料
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-4 py-2 text-left text-lg font-semibold uppercase tracking-wider text-gray-800"
-                                >
-                                  量
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                              {Object.entries(currentRecipe).map(
-                                ([ingredient, quantity]) => (
-                                  <tr key={ingredient}>
-                                    <td className="px-4 py-2 whitespace-nowrap text-lg font-medium text-gray-800">
-                                      {ingredient}
-                                    </td>
-                                    <td className="px-4 py-2 whitespace-nowrap text-lg text-gray-800">
-                                      {quantity}
-                                    </td>
-                                  </tr>
-                                )
-                              )}
-                            </tbody>
-                          </table>
-                        </CSSTransition>
-                      </TransitionGroup>
+                      <DroppableArea />
+                      <button
+                        onClick={operateFryer}
+                        className="w-full mt-4 py-2 bg-red-500 hover:bg-red-600 text-white font-bold rounded shadow-lg hover:shadow-xl transition duration-150 ease-in-out"
+                      >
+                        揚げる！！
+                      </button>
                     </div>
-                    <DroppableArea />
-                    <button
-                      onClick={operateFryer}
-                      className="w-full mt-4 py-2 bg-red-500 hover:bg-red-600 text-white font-bold rounded shadow-lg hover:shadow-xl transition duration-150 ease-in-out"
-                    >
-                      揚げる！！
-                    </button>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* 材料選択セクション */}
-          <div className="flex-1 p-4  bg-white border border-gray-200 rounded-xl shadow-sm ml-4">
-            <h2 className="text-lg font-bold mb-2">材料を選ぶ</h2>
-            <div className="grid grid-cols-4 gap-4">
-              {randomIngredients.map((ingredient) => (
-                <DraggableIngredient key={ingredient} ingredient={ingredient} />
-              ))}
+            {/* 材料選択セクション */}
+            <div className="flex-1 p-4  bg-white border border-gray-200 rounded-xl shadow-sm ml-4">
+              <h2 className="text-lg font-bold mb-2">材料を選ぶ</h2>
+              <div className="grid grid-cols-4 gap-4">
+                {randomIngredients.map((ingredient) => (
+                  <DraggableIngredient
+                    key={ingredient}
+                    ingredient={ingredient}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   );
