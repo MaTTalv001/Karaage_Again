@@ -7,7 +7,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Button from "@mui/material/Button";
 import { formatISO } from "date-fns";
 import HandleDelete from "components/DeleteRecipe";
-import  HandleDeleteReview  from "components/DeleteReview";
+import HandleDeleteReview from "components/DeleteReview";
 
 const MyPage = () => {
   const [reviews, setReviews] = useState([]);
@@ -110,7 +110,7 @@ const MyPage = () => {
     }
 
     const amountNumber = parseInt(amount, 10);
-    if (isNaN(amountNumber) || amountNumber < 0) {
+    if (isNaN(amountNumber) || amountNumber <= 0) {
       alert("からあげは常にプラス");
       return;
     }
@@ -133,6 +133,7 @@ const MyPage = () => {
       alert("唐揚げの食事ログを記録しました！");
       setEatAt(null);
       setAmount("");
+      window.location.reload();
     }
   };
 
@@ -209,7 +210,11 @@ const MyPage = () => {
               </p>
               {profile && profile.id === recipe.profile_id && (
                 <>
-                  <HandleDelete recipeId={recipe.recipe_id} recipes={recipes} setRecipes={setRecipes} />
+                  <HandleDelete
+                    recipeId={recipe.recipe_id}
+                    recipes={recipes}
+                    setRecipes={setRecipes}
+                  />
                 </>
               )}
             </div>
@@ -246,7 +251,11 @@ const MyPage = () => {
               </p>
               {profile && profile.id === review.profile_id && (
                 <>
-                  <HandleDeleteReview reviewId={review.id} reviews={reviews} setReviews={setReviews} />
+                  <HandleDeleteReview
+                    reviewId={review.id}
+                    reviews={reviews}
+                    setReviews={setReviews}
+                  />
                 </>
               )}
               <p className="mt-5 text-xs text-gray-500 dark:text-gray-500">

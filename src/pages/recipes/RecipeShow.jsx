@@ -184,7 +184,7 @@ const RecipeShow = () => {
                 国産/外国産 : {recipe.meat_origin}
               </div>
               <div className="text-sm text-gray-500">
-                サイズ : {recipe.meat_size}cm
+                サイズ : {recipe.block_size}cm
               </div>
               <div className="text-sm text-gray-500">
                 漬け時間 : {recipe.marination_time}分
