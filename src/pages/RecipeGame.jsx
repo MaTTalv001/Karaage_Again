@@ -461,7 +461,7 @@ function RecipeGame() {
               onClick={handleGaugeClick}
               className="mt-2 py-2 px-4 bg-orange-500 text-white font-bold rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline"
             >
-              クリック！
+              揚げる！！
             </button>
           </div>
         </div>
@@ -470,7 +470,9 @@ function RecipeGame() {
       {isGameCleared && (
         <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-opacity-75 bg-gray-700 z-50">
           <div className="text-center">
-            <p className="text-4xl text-white mb-8">ゲームクリア！</p>
+            <p className="text-4xl text-white mb-8">
+              ゲームクリア！クリアタイム{time}秒
+            </p>
             <button
               onClick={() => window.location.reload()}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
