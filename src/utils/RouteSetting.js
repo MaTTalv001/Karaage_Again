@@ -14,6 +14,8 @@ import ViewKaraage from "pages/ViewKaraage";
 import MyPage from "pages/users/MyPage";
 import KaraaGame from "pages/KaraaGame";
 import RecipeGame from "pages/RecipeGame";
+import { PrivacyPolicy } from "pages/static/PrivacyPolicy";
+import { TermsOfService } from "pages/static/TermsOfService";
 
 const Path = {
   home: "/",
@@ -32,6 +34,8 @@ const Path = {
   mypage: "/mypage",
   karaagame: "/karaagame",
   recipegame: "/recipegame",
+  privacypolicy: "/privacypolicy",
+  termsofuse: "/termsofuse",
 };
 
 export const RouteSetting = [
@@ -99,6 +103,14 @@ export const RouteSetting = [
     path: Path.recipegame,
     component: <RecipeGame />,
   },
+  {
+    path: Path.privacypolicy,
+    component: <PrivacyPolicy />,
+  },
+  {
+    path: Path.termsofuse,
+    component: <TermsOfService />,
+  },
 ];
 
 export const RoutePath = {
@@ -164,6 +176,14 @@ export const RoutePath = {
   },
   recipegame: {
     path: Path.recipegame,
-    name: "からあげしかないレストラン",
+    name: "リストランテからあげ",
+  },
+  privacypolicy: {
+    path: Path.privacypolicy,
+    name: "プライバシーポリシー",
+  },
+  termsofuse: {
+    path: Path.termsofuse,
+    name: "利用規約",
   },
 };

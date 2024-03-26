@@ -6,7 +6,7 @@ const KaraaGame = () => {
   // サンプルデータ
   const GamePath = [
     {
-      title: "からあげしかないレストラン",
+      title: "リストランテからあげ",
       image_url: "/assets/imgs/game/retrogame.png",
       description:
         "プレイヤーは、レシピに従って迅速にからあげを調理するシェフとなります。タイムマネジメントと正確なレシピが成功の鍵。",
@@ -16,14 +16,14 @@ const KaraaGame = () => {
       title: "KARAAGE SOULS（開発予定）",
       image_url: "/assets/imgs/game/karaagesoul.png",
       description:
-        "強力な敵と立ち向かいながら、「究極のからあげ」を探求します。剣とからあげの力を解放し、闇に立ち向かう。",
+        "古の神々が去り、人々が不死としてさまよう、朽ち果てた王国。絶望に満ちたこの地では、力を求める亡者たちが「不死のからあげ」を篝火に焚べる",
       url: "#",
     },
     {
       title: "唐揚げの野望（開発予定）",
       image_url: "/assets/imgs/game/karaagenoyabo.png",
       description:
-        "日本統一を目指し、からあげを使って大名たちとの同盟を深め、敵を出し抜く戦略シミュレーションゲーム。美味しいからあげが大義名分となる。",
+        "戦国時代のからあげ大名となり、戦略的な外交、軍事、経済の管理を通じて日本統一を目指す歴史シミュレーション。",
       url: "#",
     },
   ];

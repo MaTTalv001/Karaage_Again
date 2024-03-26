@@ -45,13 +45,11 @@ const recipes = [
   {
     もも肉: 1,
     醤油: 2,
-    生姜: 1,
     片栗粉: 1,
   },
   {
     むね肉: 1,
     酒: 1,
-    塩: 1,
     胡椒: 1,
     小麦粉: 1,
   },
@@ -65,11 +63,9 @@ const recipes = [
     手羽元: 2,
     醤油: 1,
     中華スープの素: 1,
-    小麦粉: 1,
   },
   {
     もも肉: 1,
-    生姜: 1,
     塩: 1,
     片栗粉: 1,
   },
@@ -87,7 +83,6 @@ const recipes = [
   {
     手羽元: 1,
     醤油: 2,
-    生姜: 1,
     小麦粉: 1,
   },
   {
@@ -101,19 +96,16 @@ const recipes = [
   },
   {
     手羽先: 1,
-    胡椒: 1,
     酒: 1,
     片栗粉: 1,
   },
   {
     手羽元: 2,
-    ニンニク: 1,
     中華スープの素: 1,
     小麦粉: 1,
   },
   {
     もも肉: 1,
-    胡椒: 1,
     醤油: 1,
     片栗粉: 1,
   },
@@ -126,7 +118,6 @@ const recipes = [
   },
   {
     手羽元: 1,
-    醤油: 1,
     生姜: 1,
     砂糖: 1,
     小麦粉: 1,
@@ -376,7 +367,7 @@ function RecipeGame() {
       // ゲージのアニメーション開始
       startGaugeAnimation();
     } else {
-      alert("このからあげは客さんに出せない！");
+      alert("材料が間違っている！");
       // 次のレシピを生成
       resetGame();
     }
@@ -484,7 +475,7 @@ function RecipeGame() {
       )}
       <div className="flex flex-col items-center justify-center p-20">
         <h1 className="text-2xl font-semibold text-gray-800 pb-10 pt-5">
-          からあげしかないレストラン
+          リストランテからあげ
         </h1>
         <div className="w-full max-w-4xl mb-4">
           <div className="max-w-[85rem] px-2 py-1 sm:px-4 lg:px-6 md:py-1 lg:py-1 mx-auto bg-white border border-gray-200 rounded-lg shadow-sm">

@@ -40,6 +40,12 @@ const Header = () => {
         )}
       </div>
       <div className="mx-5">
+        <Link to={RoutePath.privacypolicy.path} className="text-black mx-2">
+          {RoutePath.privacypolicy.name}
+        </Link>
+        <Link to={RoutePath.termsofuse.path} className="text-black mx-2">
+          {RoutePath.termsofuse.name}
+        </Link>
         {user ? (
           <button onClick={logout} className="text-black mx-2">
             Logout
