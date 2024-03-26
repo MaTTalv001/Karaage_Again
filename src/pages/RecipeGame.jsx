@@ -1,3 +1,5 @@
+// ミニゲーム　レシピ通りに具材を集めてからあげをあげる
+
 import React, { useState, useEffect } from "react";
 import { useProfile } from "contexts/ProfileContext";
 import supabase from "services/supabaseClient";
@@ -6,6 +8,9 @@ import { useDrag } from "react-dnd";
 import { useDrop } from "react-dnd";
 import FlyingKaraage from "components/FlyingKaraage";
 
+// To Do リファクタリング
+
+// 材料リスト
 const ingredients = [
   "むね肉",
   "もも肉",
@@ -23,7 +28,7 @@ const ingredients = [
   "片栗粉",
   "小麦粉",
 ];
-
+// 材料画像（DALLEで作成　著作権OK）
 const ingredientImages = {
   もも肉: "/assets/imgs/game/recipe/001.png",
   むね肉: "/assets/imgs/game/recipe/002.png",
@@ -41,6 +46,7 @@ const ingredientImages = {
   片栗粉: "/assets/imgs/game/recipe/014.png",
   小麦粉: "/assets/imgs/game/recipe/015.png",
 };
+// ユーザーに出題するレシピのリスト
 const recipes = [
   {
     もも肉: 1,
@@ -124,11 +130,13 @@ const recipes = [
   },
 ];
 
+// レシピをランダムで抽選する
 function generateRecipe() {
   const randomIndex = Math.floor(Math.random() * recipes.length);
   return recipes[randomIndex];
 }
 
+// ユーザーが準備した具材とレシピを照合する。順不同
 function compareRecipes(recipe1, recipe2) {
   const keys1 = Object.keys(recipe1);
   const keys2 = Object.keys(recipe2);
@@ -146,6 +154,7 @@ function compareRecipes(recipe1, recipe2) {
   return true;
 }
 
+// ここから最後までゲームのメイン部分
 function RecipeGame() {
   const { profile } = useProfile();
   const [currentRecipe, setCurrentRecipe] = useState(generateRecipe());
@@ -173,7 +182,7 @@ function RecipeGame() {
     }
   }, [successCount]); // 成功回数が変化するたびにチェック
 
-  // かああげが飛ぶ演出
+  // おまけ要素　からあげが飛ぶ演出
   useEffect(() => {
     if (isGameStarted) {
       const interval = setInterval(() => {
@@ -192,6 +201,7 @@ function RecipeGame() {
     }
   }, [isGameStarted]);
 
+  // ゲームスタート時のカウントダウン
   useEffect(() => {
     if (!isGameStarted) return;
 
@@ -204,18 +214,17 @@ function RecipeGame() {
     return () => clearInterval(countDownInterval);
   }, [isGameStarted]); // isGameStarted の変化をトリガーとする
 
+  // カウントダウンが終わったらゲーム開始フラグをオン
   useEffect(() => {
     if (countDown <= 0) {
       setShowCountDown(false); // カウントダウンを非表示にする
-      // ゲームの本格的な開始処理をここに実装する
-      // 例: タイマーをリセットして計測を開始するなど
       if (!isGameStarted) {
-        setIsGameStarted(true); // 実際のゲームを開始
+        setIsGameStarted(true); // ゲーム開始フラグ
       }
     }
   }, [countDown]);
 
-  // ドラッグアンドドロップ
+  // 具材のドラッグアンドドロップ　react-dndのインストールが必要
   function DroppableArea() {
     const [{ canDrop, isOver }, drop] = useDrop(() => ({
       accept: "ingredient",
@@ -228,7 +237,7 @@ function RecipeGame() {
         canDrop: monitor.canDrop(),
       }),
     }));
-    // ドロップエリアのスタイル
+    // ドロップエリア（まな板）のスタイル
     const style = {
       height: "100px",
       width: "100%",
@@ -267,6 +276,7 @@ function RecipeGame() {
     );
   }
 
+  // 材料表示エリア（ドラッグ可能）
   function DraggableIngredient({ ingredient }) {
     const [{ isDragging }, drag] = useDrag(() => ({
       type: "ingredient",
@@ -295,6 +305,7 @@ function RecipeGame() {
     );
   }
 
+  // 現在未使用部分　ToDo動作確認後削除
   const handleDrop = (ingredient) => {
     setSelectedIngredients((prevIngredients) => [
       ...prevIngredients,
@@ -332,7 +343,7 @@ function RecipeGame() {
     });
   }
 
-  // 具材の並び方をランダムにするFisher-Yatesアルゴリズム
+  // 具材の並び方をランダムにする。Fisher-Yatesアルゴリズム
   useEffect(() => {
     // ingredients配列をランダムに並び替える関数
     const shuffleIngredients = (ingredients) => {
@@ -399,6 +410,7 @@ function RecipeGame() {
     setIntervalId(interval); // インターバルIDをステートに設定
   };
 
+  // からあげを揚げるボタンを押した後の具材などのリセット
   const resetGame = () => {
     if (intervalId !== null) {
       clearInterval(intervalId); // インターバルをクリア
@@ -412,6 +424,8 @@ function RecipeGame() {
     shuffleIngredientsAndSet();
   };
 
+  // ゲージクリック時のリアクション
+  // To Do アラート表示ではなくモーダル化
   const handleGaugeClick = () => {
     if (showGauge) {
       if (gaugeValue >= 70 && gaugeValue <= 90) {
@@ -441,9 +455,12 @@ function RecipeGame() {
                   : "bg-black"
               }`}
               style={{ width: `${gaugeValue}%` }}
-            ></div>
+            >
+
+            </div>
             {/* 75%のマーカー */}
-            <div className="absolute top-0 left-3/4 w-0.5 h-full bg-black"></div>
+            <div className="absolute top-0 left-3/4 w-0.5 h-full bg-black">
+            </div>
           </div>
           <div className="flex justify-center items-center py-2">
             <button
@@ -455,7 +472,6 @@ function RecipeGame() {
           </div>
         </div>
       )}
-
       {isGameCleared && (
         <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-opacity-75 bg-gray-700 z-50">
           <div className="text-center">

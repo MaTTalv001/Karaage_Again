@@ -16,6 +16,7 @@ import KaraaGame from "pages/KaraaGame";
 import RecipeGame from "pages/RecipeGame";
 import { PrivacyPolicy } from "pages/static/PrivacyPolicy";
 import { TermsOfService } from "pages/static/TermsOfService";
+import SandBox from "pages/sandbox/SandBox";
 
 const Path = {
   home: "/",
@@ -36,6 +37,7 @@ const Path = {
   recipegame: "/recipegame",
   privacypolicy: "/privacypolicy",
   termsofuse: "/termsofuse",
+  sandbox: "/sandbox",
 };
 
 export const RouteSetting = [
@@ -111,6 +113,10 @@ export const RouteSetting = [
     path: Path.termsofuse,
     component: <TermsOfService />,
   },
+  {
+    path: Path.sandbox,
+    component: <SandBox />,
+  },
 ];
 
 export const RoutePath = {
@@ -185,5 +191,9 @@ export const RoutePath = {
   termsofuse: {
     path: Path.termsofuse,
     name: "利用規約",
+  },
+  sandbox: {
+    path: Path.sandbox,
+    name: "テストスペース",
   },
 };
