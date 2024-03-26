@@ -167,6 +167,12 @@ function RecipeGame() {
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [karaages, setKaraages] = useState([]);
   const [isGameCleared, setIsGameCleared] = useState(false);
+  const [countDown, setCountDown] = useState(3); // カウントダウン用
+  const [showCountDown, setShowCountDown] = useState(false); // カウントダウン表示用
+  const [showGauge, setShowGauge] = useState(false);
+  const [gaugeValue, setGaugeValue] = useState(0);
+  const [gaugeDirection, setGaugeDirection] = useState(1);
+  const [intervalId, setIntervalId] = useState(null);
 
   // ゲームクリアフラグの制御
   useEffect(() => {
@@ -194,6 +200,29 @@ function RecipeGame() {
       return () => clearInterval(interval);
     }
   }, [isGameStarted]);
+
+  useEffect(() => {
+    if (!isGameStarted) return;
+
+    setShowCountDown(true);
+    setCountDown(3); // カウントダウンを3から開始する
+    const countDownInterval = setInterval(() => {
+      setCountDown((prevCount) => prevCount - 1);
+    }, 1000);
+
+    return () => clearInterval(countDownInterval);
+  }, [isGameStarted]); // isGameStarted の変化をトリガーとする
+
+  useEffect(() => {
+    if (countDown <= 0) {
+      setShowCountDown(false); // カウントダウンを非表示にする
+      // ゲームの本格的な開始処理をここに実装する
+      // 例: タイマーをリセットして計測を開始するなど
+      if (!isGameStarted) {
+        setIsGameStarted(true); // 実際のゲームを開始
+      }
+    }
+  }, [countDown]);
 
   // ドラッグアンドドロップ
   function DroppableArea() {
@@ -258,23 +287,23 @@ function RecipeGame() {
     return (
       <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
         {/* 材料の表示 */}
-        <button
+        <div
           key={ingredient}
-          className=" p-2 relative text-gray−800 font-bold flex flex-col items-center hover:scale-105 transition-transform duration-300 ease-in-out"
-          onClick={() => selectIngredient(ingredient)}
+          className="p-2 relative text-gray-800 font-bold flex flex-col items-center hover:scale-105 transition-transform duration-300 ease-in-out"
           style={{ height: "100px" }}
         >
           <img
             src={ingredientImages[ingredient]}
             alt={ingredient}
-            className="h-full w-auto "
+            className="h-full w-auto"
           />
           <span className="z-10 relative">{ingredient}</span>
-          <div className="absolute inset-0 "></div>
-        </button>
+          <div className="absolute inset-0"></div>
+        </div>
       </div>
     );
   }
+
   const handleDrop = (ingredient) => {
     setSelectedIngredients((prevIngredients) => [
       ...prevIngredients,
@@ -284,17 +313,20 @@ function RecipeGame() {
 
   // ゲームの状態と時間計測を監視
   useEffect(() => {
-    if (!isGameStarted) {
-      // ゲームが開始していない場合は何もしない
+    // カウントダウンが表示されている間は、タイマーを開始しない
+    if (showCountDown) {
       return;
     }
-    // ゲームが開始された場合のみ、タイマーを開始する
-    const timer = setInterval(() => {
-      setTime((prevTime) => prevTime + 1);
-    }, 1000);
-    // コンポーネントのクリーンアップ時にタイマーをクリア
-    return () => clearInterval(timer);
-  }, [isGameStarted]); // 依存配列にisGameStartedを追加
+
+    // カウントダウンが非表示で、ゲームが開始された場合のみ、タイマーを開始する
+    if (isGameStarted) {
+      const timer = setInterval(() => {
+        setTime((prevTime) => prevTime + 1);
+      }, 1000);
+      // コンポーネントのクリーンアップ時にタイマーをクリア
+      return () => clearInterval(timer);
+    }
+  }, [isGameStarted, showCountDown]); // 依存配列にisGameStartedとshowCountDownを追加
 
   // ユーザーが材料を選んだ時の処理
   function selectIngredient(ingredient) {
@@ -337,19 +369,18 @@ function RecipeGame() {
 
   // フライヤーのボタンが押された時の判定
   // 材料の配列もシャッフルする
-  function operateFryer() {
+  const operateFryer = () => {
     if (compareRecipes(currentRecipe, userSelection)) {
-      setSuccessCount((prevCount) => prevCount + 1);
-      alert("おいしいからあげができた！");
+      // ゲージの表示を開始
+      setShowGauge(true);
+      // ゲージのアニメーション開始
+      startGaugeAnimation();
     } else {
       alert("このからあげは客さんに出せない！");
+      // 次のレシピを生成
+      resetGame();
     }
-    // 次のレシピを生成
-    setCurrentRecipe(generateRecipe());
-    setUserSelection({});
-    setKey(Math.random());
-    shuffleIngredientsAndSet();
-  }
+  };
 
   // ingredients配列をランダムに並び替えて設定する
   const shuffleIngredientsAndSet = () => {
@@ -357,9 +388,85 @@ function RecipeGame() {
     setRandomIngredients(shuffledIngredients);
   };
 
+  const startGaugeAnimation = () => {
+    setShowGauge(true); // ゲーム開始時にゲージを表示する
+    // すでに動作中のインターバルがあればクリアする
+    if (intervalId !== null) clearInterval(intervalId);
+
+    const interval = setInterval(() => {
+      setGaugeValue((g) => {
+        let nextValue = g + 1;
+        if (nextValue >= 100) {
+          // ゲージが100に到達したら自動的に失敗と判断
+          alert("失敗...");
+          clearInterval(interval); // ここでインターバルを停止
+          resetGame(); // ゲームをリセット
+          return nextValue; // ここで100を返して更新を止める
+        }
+        return nextValue;
+      });
+    }, 10);
+
+    setIntervalId(interval); // インターバルIDをステートに設定
+  };
+
+  const resetGame = () => {
+    if (intervalId !== null) {
+      clearInterval(intervalId); // インターバルをクリア
+      setIntervalId(null); // インターバルIDのステートをリセット
+    }
+    setGaugeValue(0); // ゲームのリセット時にゲージを0に設定
+    setShowGauge(false); // ゲージを非表示にする
+    setCurrentRecipe(generateRecipe());
+    setUserSelection({});
+    setKey(Math.random());
+    shuffleIngredientsAndSet();
+  };
+
+  const handleGaugeClick = () => {
+    if (showGauge) {
+      if (gaugeValue >= 70 && gaugeValue <= 90) {
+        // 成功範囲内であれば成功
+        alert("こんがり揚がりました！");
+        setSuccessCount((prevCount) => prevCount + 1); // 成功回数を更新
+      } else {
+        // 成功範囲外であれば失敗
+        alert("からあげ失敗...");
+      }
+      resetGame(); // ゲームをリセット
+    }
+  };
+
   return (
     <>
       {karaages}
+      {showGauge && (
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-3/4">
+          <div className="relative w-full h-10 bg-gray-200">
+            <div
+              className={`h-full ${
+                gaugeValue < 70
+                  ? "bg-blue-500"
+                  : gaugeValue <= 90
+                  ? "bg-red-500"
+                  : "bg-black"
+              }`}
+              style={{ width: `${gaugeValue}%` }}
+            ></div>
+            {/* 75%のマーカー */}
+            <div className="absolute top-0 left-3/4 w-0.5 h-full bg-black"></div>
+          </div>
+          <div className="flex justify-center items-center">
+            <button
+              onClick={handleGaugeClick}
+              className="mt-2 py-2 px-4 bg-orange-500 text-white font-bold rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+            >
+              クリック！
+            </button>
+          </div>
+        </div>
+      )}
+
       {isGameCleared && (
         <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-opacity-75 bg-gray-700 z-50">
           <div className="text-center">
@@ -450,88 +557,95 @@ function RecipeGame() {
           </div>
         )}
 
-        {/*ゲーム開始するまで非表示*/}
-        {isGameStarted && (
-          <div className="flex justify-between w-full max-w-4xl">
-            {/* レシピのセクション */}
-            <div className="flex-1">
-              <div className="max-w-[85rem] px-1 py-1 sm:px-2 lg:px-1 lg:py-2 mx-auto">
-                <div className="flex flex-col">
-                  <div className="-m-1.5 overflow-x-auto">
-                    <div className="p-1.5 min-w-full inline-block align-middle">
-                      <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-                        <div className="px-4 py-2 grid gap-2 md:flex md:justify-between md:items-center border-b border-gray-200">
-                          <h2 className="text-lg font-semibold text-gray-800">
-                            現在のオーダー
-                          </h2>
+        {showCountDown ? (
+          <div className="fixed text-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl text-black text-shadow-md z-50">
+            <h2 className="text-6xl text-black font-bold">
+              {countDown >= 0 ? countDown : "ゲームスタート！"}
+            </h2>
+          </div>
+        ) : (
+          isGameStarted && (
+            <div className="flex justify-between w-full max-w-4xl">
+              {/* レシピのセクション */}
+              <div className="flex-1">
+                <div className="max-w-[85rem] px-1 py-1 sm:px-2 lg:px-1 lg:py-2 mx-auto">
+                  <div className="flex flex-col">
+                    <div className="-m-1.5 overflow-x-auto">
+                      <div className="p-1.5 min-w-full inline-block align-middle">
+                        <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                          <div className="px-4 py-2 grid gap-2 md:flex md:justify-between md:items-center border-b border-gray-200">
+                            <h2 className="text-lg font-semibold text-gray-800">
+                              現在のオーダー
+                            </h2>
+                          </div>
+                          <TransitionGroup>
+                            <CSSTransition
+                              key={key}
+                              timeout={500}
+                              classNames="fade"
+                            >
+                              <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50">
+                                  <tr>
+                                    <th
+                                      scope="col"
+                                      className="px-4 py-2 text-left text-lg font-semibold uppercase tracking-wider text-gray-800"
+                                    >
+                                      材料
+                                    </th>
+                                    <th
+                                      scope="col"
+                                      className="px-4 py-2 text-left text-lg font-semibold uppercase tracking-wider text-gray-800"
+                                    >
+                                      量
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                  {Object.entries(currentRecipe).map(
+                                    ([ingredient, quantity]) => (
+                                      <tr key={ingredient}>
+                                        <td className="px-4 py-2 whitespace-nowrap text-lg font-medium text-gray-800">
+                                          {ingredient}
+                                        </td>
+                                        <td className="px-4 py-2 whitespace-nowrap text-lg text-gray-800">
+                                          {quantity}
+                                        </td>
+                                      </tr>
+                                    )
+                                  )}
+                                </tbody>
+                              </table>
+                            </CSSTransition>
+                          </TransitionGroup>
                         </div>
-                        <TransitionGroup>
-                          <CSSTransition
-                            key={key}
-                            timeout={500}
-                            classNames="fade"
-                          >
-                            <table className="min-w-full divide-y divide-gray-200">
-                              <thead className="bg-gray-50">
-                                <tr>
-                                  <th
-                                    scope="col"
-                                    className="px-4 py-2 text-left text-lg font-semibold uppercase tracking-wider text-gray-800"
-                                  >
-                                    材料
-                                  </th>
-                                  <th
-                                    scope="col"
-                                    className="px-4 py-2 text-left text-lg font-semibold uppercase tracking-wider text-gray-800"
-                                  >
-                                    量
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody className="bg-white divide-y divide-gray-200">
-                                {Object.entries(currentRecipe).map(
-                                  ([ingredient, quantity]) => (
-                                    <tr key={ingredient}>
-                                      <td className="px-4 py-2 whitespace-nowrap text-lg font-medium text-gray-800">
-                                        {ingredient}
-                                      </td>
-                                      <td className="px-4 py-2 whitespace-nowrap text-lg text-gray-800">
-                                        {quantity}
-                                      </td>
-                                    </tr>
-                                  )
-                                )}
-                              </tbody>
-                            </table>
-                          </CSSTransition>
-                        </TransitionGroup>
+                        <DroppableArea />
+                        <button
+                          onClick={operateFryer}
+                          className="w-full mt-4 py-2 bg-red-500 hover:bg-red-600 text-white font-bold rounded shadow-lg hover:shadow-xl transition duration-150 ease-in-out"
+                        >
+                          揚げる！！
+                        </button>
                       </div>
-                      <DroppableArea />
-                      <button
-                        onClick={operateFryer}
-                        className="w-full mt-4 py-2 bg-red-500 hover:bg-red-600 text-white font-bold rounded shadow-lg hover:shadow-xl transition duration-150 ease-in-out"
-                      >
-                        揚げる！！
-                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* 材料選択セクション */}
-            <div className="flex-1 p-4  bg-white border border-gray-200 rounded-xl shadow-sm ml-4">
-              <h2 className="text-lg font-bold mb-2">材料を選ぶ</h2>
-              <div className="grid grid-cols-4 gap-4">
-                {randomIngredients.map((ingredient) => (
-                  <DraggableIngredient
-                    key={ingredient}
-                    ingredient={ingredient}
-                  />
-                ))}
+              {/* 材料選択セクション */}
+              <div className="flex-1 p-4  bg-white border border-gray-200 rounded-xl shadow-sm ml-4">
+                <h2 className="text-lg font-bold mb-2">材料を選ぶ</h2>
+                <div className="grid grid-cols-4 gap-4">
+                  {randomIngredients.map((ingredient) => (
+                    <DraggableIngredient
+                      key={ingredient}
+                      ingredient={ingredient}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          )
         )}
       </div>
     </>
