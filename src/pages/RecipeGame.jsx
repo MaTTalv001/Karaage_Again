@@ -327,8 +327,6 @@ function RecipeGame() {
         ...prevSelection,
         [ingredient]: (prevSelection[ingredient] || 0) + 1,
       };
-      // コンソールに出力
-      console.log(newSelection);
       // 新しい状態を返す
       return newSelection;
     });
@@ -396,7 +394,7 @@ function RecipeGame() {
         }
         return nextValue;
       });
-    }, 10);
+    }, 12);
 
     setIntervalId(interval); // インターバルIDをステートに設定
   };
@@ -447,10 +445,10 @@ function RecipeGame() {
             {/* 75%のマーカー */}
             <div className="absolute top-0 left-3/4 w-0.5 h-full bg-black"></div>
           </div>
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center py-2">
             <button
               onClick={handleGaugeClick}
-              className="mt-2 py-2 px-4 bg-orange-500 text-white font-bold rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+              className="mx-10 py-10 px-8 bg-orange-500 text-white font-bold text-lg rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline"
             >
               揚げる！！
             </button>
