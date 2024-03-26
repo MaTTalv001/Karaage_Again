@@ -441,7 +441,7 @@ function RecipeGame() {
     <>
       {karaages}
       {showGauge && (
-        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-3/4">
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-3/4">
           <div className="relative w-full h-10 bg-gray-200">
             <div
               className={`h-full ${
@@ -483,7 +483,7 @@ function RecipeGame() {
         </div>
       )}
       <div className="flex flex-col items-center justify-center p-20">
-        <h1 className="text-2xl font-semibold text-gray-800 pb-2">
+        <h1 className="text-2xl font-semibold text-gray-800 pb-10 pt-5">
           からあげしかないレストラン
         </h1>
         <div className="w-full max-w-4xl mb-4">
@@ -552,7 +552,7 @@ function RecipeGame() {
         {!isGameStarted && (
           <div className="flex justify-center items-center w-full max-w-4xl mx-auto">
             <img
-              src="/assets/imgs/game/recipe/introduction.jpg"
+              src="/assets/imgs/game/recipe/instructions.png"
               alt="イントロダクション"
               className="max-w-full h-auto"
             />
