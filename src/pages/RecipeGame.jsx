@@ -677,12 +677,14 @@ function RecipeGame() {
             </div>
           )
         )}
+        <div className="pt-10">
         <Link
         to={RoutePath.karaagame.path}
         className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 rounded-md dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
       >
         ゲームセレクトに戻る
-      </Link>
+          </Link>
+        </div>
       </div>
     </>
   );
