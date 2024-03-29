@@ -4,10 +4,13 @@ import supabase from "services/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext";
 import { RoutePath } from "utils/RouteSetting";
+import { useProfile } from "contexts/ProfileContext";
+
 
 const SignUpPage = () => {
   const navigate = useNavigate();
   const { setUser } = useAuth();
+  const { setProfile } = useProfile();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,12 +49,23 @@ const SignUpPage = () => {
         if (profileError) {
           throw profileError;
         }
-        alert("ユーザー登録とプロファイル設定が完了しました。");
+        // 挿入したプロファイル情報をフェッチ
+        const { data: fetchedProfile, error: fetchError } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("user_id", userId)
+          .single();
+        if (fetchError){
+          throw fetchError;
+      }
+      // フェッチしたプロファイル情報で状態を更新
+      setProfile(fetchedProfile);
+      alert("ユーザー登録とプロファイル設定が完了しました。");
         setUser(data); // ユーザー情報を設定
         navigate(RoutePath.mainpage.path);
-      }
+    }
     } catch (error) {
-      alert("エラーが発生しました: " + error.message);
+    alert("エラーが発生しました: " + error.message);
     }
   };
 
@@ -60,7 +74,7 @@ const SignUpPage = () => {
       <div className="w-full h-full relative ">
         <div className="flex flex-col items-center justify-center h-[calc(100%-40px)]">
           <div className="p-10 rounded-3xl text-center max-w-screen-lg mx-auto">
-            <h1 className="text-4xl  mb-6">ジューシー登録</h1>
+            <h1 className="text-4xl  mb-6">ユーザー登録</h1>
             <form
               className="flex flex-col items-center gap-4 w-full px-1"
               onSubmit={signUpSubmit}

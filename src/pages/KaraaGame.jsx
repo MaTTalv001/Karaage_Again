@@ -28,7 +28,7 @@ const KaraaGame = () => {
       url: "#",
     },
     {
-      title: "唐揚げの野望（開発予定）",
+      title: "唐揚の野望（開発予定）",
       image_url: "/assets/imgs/game/karaagenoyabo.png",
       description:
         "戦国時代のからあげ大名となり、戦略的な外交、軍事、経済の管理を通じて日本統一を目指す歴史シミュレーション。",
@@ -48,29 +48,30 @@ const KaraaGame = () => {
         メインページへ
       </Link>
       <div className="flex flex-wrap -m-4 pt-10">
-        {GamePath.map((game, index) => (
-          <div key={index} className="p-4 md:w-1/2 lg:w-1/3">
-            <div className="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
-              {/* 画像をリンクとして使用 */}
-              <Link to={game.url}>
-                <img
-                  className="w-full h-auto rounded-t-xl cursor-pointer object-cover hover:scale-105 transition-transform duration-300 ease-in-out"
-                  src={game.image_url}
-                  alt="Image Description"
-                />
-              </Link>
-              <div className="p-4 md:p-5">
-                <h3 className="text-lg font-bold text-gray-800 dark:text-white">
-                  {game.title}
-                </h3>
-                <p className="mt-1 text-gray-500 dark:text-gray-400">
-                  {game.description}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
+  {GamePath.map((game, index) => (
+    <div key={index} className="p-4 w-full md:w-1/3">
+      <div className="flex flex-col h-full bg-white border shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
+        {/* 画像をリンクとして使用 */}
+        <Link to={game.url}>
+          <img
+            className="w-full h-48 md:h-64 rounded-t-xl cursor-pointer object-cover hover:scale-105 transition-transform duration-300 ease-in-out"
+            src={game.image_url}
+            alt="Image Description"
+          />
+        </Link>
+        <div className="p-4 md:p-5 flex flex-col justify-between flex-grow">
+          <h3 className="text-lg font-bold text-gray-800 dark:text-white">
+            {game.title}
+          </h3>
+          <p className="mt-1 text-gray-500 dark:text-gray-400">
+            {game.description}
+          </p>
+        </div>
       </div>
+    </div>
+  ))}
+</div>
+
       <div className="p-10 text-right text-md text-gray-800">
         ※実際は開発予定すらない場合があります
       </div>
