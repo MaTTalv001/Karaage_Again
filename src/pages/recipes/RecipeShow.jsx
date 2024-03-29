@@ -77,7 +77,7 @@ const RecipeShow = () => {
 
   return (
     <div className="">
-      <div className="mx-auto max-w-7xl grid grid-cols-1 gap-x-8 gap-y-16 px-4 py-24 sm:px-6 sm:py-32 lg:grid-cols-2 lg:px-8">
+      <div className="mx-auto max-w-7xl grid grid-cols-1 gap-x-8 gap-y-16 px-4 py-5 sm:px-6 sm:py-32 lg:grid-cols-2 lg:px-8">
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             {recipe.title}
