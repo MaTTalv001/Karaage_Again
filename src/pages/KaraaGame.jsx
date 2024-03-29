@@ -14,6 +14,13 @@ const KaraaGame = () => {
       url: RoutePath.recipegame.path,
     },
     {
+      title: "からあげめくり",
+      image_url: "/assets/imgs/game/karaagemekuri.png",
+      description:
+        "からあげは「めくるか、めくられるか」。秘密のレシピを発見するため、からあげめくり名人の旅が始まる",
+      url: RoutePath.mekuri.path,
+    },
+    {
       title: "KARAAGE SOULS（開発予定）",
       image_url: "/assets/imgs/game/karaagesoul.png",
       description:
@@ -47,7 +54,7 @@ const KaraaGame = () => {
               {/* 画像をリンクとして使用 */}
               <Link to={game.url}>
                 <img
-                  className="w-full h-auto rounded-t-xl cursor-pointer"
+                  className="w-full h-auto rounded-t-xl cursor-pointer object-cover hover:scale-105 transition-transform duration-300 ease-in-out"
                   src={game.image_url}
                   alt="Image Description"
                 />

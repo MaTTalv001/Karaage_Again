@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { RoutePath } from "utils/RouteSetting";
+import { Link } from "react-router-dom";
+
 
 const generateCardImages = (difficulty) => {
   let pairs = 4; // easy のデフォルト
@@ -7,7 +10,7 @@ const generateCardImages = (difficulty) => {
 
   const cardImages = [];
   for (let i = 1; i <= pairs; i++) {
-    cardImages.push({ src: `/assets/imgs/game/flip/img${i}.png`, matched: false });
+    cardImages.push({ src: `/assets/imgs/game/flip/img${i}.jpg`, matched: false });
   }
   return cardImages;
 };
@@ -136,10 +139,11 @@ const Mekuri = () => {
       </div>
   <button 
     onClick={shuffleCards} 
-    className="mb-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out"
+    className="my-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out"
   >
     New Game
-  </button>
+      </button>
+      <p className="my-2 text-2xl font-bold">ターン数: {turns}</p>
   <div className="card-grid grid grid-cols-4 gap-4">
     {cards.map(card => (
       <div 
@@ -156,7 +160,7 @@ const Mekuri = () => {
       </div>
     ))}
   </div>
-  <p className="mt-8 text-2xl font-bold">ターン数: {turns}</p>
+ 
   {isGameCleared && (
     <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-opacity-75 bg-gray-700 z-50">
       <div className="text-center p-8 bg-gray-800 rounded-lg shadow-xl">
@@ -177,7 +181,15 @@ const Mekuri = () => {
           </button>
       </div>
     </div>
-  )}
+      )}
+      <div className="py-5">
+      <Link
+        to={RoutePath.karaagame.path}
+        className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 rounded-md dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
+      >
+        ゲームセレクトに戻る
+        </Link>
+      </div>
 </div>
 
   );
