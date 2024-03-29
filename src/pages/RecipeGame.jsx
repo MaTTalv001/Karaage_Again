@@ -174,6 +174,20 @@ function RecipeGame() {
   const [gaugeDirection, setGaugeDirection] = useState(1);
   const [intervalId, setIntervalId] = useState(null);
 
+  const post = {
+    title: "からあげアゲイン",
+    url: "https://karaage-again.vercel.app/",
+  };
+  const handleTweet = () => {
+    const tweetText = `【リストランテからあげ】${time}秒でクリアしました！！`;
+    const twitterUrl = `https://twitter.com/share?url=${encodeURIComponent(
+      post.url
+    )}&text=${encodeURIComponent(tweetText)}`;
+
+    // 新しいタブでTwitter共有ページを開く
+    window.open(twitterUrl, "_blank");
+  };
+
   // ゲームクリアフラグの制御
   useEffect(() => {
     if (successCount >= 5) {
@@ -484,6 +498,12 @@ function RecipeGame() {
             >
               リトライ
             </button>
+            <button
+            onClick={handleTweet}
+            className="mx-2 bg-black hover:bg-black text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out"
+          >
+            <i className="fab fa-twitter"></i> Xにポスト
+          </button>
           </div>
         </div>
       )}

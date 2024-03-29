@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import supabase from "services/supabaseClient";
 import { Link } from "react-router-dom";
 import { useProfile } from "contexts/ProfileContext";
-import  HandleDelete  from "components/DeleteRecipe";
+import HandleDelete from "components/DeleteRecipe";
+import Loading from "components/Loading";
 
 const RecipesList = () => {
   const [recipes, setRecipes] = useState([]);
   const { profile } = useProfile();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -19,9 +21,11 @@ const RecipesList = () => {
         console.error("Error fetching recipes:", error);
       } else {
         setRecipes(data);
+        setIsLoading(false);
       }
+      
     };
-
+    
     fetchRecipes();
   }, []);
 
@@ -36,6 +40,10 @@ const RecipesList = () => {
       );
     });
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex flex-col justify-start min-h-screen m-24 ">

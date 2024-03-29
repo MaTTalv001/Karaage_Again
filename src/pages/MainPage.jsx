@@ -62,7 +62,7 @@ const MainMenu = () => {
     <>
       <div className="flex flex-col items-center justify-center pt-20 pb-5 px-4 md:px-20">
         <h3 className="text-lg font-bold text-gray-800 pt-5">
-          今日のからあげメッセージ
+          今日のポジティブからあげ
         </h3>
 
         <p className="pt-2 flex items-center">

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { RoutePath } from "utils/RouteSetting";
 
 const ViewPage = () => {
-  const [selection, setSelection] = useState("none");
+  const [selection, setSelection] = useState("make");
 
   return (
     <div>

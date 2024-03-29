@@ -3,6 +3,7 @@ import { RoutePath } from "utils/RouteSetting";
 import { Link } from "react-router-dom";
 
 const KaraaGame = () => {
+  
   // サンプルデータ
   const GamePath = [
     {

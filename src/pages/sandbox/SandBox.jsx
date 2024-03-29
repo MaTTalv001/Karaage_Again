@@ -1,139 +1,195 @@
-import React, { useState, useEffect, useCallback } from "react";
-import ReactDOM from "react-dom";
+import React, { useState, useEffect } from 'react';
 
-const SandBox = () => {
-  const [position, setPosition] = useState({ x: 250, y: 250 });
-  const [enemies, setEnemies] = useState([]);
-  const [gameOver, setGameOver] = useState(false);
+const generateCardImages = (difficulty) => {
+  let pairs = 4; // easy のデフォルト
+  if (difficulty === 'normal') pairs = 8;
+  else if (difficulty === 'KARAAGE Must Die') pairs = 16;
 
-  const movePlayer = useCallback((e) => {
-    setPosition((prevPosition) => {
-      let newX = prevPosition.x;
-      let newY = prevPosition.y;
-
-      switch (e.key) {
-        case "ArrowUp":
-          newY -= 10;
-          break;
-        case "ArrowDown":
-          newY += 10;
-          break;
-        case "ArrowLeft":
-          newX -= 10;
-          break;
-        case "ArrowRight":
-          newX += 10;
-          break;
-        default:
-          return prevPosition;
-      }
-
-      return { x: newX, y: newY };
-    });
-  }, []);
-
-  useEffect(() => {
-    const enemySpawnInterval = setInterval(() => {
-      // 新しい敵をプレイヤーの周囲にランダムに生成する
-      const newEnemy = {
-        id: Math.random(), // 簡単なIDの生成方法ですが、実際にはより堅牢な方法を検討してください
-        x: position.x + (Math.random() - 0.5) * 200, // プレイヤーの位置の周囲に生成
-        y: position.y + (Math.random() - 0.5) * 200,
-        createdAt: Date.now(),
-      };
-
-      setEnemies((prevEnemies) => [...prevEnemies, newEnemy]);
-    }, 5000); // 5秒ごとに新しい敵を生成
-
-    return () => clearInterval(enemySpawnInterval);
-  }, [position]); // 依存配列にpositionを追加することで、プレイヤーの位置が変わるたびに敵の生成位置も更新されます
-
-  useEffect(() => {
-    window.addEventListener("keydown", movePlayer);
-
-    return () => window.removeEventListener("keydown", movePlayer);
-  }, [movePlayer]);
-
-  useEffect(() => {
-    const moveEnemies = () => {
-      setEnemies(
-        (prevEnemies) =>
-          prevEnemies
-            .map((enemy) => {
-              // 敵の動きをプレイヤーに向けて計算
-              const directionX = position.x > enemy.x ? 1 : -1;
-              const directionY = position.y > enemy.y ? 1 : -1;
-              return {
-                ...enemy,
-                x: enemy.x + directionX * (Math.random() * 2), // 敵の速度をランダムに調整
-                y: enemy.y + directionY * (Math.random() * 2),
-              };
-            })
-            .filter((enemy) => Date.now() - enemy.createdAt < 10000) // 生成から10秒後に消滅
-      );
-    };
-
-    // 敵の位置を0.5秒ごとに更新
-    const intervalId = setInterval(moveEnemies, 500);
-
-    return () => clearInterval(intervalId);
-  }, [position]); // 依存配列にpositionを追加して、プレイヤーの位置が更新されるたびに敵も追従するように
-
-  useEffect(() => {
-    const checkCollision = () => {
-      enemies.forEach((enemy) => {
-        if (
-          Math.abs(position.x - enemy.x) < 20 &&
-          Math.abs(position.y - enemy.y) < 20
-        ) {
-          setGameOver(true);
-        }
-      });
-    };
-
-    checkCollision();
-  }, [position, enemies]);
-
-  return (
-    <div className="pt-20">
-      {gameOver ? (
-        <div>Game Over!</div>
-      ) : (
-        <div
-          style={{
-            position: "relative",
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "lightgrey",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: position.y,
-              left: position.x,
-              width: "20px",
-              height: "20px",
-              backgroundColor: "red",
-            }}
-          ></div>
-          {enemies.map((enemy) => (
-            <div
-              key={enemy.id}
-              style={{
-                position: "absolute",
-                top: enemy.y,
-                left: enemy.x,
-                width: "20px",
-                height: "20px",
-                backgroundColor: "black",
-              }}
-            ></div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+  const cardImages = [];
+  for (let i = 1; i <= pairs; i++) {
+    cardImages.push({ src: `/assets/imgs/game/flip/img${i}.png`, matched: false });
+  }
+  return cardImages;
 };
 
+const SandBox = () => {
+  const [cards, setCards] = useState([]);
+  const [turns, setTurns] = useState(0);
+  const [choiceOne, setChoiceOne] = useState(null);
+  const [choiceTwo, setChoiceTwo] = useState(null);
+  const [disabled, setDisabled] = useState(false);
+  const [isGameCleared, setIsGameCleared] = useState(false);
+  const [difficulty, setDifficulty] = useState('easy');
+
+  const post = {
+    title: "からあげアゲイン",
+    url: "https://karaage-again.vercel.app/",
+  };
+
+  const handleTweet = () => {
+    const tweetText = `【からあげめくり】${difficulty}モードを${turns}ターンでクリアしました！！`;
+    const twitterUrl = `https://twitter.com/share?url=${encodeURIComponent(
+      post.url
+    )}&text=${encodeURIComponent(tweetText)}`;
+
+    // 新しいタブでTwitter共有ページを開く
+    window.open(twitterUrl, "_blank");
+  };
+  
+  useEffect(() => {
+    shuffleCards(difficulty);
+  }, [difficulty]);
+
+  // ゲームクリアのチェック
+  useEffect(() => {
+    const unmatchedCards = cards.filter(card => !card.matched);
+    if (cards.length >= 0 && unmatchedCards.length === 0) {
+      setIsGameCleared(true);
+    }
+  }, [cards]);
+
+
+  const shuffleCards = (difficulty) => {
+    const cardImages = generateCardImages(difficulty);
+    const shuffledCards = [...cardImages, ...cardImages]
+      .sort(() => Math.random() - 0.5)
+      .map((card) => ({ ...card, id: Math.random(), flipped: false }));
+
+    setChoiceOne(null);
+    setChoiceTwo(null);
+    setCards(shuffledCards);
+    setTurns(0);
+    setIsGameCleared(false);
+  };
+
+  // カード選択
+  const handleChoice = (card) => {
+    if (!disabled) {
+      if (!choiceOne) {
+        setChoiceOne(card);
+        setCards(prevCards => prevCards.map(item =>
+          item.id === card.id ? { ...item, flipped: true } : item
+        ));
+      } else if (!choiceTwo && card.id !== choiceOne.id) {
+        setChoiceTwo(card);
+        setCards(prevCards => prevCards.map(item =>
+          item.id === card.id ? { ...item, flipped: true } : item
+        ));
+        setDisabled(true);
+      }
+    }
+  };
+
+  // 選択したカードの比較
+  useEffect(() => {
+  if (choiceOne && choiceTwo) {
+    setDisabled(true); // 2枚選択中は他のカードの選択を禁止
+    setTimeout(() => {
+      if (choiceOne.src === choiceTwo.src) {
+        // 正解の場合
+        setCards(prevCards => prevCards.map(card =>
+          card.src === choiceOne.src ? { ...card, matched: true } : card
+        ));
+        alert('正解！');
+      } else {
+        // 不正解の場合
+        setCards(prevCards => prevCards.map(card => ({
+          ...card,
+          flipped: false // 両方のカードを裏に戻す
+        })));
+        alert('不正解！');
+      }
+      resetTurn();
+    }, 1000); // 2枚のカードが表示された後、3秒待ってから処理を実行
+  }
+}, [choiceOne, choiceTwo]);
+
+
+  // ターンと選択のリセット
+  const resetTurn = () => {
+    setChoiceOne(null);
+    setChoiceTwo(null);
+    setTurns(prevTurns => prevTurns + 1);
+    setDisabled(false);
+    // 正解したカードを除去
+    setCards(prevCards => prevCards.filter(card => !card.matched));
+  };
+
+  // ゲーム開始時にカードをシャッフル
+  useEffect(() => {
+    shuffleCards();
+  }, []);
+
+  return (
+    <div className="pt-20 flex flex-col items-center justify-center">
+      <h2 className="text-2xl font-bold mb-4">からあげめくり</h2>
+      <div className="flex flex-wrap justify-center mb-4">
+        {['easy', 'normal', 'KARAAGE Must Die'].map((level) => (
+          <button 
+            key={level}
+            onClick={() => setDifficulty(level)}
+            className={`py-2 px-4 m-2 text-sm font-medium ${difficulty === level ? 'bg-blue-500 text-white' : 'bg-white text-gray-800'} rounded-lg shadow`}
+          >
+            {level}
+          </button>
+        ))}
+      </div>
+  <button 
+    onClick={shuffleCards} 
+    className="mb-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out"
+  >
+    New Game
+  </button>
+  <div className="card-grid grid grid-cols-4 gap-4">
+    {cards.map(card => (
+      <div 
+        className="card aspect-w-1 aspect-h-1 w-40 h-40 flex justify-center items-center bg-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-150 ease-in-out cursor-pointer"
+        key={card.id} 
+        onClick={() => handleChoice(card)}
+      >
+        {card.flipped && (
+          <img src={card.src} alt="card front" className="w-full h-full object-cover rounded-lg" />
+        )}
+        {!card.flipped && (
+          <img src="favicon.png" alt="card back" className="w-full h-full object-cover rounded-lg" />
+        )}
+      </div>
+    ))}
+  </div>
+  <p className="mt-8 text-2xl font-bold">ターン数: {turns}</p>
+  {isGameCleared && (
+    <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-opacity-75 bg-gray-700 z-50">
+      <div className="text-center p-8 bg-gray-800 rounded-lg shadow-xl">
+        <p className="text-4xl text-white mb-8">
+              ゲームクリア！{ difficulty}モード　ターン数: {turns}
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out"
+        >
+          リトライ
+            </button>
+            <button
+            onClick={handleTweet}
+            className="mx-2 bg-black hover:bg-black text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out"
+          >
+            <i className="fab fa-twitter"></i> Xにポスト
+          </button>
+      </div>
+    </div>
+  )}
+</div>
+
+  );
+};
+ 
 export default SandBox;
+
+
+
+
+
+
+
+
+

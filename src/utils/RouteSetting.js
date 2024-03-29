@@ -17,6 +17,7 @@ import RecipeGame from "pages/RecipeGame";
 import { PrivacyPolicy } from "pages/static/PrivacyPolicy";
 import { TermsOfService } from "pages/static/TermsOfService";
 import SandBox from "pages/sandbox/SandBox";
+import Mekuri from "pages/Mekuri";
 
 const Path = {
   home: "/",
@@ -38,6 +39,7 @@ const Path = {
   privacypolicy: "/privacypolicy",
   termsofuse: "/termsofuse",
   sandbox: "/sandbox",
+  mekuri: "/mekuri",
 };
 
 export const RouteSetting = [
@@ -117,6 +119,9 @@ export const RouteSetting = [
     path: Path.sandbox,
     component: <SandBox />,
   },
+  {path: Path.mekuri,
+    component: <Mekuri />,
+  },
 ];
 
 export const RoutePath = {
@@ -195,5 +200,9 @@ export const RoutePath = {
   sandbox: {
     path: Path.sandbox,
     name: "テストスペース",
+  },
+  mekuri: {
+    path: Path.mekuri,
+    name: "からあげめくり",
   },
 };
