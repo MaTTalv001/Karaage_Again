@@ -178,7 +178,7 @@ function RecipeGame() {
 
   const post = {
     title: "からあげアゲイン",
-    url: "https://karaage-again.vercel.app/",
+    url: "https://karaage-again.vercel.app/karaagame",
   };
   const handleTweet = () => {
     const tweetText = `【リストランテからあげ】${time}秒でクリアしました！！`;
@@ -471,12 +471,9 @@ function RecipeGame() {
                   : "bg-black"
               }`}
               style={{ width: `${gaugeValue}%` }}
-            >
-
-            </div>
+            ></div>
             {/* 75%のマーカー */}
-            <div className="absolute top-0 left-3/4 w-0.5 h-full bg-black">
-            </div>
+            <div className="absolute top-0 left-3/4 w-0.5 h-full bg-black"></div>
           </div>
           <div className="flex justify-center items-center py-2">
             <button
@@ -501,11 +498,11 @@ function RecipeGame() {
               リトライ
             </button>
             <button
-            onClick={handleTweet}
-            className="mx-2 bg-black hover:bg-black text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out"
-          >
-            <i className="fab fa-twitter"></i> Xにポスト
-          </button>
+              onClick={handleTweet}
+              className="mx-2 bg-black hover:bg-black text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out"
+            >
+              <i className="fab fa-twitter"></i> Xにポスト
+            </button>
           </div>
         </div>
       )}
@@ -513,7 +510,7 @@ function RecipeGame() {
         <h1 className="text-2xl font-semibold text-gray-800 pb-10 pt-5">
           リストランテからあげ
         </h1>
-        
+
         <div className="w-full max-w-4xl mb-4">
           <div className="max-w-[85rem] px-2 py-1 sm:px-4 lg:px-6 md:py-1 lg:py-1 mx-auto bg-white border border-gray-200 rounded-lg shadow-sm">
             <div className="flex justify-between items-center">
@@ -678,11 +675,11 @@ function RecipeGame() {
           )
         )}
         <div className="pt-10">
-        <Link
-        to={RoutePath.karaagame.path}
-        className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 rounded-md dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
-      >
-        ゲームセレクトに戻る
+          <Link
+            to={RoutePath.karaagame.path}
+            className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 rounded-md dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
+          >
+            ゲームセレクトに戻る
           </Link>
         </div>
       </div>
