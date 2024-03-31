@@ -181,7 +181,7 @@ function RecipeGame() {
     url: "https://karaage-again.vercel.app/karaagame",
   };
   const handleTweet = () => {
-    const tweetText = `【リストランテからあげ】${time}秒でクリアしました！！`;
+    const tweetText = `【リストランテからあげ】${time}秒でクリアしました！！ #からあげアゲイン `;
     const twitterUrl = `https://twitter.com/share?url=${encodeURIComponent(
       post.url
     )}&text=${encodeURIComponent(tweetText)}`;

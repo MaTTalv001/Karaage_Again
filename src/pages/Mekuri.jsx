@@ -32,7 +32,7 @@ const Mekuri = () => {
   };
 
   const handleTweet = () => {
-    const tweetText = `【からあげめくり】${difficulty}モードを${turns}ターンでクリアしました！！`;
+    const tweetText = `【からあげめくり】${difficulty}モードを${turns}ターンでクリアしました！！ #からあげアゲイン `;
     const twitterUrl = `https://twitter.com/share?url=${encodeURIComponent(
       post.url
     )}&text=${encodeURIComponent(tweetText)}`;
